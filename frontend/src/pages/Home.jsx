@@ -227,8 +227,6 @@ export default function Home({ openChat }) {
         </div>
       </section>
 
-<<<<<<< HEAD
-=======
       {/* ================= PREVIOUS FELLOWS ================= */}
       <section className="fellows-section">
         <div className="section-shell">
@@ -268,7 +266,6 @@ export default function Home({ openChat }) {
         </div>
       </section>
 
->>>>>>> master
       {/* ================= YLP HUB ================= */}
       <section className="hub" id="hub">
         <div className="hub-inner">

@@ -4,7 +4,4 @@ frontend/dist/
 frontend/.env
 backend/.env
 .DS_Store
-<<<<<<< HEAD
 backend/data/roster.csv
-=======
->>>>>>> master
