@@ -126,8 +126,40 @@ if (!process.env.YLP_SECRET) {
 
 const SESSION_COOKIE = IS_PRODUCTION ? "__Host-ylp_session" : "ylp_session";
 const TOKEN_TTL = Number(process.env.SESSION_TTL_MINUTES || 480) * 60 * 1000;
-const REQUIRE_EMAIL_VERIFICATION = String(process.env.REQUIRE_EMAIL_VERIFICATION || (IS_PRODUCTION ? "true" : "false")) === "true";
 const AUTH_TOKEN_TTL = Number(process.env.AUTH_TOKEN_TTL_MINUTES || 15) * 60 * 1000;
+
+// Public application controls. Keep closed by default; explicitly opt in when a cohort opens.
+const APPLICATIONS_ENABLED = String(process.env.APPLICATIONS_OPEN || "false").toLowerCase() === "true";
+const APPLICATION_CLOSE_AT = process.env.APPLICATION_CLOSE_AT ? Date.parse(process.env.APPLICATION_CLOSE_AT) : null;
+
+function applicationStatus() {
+  const now = Date.now();
+  const hasValidDeadline = Number.isFinite(APPLICATION_CLOSE_AT);
+  const open = APPLICATIONS_ENABLED && (!hasValidDeadline || now < APPLICATION_CLOSE_AT);
+  return {
+    open,
+    closeAt: hasValidDeadline ? new Date(APPLICATION_CLOSE_AT).toISOString() : null,
+    message: open ? "Applications are currently open." : "Applications are closed.",
+    forms: {
+      public: cleanPublicUrl(process.env.PUBLIC_SECTOR_FORM_URL),
+      private: cleanPublicUrl(process.env.PRIVATE_SECTOR_FORM_URL),
+    },
+    submissions: {
+      public: cleanPublicUrl(process.env.PUBLIC_SECTOR_SUBMIT_URL),
+      private: cleanPublicUrl(process.env.PRIVATE_SECTOR_SUBMIT_URL),
+    },
+  };
+}
+
+function cleanPublicUrl(value) {
+  if (!value) return "";
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol) ? url.toString() : "";
+  } catch {
+    return "";
+  }
+}
 
 /* --------------------------------------------------------------------------
    JSON store
@@ -702,6 +734,10 @@ app.get(
   }
 );
 
+app.get("/api/application-status", (_req, res) => {
+  res.json(applicationStatus());
+});
+
 /* --------------------------------------------------------------------------
    Login
    -------------------------------------------------------------------------- */
@@ -757,10 +793,6 @@ app.post(
         });
     }
 
-    if (REQUIRE_EMAIL_VERIFICATION && (!match.email || !match.emailVerifiedAt)) {
-      console.warn(`[security] blocked unverified login user=${match.id} ip=${req.ip}`);
-      return res.status(403).json({ error: "Email verification is required before login." });
-    }
 
     attempts.delete(req.ip);
     const sessionToken = issueToken(match.id);
@@ -788,19 +820,9 @@ app.post("/api/auth/register", signupLimiter, async (req, res) => {
   const participants = read("participants.json", []);
   if (participants.some((p) => String(p.email || "").toLowerCase() === email)) return res.status(202).json({ ok: true });
   const cred = hashSecret(password); const id = `u-${crypto.randomBytes(12).toString("hex")}`;
-  participants.push({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, emailVerifiedAt: null, country: "", track: "public", cohort: "", role: "participant" });
+  participants.push({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, country: "", track: "public", cohort: "", role: "participant" });
   write("participants.json", participants);
-  const token = setAuthToken("verify-email", id);
-  await deliverEmail(email, "Verify your KOICA YLP email", `${process.env.FRONTEND_URL || ""}/verify-email?token=${encodeURIComponent(token)}`);
   res.status(202).json({ ok: true });
-});
-
-app.post("/api/auth/verify-email", signupLimiter, (req, res) => {
-  const token = consumeAuthToken("verify-email", req.body?.token);
-  if (!token) return res.status(400).json({ error: "Verification token is invalid or expired." });
-  const participants = read("participants.json", []), p = participants.find((x) => x.id === token.participantId);
-  if (!p) return res.status(400).json({ error: "Verification token is invalid or expired." });
-  p.emailVerifiedAt = new Date().toISOString(); write("participants.json", participants); res.json({ ok: true });
 });
 
 app.post("/api/auth/forgot-password", signupLimiter, async (req, res) => {

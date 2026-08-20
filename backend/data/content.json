@@ -111,6 +111,25 @@
           "time": "14:00–17:00",
           "facilitator": "Prof. Kim Ki-yeon"
         }
+<<<<<<< HEAD
+=======
+      ],
+      "presentations": [
+        {
+          "id": "p-6f8881a2b661",
+          "filePath": "uploads/module-presentations/1787262629802-f4117d9bcd5f3af1.pdf",
+          "originalFileName": "Light Iot LED and Sinage applications.pdf",
+          "mime": "application/pdf",
+          "size": 17194501
+        },
+        {
+          "id": "p-12b362f5e448",
+          "filePath": "uploads/module-presentations/1787262670917-0dcb806d7963110a.pdf",
+          "originalFileName": "(Additional materials)_Light Iot LED and Sinage applications.pdf",
+          "mime": "application/pdf",
+          "size": 9921213
+        }
+>>>>>>> master
       ]
     },
     {
@@ -456,12 +475,18 @@
     {
       "id": "r2",
       "title": "Action Plan template",
+<<<<<<< HEAD
       "type": "PDF",
       "note": "Use this structure for your Action Plan draft.",
       "filePath": "uploads/resources/1787224989669-9196263291e30cf5.pdf",
       "originalFileName": "AP Orientation Lecture.pdf",
       "mime": "application/pdf",
       "size": 369470
+=======
+      "type": "DOCX",
+      "url": "#",
+      "note": "Use this structure for your Action Plan draft."
+>>>>>>> master
     },
     {
       "id": "r3",

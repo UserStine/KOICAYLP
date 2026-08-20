@@ -11,7 +11,7 @@
    - track   : "public" or "private"
    - cohort  : any label you use, e.g. 2026-2027
    - PINs are hashed with scrypt and are never stored in plaintext.
-   - Optional email column supports verification/password-reset migration.
+   - Optional email column supports password-reset emails.
    ========================================================================== */
 
 import fs from "node:fs";
@@ -80,7 +80,6 @@ const participants = rows.slice(1).map((r, i) => {
     salt,
     pinHash: crypto.scryptSync(pin, salt, 32).toString("hex"),
     email: idx("email") > -1 ? (r[idx("email")] || "").trim().toLowerCase() : "",
-    emailVerifiedAt: idx("email") > -1 && (r[idx("email")] || "").trim() ? new Date().toISOString() : null,
     country: idx("country") > -1 ? (r[idx("country")] || "").trim() : "",
     track: idx("track") > -1 ? (r[idx("track")] || "public").trim().toLowerCase() : "public",
     cohort: idx("cohort") > -1 ? (r[idx("cohort")] || "").trim() : "",

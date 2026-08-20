@@ -227,6 +227,48 @@ export default function Home({ openChat }) {
         </div>
       </section>
 
+<<<<<<< HEAD
+=======
+      {/* ================= PREVIOUS FELLOWS ================= */}
+      <section className="fellows-section">
+        <div className="section-shell">
+          <div className="section-heading" data-reveal>
+            <span className="eyebrow">Fellow stories</span>
+            <h2 className="section-title">Hear from previous <span>fellows</span></h2>
+            <p className="section-sub">Verified fellow testimonials can be published here without changing the page layout.</p>
+          </div>
+          <div className="testimonial-grid">
+            {["Public Sector Fellow", "Private Sector Fellow", "Regional Fellow"].map((label) => (
+              <article className="testimonial-card" data-reveal key={label}>
+                <span className="testimonial-quote">“</span>
+                <p>Verified testimonial coming soon.</p>
+                <div><strong>{label}</strong><span>KOICA Youth Leaders Program</span></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="fellow-gallery-section">
+        <div className="section-shell">
+          <div className="section-heading" data-reveal>
+            <span className="eyebrow">Previous fellows</span>
+            <h2 className="section-title">Moments from the <span>community</span></h2>
+            <p className="section-sub">Add approved photos of previous fellows to these gallery slots.</p>
+          </div>
+          <div className="fellow-gallery">
+            {[1, 2, 3, 4, 5, 6].map((number) => (
+              <div className="fellow-gallery-card" data-reveal key={number}>
+                <div className="fellow-photo-placeholder" aria-label={`Previous fellow gallery photo ${number}`}>
+                  <span>Fellow photo</span><small>{String(number).padStart(2, "0")}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+>>>>>>> master
       {/* ================= YLP HUB ================= */}
       <section className="hub" id="hub">
         <div className="hub-inner">
