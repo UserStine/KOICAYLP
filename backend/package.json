@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch server.js",
     "start": "node server.js",
-    "import-roster": "node scripts/import-roster.mjs"
+    "import-roster": "node scripts/import-roster.mjs",
+    "rag:build": "node scripts/build-rag-index.mjs"
   },
   "engines": {
     "node": ">=20.12"

@@ -8,6 +8,7 @@ import { API } from "../auth/AuthContext";
 export default function ChatWidget({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [sending, setSending] = useState(false);
   const bodyRef = useRef(null);
   const { t, lang } = useT();
 
@@ -15,21 +16,55 @@ export default function ChatWidget({ open, setOpen }) {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [messages, open]);
 
-  /* clear the transcript when the language changes so replies stay consistent */
-  useEffect(() => { setMessages([]); }, [lang]);
+  /* Clear the transcript when language changes so replies stay consistent. */
+  useEffect(() => {
+    setMessages([]);
+  }, [lang]);
 
   const ask = async (q) => {
     const message = q.trim();
-    if (!message) return;
-    setMessages((m) => [...m, { from: "user", text: message }]);
+    if (!message || sending) return;
+
+    const history = messages
+      .slice(-6)
+      .map((item) => ({
+        role: item.from === "bot" ? "assistant" : "user",
+        content: item.text,
+      }));
+
+    setMessages((current) => [...current, { from: "user", text: message }]);
     setInput("");
+    setSending(true);
+
     try {
-      const res = await fetch(`${API}/api/ai/chat`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message }) });
+      const res = await fetch(`${API}/api/ai/chat`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message,
+          language: lang,
+          history,
+        }),
+      });
+
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "AI service is unavailable.");
-      setMessages((m) => [...m, { from: "bot", text: data.reply }]);
+
+      setMessages((current) => [
+        ...current,
+        {
+          from: "bot",
+          text: data.reply,
+          sources: Array.isArray(data.sources) ? data.sources : [],
+        },
+      ]);
     } catch (error) {
-      setMessages((m) => [...m, { from: "bot", text: error.message }]);
+      setMessages((current) => [...current, { from: "bot", text: error.message, sources: [] }]);
+    } finally {
+      setSending(false);
     }
   };
 
@@ -53,29 +88,53 @@ export default function ChatWidget({ open, setOpen }) {
                 strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
           </div>
+
           <div className="chat-body" ref={bodyRef}>
             <div className="chat-msg"><WaveIcon /> {t.chat.greeting}</div>
+
             <div className="chat-chips">
               {t.chat.chips.map((c) => (
-                <button key={c} className="chat-chip" onClick={() => ask(c)}>{c}</button>
+                <button key={c} className="chat-chip" disabled={sending} onClick={() => ask(c)}>{c}</button>
               ))}
             </div>
+
             {messages.map((m, i) => (
-              <div key={i} className={`chat-msg ${m.from === "user" ? "user" : ""}`}>{m.text}</div>
+              <div key={i} className={`chat-msg ${m.from === "user" ? "user" : ""}`}>
+                <div>{m.text}</div>
+                {m.from === "bot" && m.sources?.length > 0 && (
+                  <div className="chat-sources" aria-label="Sources">
+                    {m.sources.map((source) => (
+                      <span className="chat-source" key={`${source.ref}-${source.title}`}>
+                        {source.ref} · {source.title}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
+
+            {sending && <div className="chat-msg chat-thinking">Searching the KOICA knowledge base…</div>}
           </div>
+
           <div className="chat-input">
-            <input type="text" placeholder={t.chat.placeholder} value={input}
+            <input
+              type="text"
+              placeholder={t.chat.placeholder}
+              value={input}
+              disabled={sending}
+              maxLength={2000}
               onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && ask(input)} />
-            <button aria-label={t.chat.send} onClick={() => ask(input)}>
+              onKeyDown={(e) => e.key === "Enter" && ask(input)}
+            />
+            <button aria-label={t.chat.send} disabled={sending || !input.trim()} onClick={() => ask(input)}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
               </svg>
             </button>
           </div>
-          <div className="chat-note">{t.chat.note}</div>
+
+          <div className="chat-note">Answers are grounded in the KOICA YLP knowledge base. Confirm cohort-specific decisions with KOICA.</div>
         </div>
       )}
     </>
