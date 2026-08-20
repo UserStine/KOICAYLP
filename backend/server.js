@@ -125,6 +125,17 @@ if (!process.env.YLP_SECRET) {
 }
 
 const SESSION_COOKIE = IS_PRODUCTION ? "__Host-ylp_session" : "ylp_session";
+
+// The frontend and API may be deployed on separate HTTPS origins in production.
+// SameSite=None is required for the browser to send the HttpOnly session cookie
+// on credentialed cross-origin API requests. Secure is mandatory with None.
+const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: IS_PRODUCTION,
+  sameSite: IS_PRODUCTION ? "none" : "lax",
+  path: "/",
+};
+
 const TOKEN_TTL = Number(process.env.SESSION_TTL_MINUTES || 480) * 60 * 1000;
 const AUTH_TOKEN_TTL = Number(process.env.AUTH_TOKEN_TTL_MINUTES || 15) * 60 * 1000;
 
@@ -797,10 +808,7 @@ app.post(
     attempts.delete(req.ip);
     const sessionToken = issueToken(match.id);
     res.cookie(SESSION_COOKIE, sessionToken, {
-      httpOnly: true,
-      secure: IS_PRODUCTION,
-      sameSite: "strict",
-      path: "/",
+      ...SESSION_COOKIE_OPTIONS,
       maxAge: TOKEN_TTL,
     });
     console.info(`[auth] login_success user=${match.id} ip=${req.ip}`);
@@ -809,7 +817,7 @@ app.post(
 );
 
 app.post("/api/logout", auth, (req, res) => {
-  res.clearCookie(SESSION_COOKIE, { httpOnly: true, secure: IS_PRODUCTION, sameSite: "strict", path: "/" });
+  res.clearCookie(SESSION_COOKIE, SESSION_COOKIE_OPTIONS);
   console.info(`[auth] logout user=${req.user.id} ip=${req.ip}`);
   res.json({ ok: true });
 });

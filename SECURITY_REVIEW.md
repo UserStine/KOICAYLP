@@ -10,11 +10,7 @@
 - Added ownership/entitlement validation to progress updates so arbitrary module/lesson IDs cannot be written.
 - Kept module/resource track authorization on read/download endpoints and admin role authorization on all admin endpoints.
 - Added strict route-ID validation and file-content signature checks for allowed uploads.
-<<<<<<< HEAD
-- Added email verification and password-reset token flows. Tokens expire, are single-use, and are stored only as SHA-256 digests.
-=======
 - Added password-reset token flows. Tokens expire, are single-use, and are stored only as SHA-256 digests.
->>>>>>> master
 - Added server-side AI integration. `OPENAI_API_KEY` remains server-only and the frontend only calls `/api/ai/chat`.
 - Added a daily calendar endpoint and portal view based on the dated programme modules.
 
@@ -22,10 +18,6 @@
 
 - Rotate every legacy PIN before production because plaintext credentials existed in the original repository and Git history.
 - Purge the old credentials from any remote Git history before sharing or publishing the repository.
-<<<<<<< HEAD
-- Add verified email addresses for every production account and set `REQUIRE_EMAIL_VERIFICATION=true`.
-=======
->>>>>>> master
 - Configure `YLP_SECRET`, `OPENAI_API_KEY`, and mail webhook credentials in the hosting platform secret manager.
 - Keep the backend and any future database on private infrastructure; never expose a database port publicly.
 - Send logs to centralized monitoring and alert on repeated login failures, rate-limit hits, origin rejections, 5xx responses, and AI upstream errors.
@@ -34,8 +26,4 @@
 
 ## Compatibility note
 
-<<<<<<< HEAD
-Legacy roster accounts still authenticate using their hashed KOICA PIN in development. Production email verification intentionally blocks accounts that have no verified email when `REQUIRE_EMAIL_VERIFICATION=true`; migrate those accounts before enabling production access.
-=======
 Legacy roster accounts authenticate using their hashed KOICA PIN. Email verification is currently disabled and not required for login.
->>>>>>> master
