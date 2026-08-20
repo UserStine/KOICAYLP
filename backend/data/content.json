@@ -1,0 +1,503 @@
+{
+  "announcements": [
+    {
+      "id": "a1",
+      "title": "Private Sector Invitational Training schedule is now live",
+      "body": "Your LMS modules now follow the official 16–29 August programme timetable. Mark each scheduled session complete as you progress.",
+      "tag": "Schedule"
+    },
+    {
+      "id": "a2",
+      "title": "Action Plan preparation",
+      "body": "Action Plan preparation runs in small groups from 24–27 August, followed by final Demo Day material submission and pitching on 28 August.",
+      "tag": "Action Plan"
+    }
+  ],
+  "modules": [
+    {
+      "id": "m1",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 01 · Sunday, 16 August",
+      "summary": "Arrival in Ghana and programme onboarding.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Participants from four countries arrive in Ghana",
+          "type": "event",
+          "minutes": 0,
+          "time": "Arrival",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "GIMPA dormitory room allocation",
+          "type": "event",
+          "minutes": 0,
+          "time": "Arrival",
+          "facilitator": ""
+        },
+        {
+          "id": "l3",
+          "title": "Distribution of orientation materials",
+          "type": "event",
+          "minutes": 0,
+          "time": "Arrival",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m2",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 02 · Monday, 17 August",
+      "summary": "Orientation, opening ceremony, country reports and participant networking.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Orientation, Program Briefing & Team Formation",
+          "type": "event",
+          "minutes": 90,
+          "time": "09:00–10:30",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "Opening Ceremony",
+          "type": "event",
+          "minutes": 90,
+          "time": "10:30–12:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l3",
+          "title": "Country Report",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Prof. Cha Jae-sang, Prof. Kim Ki-yeon, and Director Lee Seok-gak"
+        },
+        {
+          "id": "l4",
+          "title": "Self-Introduction & Networking",
+          "type": "event",
+          "minutes": 120,
+          "time": "19:00–21:00",
+          "facilitator": "Wendy"
+        }
+      ]
+    },
+    {
+      "id": "m3",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 03 · Tuesday, 18 August",
+      "summary": "AI, IoT and intelligent signage applications for startup development.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Light IoT and LED/Intelligent Signage Applications",
+          "type": "lecture",
+          "minutes": 120,
+          "time": "10:00–12:00",
+          "facilitator": "Prof. Cha Jae-sang"
+        },
+        {
+          "id": "l2",
+          "title": "AI Applications and Utilization of AI-ICT Solutions",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Prof. Kim Ki-yeon"
+        }
+      ],
+      "presentations": [
+        {
+          "id": "p-6f8881a2b661",
+          "filePath": "uploads/module-presentations/1787262629802-f4117d9bcd5f3af1.pdf",
+          "originalFileName": "Light Iot LED and Sinage applications.pdf",
+          "mime": "application/pdf",
+          "size": 17194501
+        },
+        {
+          "id": "p-12b362f5e448",
+          "filePath": "uploads/module-presentations/1787262670917-0dcb806d7963110a.pdf",
+          "originalFileName": "(Additional materials)_Light Iot LED and Sinage applications.pdf",
+          "mime": "application/pdf",
+          "size": 9921213
+        }
+      ]
+    },
+    {
+      "id": "m4",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 04 · Wednesday, 19 August",
+      "summary": "Business opportunity identification and customer development.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Identifying Business Opportunities and Customer Development",
+          "type": "lecture",
+          "minutes": 120,
+          "time": "10:00–12:00",
+          "facilitator": "Director Lee Seok-gak"
+        },
+        {
+          "id": "l2",
+          "title": "Advanced Customer Development",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Director Lee Seok-gak"
+        }
+      ]
+    },
+    {
+      "id": "m5",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 05 · Thursday, 20 August",
+      "summary": "Market sizing, competition and entrepreneurship for social problem solving.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Market Size Analysis and Competitive Analysis",
+          "type": "lecture",
+          "minutes": 120,
+          "time": "10:00–12:00",
+          "facilitator": "Director Lee Seok-gak"
+        },
+        {
+          "id": "l2",
+          "title": "Entrepreneurship Cases for Solving Social Problems",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Director Lee Seok-gak"
+        }
+      ]
+    },
+    {
+      "id": "m6",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 06 · Friday, 21 August",
+      "summary": "Pitching, Action Plan writing and private-sector Action Plan enhancement.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Pitching and AP Writing",
+          "type": "workshop",
+          "minutes": 120,
+          "time": "10:00–12:00",
+          "facilitator": "Prof. Kim Byung-chun"
+        },
+        {
+          "id": "l2",
+          "title": "Private-Sector AP Enhancement",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Prof. Kim Byung-chun"
+        }
+      ]
+    },
+    {
+      "id": "m7",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 07 · Saturday, 22 August",
+      "summary": "Institution visit, special lecture and cultural experience.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "G-KACE Institution Overview Special Lecture",
+          "type": "visit",
+          "minutes": 120,
+          "time": "10:00–12:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "Cultural Experience 1: KAMP",
+          "type": "visit",
+          "minutes": 90,
+          "time": "14:00–15:30",
+          "facilitator": ""
+        },
+        {
+          "id": "l3",
+          "title": "Cultural Experience 2: Osu Castle",
+          "type": "visit",
+          "minutes": 90,
+          "time": "15:30–17:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m8",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 08 · Sunday, 23 August",
+      "summary": "Independent learning and reflection day.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Self-Directed Learning — Morning Session",
+          "type": "self-study",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "Self-Directed Learning — Afternoon Session",
+          "type": "self-study",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m9",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 09 · Monday, 24 August",
+      "summary": "Generative AI startup tools, perception AI case analysis and Action Plan preparation.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Hands-on Practice with Generative AI-Based Startup Tools",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": "Prince"
+        },
+        {
+          "id": "l2",
+          "title": "Perception AI Startup Case Analysis",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Ama"
+        },
+        {
+          "id": "l3",
+          "title": "AP Preparation — Small Group 1",
+          "type": "task",
+          "minutes": 120,
+          "time": "20:00–22:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m10",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 10 · Tuesday, 25 August",
+      "summary": "MVP development with no-code platforms and problem-tree analysis.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Hands-on MVP Development Using No-Code Platforms",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": "Prince"
+        },
+        {
+          "id": "l2",
+          "title": "Problem Tree & Stakeholder Map",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Prince"
+        },
+        {
+          "id": "l3",
+          "title": "AP Preparation — Small Group 2",
+          "type": "task",
+          "minutes": 120,
+          "time": "20:00–22:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m11",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 11 · Wednesday, 26 August",
+      "summary": "Institution overview, problem-solving fundamentals, KPIs and Action Plan preparation.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "NYA Institution Overview Special Lecture",
+          "type": "visit",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "Basics of Problem Solving and KPIs",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": "Prince"
+        },
+        {
+          "id": "l3",
+          "title": "AP Preparation — Small Group 3",
+          "type": "task",
+          "minutes": 120,
+          "time": "20:00–22:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m12",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 12 · Thursday, 27 August",
+      "summary": "Startup project design, YALI alumni special lecture and final Action Plan preparation.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Startup Project Design",
+          "type": "workshop",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": "Okantey"
+        },
+        {
+          "id": "l2",
+          "title": "Special Lecture by YALI Alumni",
+          "type": "lecture",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l3",
+          "title": "AP Preparation — Small Group 4",
+          "type": "task",
+          "minutes": 120,
+          "time": "20:00–22:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m13",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 13 · Friday, 28 August",
+      "summary": "Demo Day submission, pitching, completion ceremony and farewell reception.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Final Submission of Demo Day Presentation Materials",
+          "type": "task",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": "Okantey"
+        },
+        {
+          "id": "l2",
+          "title": "Demo Day Pitching",
+          "type": "event",
+          "minutes": 180,
+          "time": "14:00–17:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l3",
+          "title": "Completion Ceremony",
+          "type": "event",
+          "minutes": 60,
+          "time": "17:00–18:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l4",
+          "title": "Farewell Reception",
+          "type": "event",
+          "minutes": 120,
+          "time": "18:00–20:00",
+          "facilitator": ""
+        }
+      ]
+    },
+    {
+      "id": "m14",
+      "track": "private",
+      "phase": "Invitational Training",
+      "title": "Day 14 · Saturday, 29 August",
+      "summary": "Programme departure and return home.",
+      "lessons": [
+        {
+          "id": "l1",
+          "title": "Departure",
+          "type": "event",
+          "minutes": 180,
+          "time": "09:00–12:00",
+          "facilitator": ""
+        },
+        {
+          "id": "l2",
+          "title": "Return Home",
+          "type": "event",
+          "minutes": 300,
+          "time": "14:00–19:00",
+          "facilitator": ""
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "id": "r1",
+      "title": "Programme handbook",
+      "type": "PDF",
+      "url": "#",
+      "note": "Everything about the three phases in one document."
+    },
+    {
+      "id": "r2",
+      "title": "Action Plan template",
+      "type": "DOCX",
+      "url": "#",
+      "note": "Use this structure for your Action Plan draft."
+    },
+    {
+      "id": "r3",
+      "title": "Code of conduct",
+      "type": "PDF",
+      "url": "#",
+      "note": "Expectations for all participants during training."
+    },
+    {
+      "id": "r4",
+      "track": "public",
+      "title": "DX/AX policy toolkit",
+      "type": "PDF",
+      "url": "#",
+      "note": "Public Sector track reference material."
+    },
+    {
+      "id": "r5",
+      "track": "private",
+      "title": "CJM & MVP worksheets",
+      "type": "PDF",
+      "url": "#",
+      "note": "Private Sector track workbook."
+    }
+  ]
+}
