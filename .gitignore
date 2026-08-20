@@ -4,3 +4,4 @@ frontend/dist/
 frontend/.env
 backend/.env
 .DS_Store
+backend/data/roster.csv
