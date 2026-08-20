@@ -1,0 +1,56 @@
+import { createContext, useContext, useState, useEffect, useCallback } from "react";
+
+export const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const AuthContext = createContext(null);
+
+export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API}/api/me`, { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r)))
+      .then((d) => setUser(d.user))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const login = useCallback(async (name, pin) => {
+    const res = await fetch(`${API}/api/login`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, pin }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Login failed. Please try again.");
+    setUser(data.user);
+    return data.user;
+  }, []);
+
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${API}/api/logout`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
+    } catch {}
+    setUser(null);
+  }, []);
+
+  const api = useCallback(async (pathname, options = {}) => {
+    const res = await fetch(`${API}${pathname}`, {
+      ...options,
+      credentials: "include",
+      headers: {
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...options.headers,
+      },
+    });
+    if (res.status === 401) { setUser(null); throw new Error("Your session expired. Please log in again."); }
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Something went wrong.");
+    return data;
+  }, []);
+
+  return <AuthContext.Provider value={{ user, loading, login, logout, api }}>{children}</AuthContext.Provider>;
+}
+
+export const useAuth = () => useContext(AuthContext);
