@@ -6,6 +6,13 @@ import flagNg from "../assets/flag-ng.png";
 import flagSn from "../assets/flag-sn.png";
 import flagCi from "../assets/flag-ci.png";
 import flagCm from "../assets/flag-cm.png";
+import flagKr from "../assets/flag-kr.png";
+import fellows01 from "../assets/fellows-01.png";
+import fellows02 from "../assets/fellows-02.png";
+import fellows03 from "../assets/fellows-03.png";
+import fellows04 from "../assets/fellows-04.png";
+import fellows05 from "../assets/fellows-05.png";
+import fellows06 from "../assets/fellows-06.png";
 import {
   CalendarCheckIcon, NetworkIcon, BookIcon, ChatSparkIcon, Arrow,
 } from "../components/Icons";
@@ -20,6 +27,7 @@ const ORBITS = [
     cspin: "cspin-l60",
     items: [
       { src: flagGh, angle: 30, r: 399, size: "", shape: "", glow: "glow-gold", delay: 1.8, alt: "Ghana" },
+      { src: flagKr, angle: 0, r: 399, size: "lg", shape: "sq24", glow: "glow-blue", delay: 1.7, alt: "Republic of Korea" },
       { src: flagCi, angle: 95, r: 399, size: "lg", shape: "sq24", glow: "glow-orange", delay: 2.0, alt: "C\u00f4te d'Ivoire" },
       { src: flagSn, angle: 220, r: 399, size: "lg", shape: "sq24", glow: "glow-green", delay: 2.15, alt: "Senegal" },
       { src: flagCm, angle: 320, r: 399, size: "", shape: "", glow: "glow-red", delay: 2.3, alt: "Cameroon" },
@@ -45,8 +53,15 @@ const ORBITS = [
 ];
 
 
-/* REPLACE href values with your colleagues' real product URLs.
-   Copy (title/text/tag/link) comes from src/i18n/*.js under home.cards */
+const FELLOW_GALLERY = [
+  { src: fellows01, alt: "KOICA Youth Leaders Program fellows during a group session" },
+  { src: fellows02, alt: "KOICA Youth Leaders Program group photo with fellows and facilitators" },
+  { src: fellows03, alt: "KOICA Youth Leaders Program representatives at the Accra programme" },
+  { src: fellows04, alt: "KOICA Youth Leaders Program fellows with a programme facilitator" },
+  { src: fellows05, alt: "KOICA Youth Leaders Program fellows sharing a moment together" },
+  { src: fellows06, alt: "KOICA Youth Leaders Program fellows with the Ghana flag" },
+];
+
 const HUB_CARDS = [
   { key: "attendance", icon: <CalendarCheckIcon />, href: "https://koica-attendance.vercel.app/" },
   { key: "network",    icon: <NetworkIcon />,       href: "https://koicakonnect.vercel.app/" },
@@ -223,6 +238,23 @@ export default function Home({ openChat }) {
               </p>
               <span className="ts-cta">Explore the track <Arrow /></span>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= PREVIOUS FELLOWS GALLERY ================= */}
+      <section className="fellow-gallery-section">
+        <div className="section-shell">
+          <div className="section-heading" data-reveal>
+            <span className="eyebrow">Previous fellows</span>
+            <h2 className="section-title">Moments from the <span>community</span></h2>
+          </div>
+          <div className="fellow-gallery">
+            {FELLOW_GALLERY.map((photo, index) => (
+              <figure className={`fellow-gallery-card fellow-gallery-card-${index + 1}`} data-reveal key={photo.src}>
+                <img src={photo.src} alt={photo.alt} loading="lazy" />
+              </figure>
+            ))}
           </div>
         </div>
       </section>

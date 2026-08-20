@@ -74,7 +74,6 @@ export default function Apply() {
         <h2 className="section-title">{a.formsTitle}</h2>
         <p className="section-sub">{a.formsSub}</p>
         <div className="dl-grid">
-          {/* REPLACE href="#" with the real form links */}
           <a className="dl-card" href="#" target="_blank" rel="noopener noreferrer">
             <div className="dl-icon"><FileIcon /></div>
             <div>

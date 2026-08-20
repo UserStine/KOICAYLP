@@ -408,7 +408,7 @@ export default {
     chips: ["Am I eligible?", "How do I apply?", "Public vs Private track", "After the program"],
     placeholder: "Type your question…",
     send: "Send",
-    reply: "Great question! Connect me to your AI backend and I'll answer this in detail.",
-    note: "Demo UI. Connect this panel to your AI backend. For official confirmation, contact the KOICA office.",
+    reply: "I couldn't find enough verified KOICA information to answer that yet.",
+    note: "Answers are grounded in the KOICA YLP knowledge base. Confirm cohort-specific decisions with KOICA.",
   },
 };
