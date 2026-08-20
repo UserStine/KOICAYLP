@@ -1467,6 +1467,167 @@ html,body{max-width:100%;}
   .split-list li{font-size:14px;}
   .ct-row > div{padding:14px 16px;}
 }
+
+/* ============ Home responsive refinements ============ */
+@media (max-width:1024px){
+  .app{min-height:auto;}
+  .hero{
+    min-height:auto;
+    padding-top:28px;
+    padding-bottom:52px;
+  }
+  .hero-left{width:100%;margin:0 auto;}
+  .eyebrow{justify-content:center;}
+  .hero h1{
+    max-width:760px;
+    margin-inline:auto;
+    font-size:clamp(38px,6.4vw,58px);
+    line-height:1.04;
+  }
+  .hero-cta{margin-top:30px;}
+  .hero-right{
+    width:min(100%,calc(720px * var(--stage-scale)));
+    height:calc(680px * var(--stage-scale));
+  }
+  .tracks-teaser{padding-top:64px;}
+}
+
+@media (max-width:900px){
+  .tracks-teaser .track-split{
+    flex-direction:column;
+    min-height:0;
+    gap:16px;
+  }
+  .tracks-teaser .ts-panel{
+    flex:none;
+    width:100%;
+    min-height:320px;
+    padding:32px 28px 28px;
+  }
+  .tracks-teaser .ts-panel:hover{flex:none;transform:none;}
+  .tracks-teaser .ts-panel > p{max-width:620px;}
+  .tt-head{max-width:720px;}
+  .hub-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+
+@media (max-width:768px){
+  :root{--stage-scale:.50;}
+  .hero{
+    padding-top:18px;
+    padding-bottom:42px;
+    gap:0;
+  }
+  .hero-left{max-width:100%;}
+  .eyebrow{
+    margin-bottom:14px;
+    font-size:11.5px;
+    letter-spacing:1.8px;
+  }
+  .hero h1{
+    font-size:clamp(34px,9vw,50px);
+    letter-spacing:-1px;
+    line-height:1.03;
+  }
+  .hero-cta{margin-top:26px;}
+  .hero-right{
+    width:100%;
+    height:360px;
+    margin-top:0;
+    overflow:hidden;
+  }
+  .orbit-stage{top:48%;}
+  .tracks-teaser{
+    padding:58px var(--page-pad) 14px;
+  }
+  .tt-head{margin-bottom:24px;}
+  .section-title{font-size:clamp(28px,7.5vw,36px);line-height:1.08;}
+  .section-sub{font-size:15px;line-height:1.6;}
+  .tracks-teaser .ts-panel{min-height:300px;}
+  .hub{
+    padding-left:var(--page-pad);
+    padding-right:var(--page-pad);
+  }
+  .hub-head{gap:22px;margin-bottom:34px;}
+  .hub-head-text{max-width:100%;}
+  .hub h2{font-size:clamp(30px,7vw,40px);}
+  .hub-sub{font-size:15px;}
+}
+
+@media (max-width:560px){
+  :root{--stage-scale:.41;--page-pad:20px;}
+  .app{
+    background:
+      radial-gradient(420px 320px at 75% 42%,rgba(57,188,242,.10),transparent 62%),
+      #fff;
+  }
+  .hero{
+    padding-top:14px;
+    padding-bottom:34px;
+  }
+  .eyebrow{width:100%;}
+  .hero h1{
+    font-size:clamp(31px,10.2vw,43px);
+    line-height:1.04;
+    min-height:0;
+  }
+  .type-cursor{width:3px;}
+  .hero-cta{margin-top:24px;}
+  .hero-right{
+    height:300px;
+    margin-top:4px;
+  }
+  .orbit-stage{top:50%;}
+  .tracks-teaser{padding-top:48px;}
+  .tracks-teaser .ts-panel{
+    min-height:0;
+    padding:28px 22px 24px;
+    border-radius:22px;
+    gap:13px;
+  }
+  .ts-panel h2{font-size:clamp(27px,8vw,34px);}
+  .ts-panel > p{font-size:14px;line-height:1.6;}
+  .ts-ghost{font-size:64px;right:8px;bottom:-8px;}
+  .ts-cta{
+    margin-top:16px;
+    padding:11px 18px;
+    font-size:14px;
+  }
+  .hub{
+    padding-top:56px;
+    padding-bottom:64px;
+  }
+  .hub-head{
+    align-items:flex-start;
+    margin-bottom:28px;
+  }
+  .hub-peko{
+    width:92px;
+    height:92px;
+    border-radius:20px;
+  }
+  .hub-peko img{width:76px;height:76px;}
+  .hub-grid{grid-template-columns:1fr;gap:14px;}
+  .hub-card{
+    min-height:0;
+    padding:24px 20px 22px;
+    border-radius:18px;
+    gap:12px;
+  }
+  .hub-card h3{font-size:19px;padding-right:64px;}
+  .hub-tag{top:18px;right:18px;}
+}
+
+@media (max-width:400px){
+  :root{--stage-scale:.34;--page-pad:16px;}
+  .hero h1{font-size:clamp(29px,10.4vw,38px);}
+  .hero-right{height:260px;}
+  .hero-cta .btn.btn-lg{padding:13px 20px;font-size:15px;}
+  .tracks-teaser .ts-panel{padding:24px 18px 22px;}
+  .hub h2{font-size:29px;}
+  .hub-card h3{padding-right:0;}
+  .hub-tag{position:static;align-self:flex-start;order:-1;}
+}
+
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;}
   .flag,.hero-cta,.ticker-section,.hub-head,.hub-card,.page > *{opacity:1 !important;transform:none !important;}
