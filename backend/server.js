@@ -519,7 +519,4 @@ app.get("/api/admin/participants", auth, adminOnly, (req, res) => {
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
-app.listen(PORT, () => {
-  console.log(`[ylp] API listening on port ${PORT}`);
-  console.log(`[ylp] Allowed frontend origin(s): ${allowedOrigins.join(", ")}`);
-});
+export default app;
