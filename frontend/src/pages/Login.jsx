@@ -22,7 +22,7 @@ export default function Login() {
     setErr("");
     setBusy(true);
     try {
-      const who = await login(name, pin);
+      const who = await login(name.replace(/\s+/g, " ").trim(), pin.trim());
       nav(who.role === "admin" ? "/admin" : "/portal");
     } catch (e2) {
       setErr(e2.message);
@@ -48,12 +48,18 @@ export default function Login() {
         <form onSubmit={submit} className="login-form">
           <label className="field">
             <span>{l.name}</span>
+            {/* Mobile keyboards autocapitalise and autocorrect text inputs by
+                default, which silently rewrites roster names and breaks the
+                exact-match lookup on the server. All three must be off. */}
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder={l.namePlaceholder}
-              autoComplete="name"
+              autoComplete="off"
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck="false"
               required
             />
           </label>
@@ -65,8 +71,11 @@ export default function Login() {
               value={pin}
               onChange={(e) => setPin(e.target.value.toUpperCase())}
               placeholder="KYLP000"
-              autoComplete="off"
+              autoComplete="one-time-code"
+              autoCapitalize="characters"
+              autoCorrect="off"
               spellCheck="false"
+              inputMode="text"
               className="pin-input"
               required
             />

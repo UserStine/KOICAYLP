@@ -243,7 +243,7 @@ function readToken(token) {
   }
 }
 
-async function auth(
+async function authHandler(
   req,
   res,
   next
@@ -268,15 +268,19 @@ async function auth(
       });
   }
 
-  const participant =
-    await read(
-      "participants.json",
-      []
-    ).find(
-      (participant) =>
-        participant.id ===
-        data.id
-    );
+  // `await read(...).find(...)` calls .find on the Promise, not the array.
+  // That threw a TypeError inside async middleware, which Express 4 does not
+  // catch, so the whole process crashed on every authenticated request.
+  const participants = await read(
+    "participants.json",
+    []
+  );
+
+  const participant = participants.find(
+    (participant) =>
+      participant.id ===
+      data.id
+  );
 
   if (!participant) {
     return res
@@ -293,6 +297,16 @@ async function auth(
   next();
 }
 
+// Express 4 does not catch rejected promises from async middleware; an
+// unhandled rejection terminates the Node process, taking every in-flight
+// request with it. Route errors through the standard error handler instead.
+const asyncRoute =
+  (handler) =>
+  (req, res, next) =>
+    Promise.resolve(handler(req, res, next)).catch(next);
+
+const auth = asyncRoute(authHandler);
+
 /* --------------------------------------------------------------------------
    Login throttle
    -------------------------------------------------------------------------- */
@@ -304,12 +318,19 @@ const MAX_TRIES = 8;
 const LOCKOUT =
   15 * 60 * 1000;
 
+// Behind the frontend's same-origin /api proxy every request reaches this
+// service from the same Vercel function, so req.ip is shared by the whole
+// cohort. Keying the lockout on the IP would let eight wrong PINs from any
+// one participant lock everybody out. Key on the account being targeted.
+const throttleKey = (req) =>
+  normalizeName(req.body?.name || req.body?.email || "") || `ip:${req.ip}`;
+
 function throttle(
   req,
   res,
   next
 ) {
-  const ip = req.ip;
+  const ip = throttleKey(req);
   const record =
     attempts.get(ip);
 
@@ -462,10 +483,11 @@ app.use(
   }
 );
 
+// Deliberately omits `id`. For roster-imported accounts the id is the PIN
+// lowercased, so returning it would hand the credential back over the API.
 const publicUser = (
   participant
 ) => ({
-  id: participant.id,
   name: participant.name,
   country:
     participant.country,
@@ -521,8 +543,11 @@ function rateLimit({ windowMs, max, key = (req) => req.ip, label = "request" }) 
   };
 }
 
-const apiLimiter = rateLimit({ windowMs: 60_000, max: Number(process.env.API_RATE_LIMIT_PER_MINUTE || 120), label: "api" });
-const authLimiter = rateLimit({ windowMs: 15 * 60_000, max: Number(process.env.LOGIN_RATE_LIMIT || 8), key: (req) => `${req.ip}:${normalizeName(req.body?.name || req.body?.email || "")}`, label: "login" });
+// req.ip is the frontend proxy function for every participant, so the API
+// limiter is a whole-cohort budget rather than a per-user one. Sized for a
+// full cohort browsing the portal at once, and overridable via env.
+const apiLimiter = rateLimit({ windowMs: 60_000, max: Number(process.env.API_RATE_LIMIT_PER_MINUTE || 3000), label: "api" });
+const authLimiter = rateLimit({ windowMs: 15 * 60_000, max: Number(process.env.LOGIN_RATE_LIMIT || 8), key: (req) => normalizeName(req.body?.name || req.body?.email || "") || `ip:${req.ip}`, label: "login" });
 const signupLimiter = rateLimit({ windowMs: 60 * 60_000, max: Number(process.env.SIGNUP_RATE_LIMIT_PER_HOUR || 5), label: "signup" });
 const aiLimiter = rateLimit({ windowMs: 60_000, max: Number(process.env.AI_RATE_LIMIT_PER_MINUTE || 10), label: "ai" });
 app.use("/api", apiLimiter);
@@ -682,7 +707,7 @@ app.post(
       : verifyPin(pin, match));
 
     if (!credentialOk) {
-      noteFail(req.ip);
+      noteFail(throttleKey(req));
       console.warn(`[auth] login_failed ip=${req.ip} name=${normalizeName(name).slice(0, 80)}`);
 
       return res
@@ -694,7 +719,7 @@ app.post(
     }
 
 
-    attempts.delete(req.ip);
+    attempts.delete(throttleKey(req));
     const sessionToken = issueToken(match.id);
     res.cookie(SESSION_COOKIE, sessionToken, {
       ...SESSION_COOKIE_OPTIONS,

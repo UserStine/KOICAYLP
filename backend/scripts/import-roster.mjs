@@ -75,7 +75,9 @@ const participants = rows.slice(1).map((r, i) => {
 
   const salt = crypto.randomBytes(16).toString("hex");
   return {
-    id: pin.toLowerCase(),
+    // The id must never be derived from the PIN. It appears in progress keys,
+    // log lines and admin payloads, so deriving it would leak the credential.
+    id: `u-${crypto.randomBytes(9).toString("hex")}`,
     name,
     salt,
     pinHash: crypto.scryptSync(pin, salt, 32).toString("hex"),

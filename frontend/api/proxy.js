@@ -16,6 +16,20 @@ const REQUEST_HEADERS_TO_DROP = new Set([
   "referer",
   "content-length",
   "content-encoding",
+  // Let undici negotiate its own encoding with the backend. Forwarding the
+  // browser's value (Android Chrome advertises zstd, desktop does not) makes
+  // the upstream encoding vary per device.
+  "accept-encoding",
+]);
+
+// fetch() has already decompressed the upstream body by the time we read it,
+// so forwarding content-encoding tells the browser to decompress plain JSON a
+// second time. content-length is equally stale.
+const RESPONSE_HEADERS_TO_DROP = new Set([
+  ...HOP_BY_HOP_HEADERS,
+  "set-cookie",
+  "content-length",
+  "content-encoding",
 ]);
 
 function backendOrigin() {
@@ -102,8 +116,7 @@ export default async function handler(req, res) {
     res.setHeader("Cache-Control", "no-store");
 
     for (const [name, value] of upstream.headers.entries()) {
-      const lower = name.toLowerCase();
-      if (HOP_BY_HOP_HEADERS.has(lower) || lower === "set-cookie" || lower === "content-length") continue;
+      if (RESPONSE_HEADERS_TO_DROP.has(name.toLowerCase())) continue;
       res.setHeader(name, value);
     }
 
