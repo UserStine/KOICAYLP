@@ -242,6 +242,26 @@ export default function Home({ openChat }) {
         </div>
       </section>
 
+      {/* ================= PREVIOUS FELLOWS TESTIMONIALS ================= */}
+      <section className="fellows-section">
+        <div className="section-shell">
+          <div className="section-heading" data-reveal>
+            <span className="eyebrow">Fellow stories</span>
+            <h2 className="section-title">Hear from previous <span>fellows</span></h2>
+            <p className="section-sub">Verified fellow testimonials can be published here without changing the page layout.</p>
+          </div>
+          <div className="testimonial-grid">
+            {["Public Sector Fellow", "Private Sector Fellow", "Regional Fellow"].map((label) => (
+              <article className="testimonial-card" data-reveal key={label}>
+                <span className="testimonial-quote">“</span>
+                <p>Verified testimonial coming soon.</p>
+                <div><strong>{label}</strong><span>KOICA Youth Leaders Program</span></div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ================= PREVIOUS FELLOWS GALLERY ================= */}
       <section className="fellow-gallery-section">
         <div className="section-shell">

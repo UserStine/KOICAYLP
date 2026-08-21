@@ -1649,4 +1649,28 @@ html[data-contrast="high"]{--ink:#000;--grey:#161616;--line:#000;--koica:#003A80
 
 /* Module PowerPoint attachments */
 .module-presentations-editor{border:1px solid var(--line);border-radius:16px;padding:16px;background:#F8FBFF;margin-bottom:16px}.module-presentation-upload{margin-bottom:8px!important}.presentation-file-list{display:flex;flex-direction:column;gap:8px;margin-top:10px}.presentation-file-list.pending{margin-bottom:12px}.presentation-list-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--grey);margin-bottom:2px}.presentation-file-row{display:flex;align-items:center;gap:10px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 10px;font-size:13px;color:var(--ink)}.presentation-file-row>span:nth-child(2){flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.presentation-file-icon{width:30px;height:30px;display:grid;place-items:center;border-radius:8px;background:#D95C35;color:#fff;font-weight:800;font-size:14px;flex:0 0 auto}.module-presentations{margin:2px 0 24px}.module-presentations-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:10px}.module-presentations-head h2{font-family:'Urbanist',sans-serif;font-size:18px;color:var(--ink)}.module-presentation-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}.module-presentation-card{display:flex;align-items:center;gap:12px;text-align:left;border:1px solid var(--line);background:#fff;border-radius:14px;padding:13px 14px;cursor:pointer;color:var(--ink);transition:border-color .2s ease,transform .2s ease}.module-presentation-card:hover{border-color:var(--sky);transform:translateY(-1px)}.module-presentation-card:disabled{opacity:.65;cursor:wait}.module-presentation-name{flex:1;min-width:0}.module-presentation-name strong{display:block;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.module-presentation-name small{display:block;color:var(--grey);font-size:11.5px;margin-top:3px}.module-presentation-action{font-size:12px;color:var(--koica);font-weight:700;white-space:nowrap}html[data-theme="dark"] .module-presentations-editor{background:#0C1725;border-color:var(--line)}html[data-theme="dark"] .presentation-file-row,html[data-theme="dark"] .module-presentation-card{background:#101B2B;border-color:var(--line)}
+
+
+/* ============ Previous fellows testimonials + gallery ============ */
+.fellows-section,.fellow-gallery-section{padding:82px 24px;background:#F7FBFF;}
+.fellow-gallery-section{padding-top:10px;padding-bottom:88px;}
+.section-shell{max-width:1180px;margin:0 auto;}
+.section-heading{max-width:760px;margin-bottom:28px;}
+.section-title span{color:var(--koica);}
+.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.testimonial-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;min-height:190px;box-shadow:0 10px 30px rgba(0,43,94,.06);}
+.testimonial-quote{position:absolute;right:22px;top:10px;font-family:Georgia,serif;font-size:64px;line-height:1;color:rgba(0,66,144,.09);}
+.testimonial-card p{font-size:15px;line-height:1.75;color:#34445F;margin:20px 0 28px;}
+.testimonial-card div{display:flex;flex-direction:column;gap:3px;}
+.testimonial-card strong{font-family:'Urbanist',sans-serif;color:var(--ink);font-size:14px;}
+.testimonial-card div span{font-size:12.5px;color:var(--grey);}
+.fellow-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.fellow-gallery-card{border-radius:20px;overflow:hidden;min-height:230px;background:#fff;border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,43,94,.05);margin:0;}
+.fellow-gallery-card img{width:100%;height:100%;min-height:230px;aspect-ratio:4/3;object-fit:cover;transition:transform .4s var(--ease-out);}
+.fellow-gallery-card:hover img{transform:scale(1.035);}
+html[data-theme="dark"] .fellows-section,html[data-theme="dark"] .fellow-gallery-section{background:#0B1625;}
+html[data-theme="dark"] .testimonial-card,html[data-theme="dark"] .fellow-gallery-card{background:#101B2B;border-color:var(--line);}
+html[data-theme="dark"] .testimonial-card p{color:#C5D2E4;}
+@media(max-width:900px){.testimonial-grid,.fellow-gallery{grid-template-columns:1fr 1fr;}}
+@media(max-width:640px){.testimonial-grid,.fellow-gallery{grid-template-columns:1fr;}.fellows-section,.fellow-gallery-section{padding-left:18px;padding-right:18px;}}
 `;
