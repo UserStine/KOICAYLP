@@ -128,13 +128,13 @@ if (!process.env.YLP_SECRET) {
 const SESSION_COOKIE = IS_PRODUCTION ? "__Host-ylp_session" : "ylp_session";
 const TOKEN_TTL = Number(process.env.SESSION_TTL_MINUTES || 480) * 60 * 1000;
 
-// Production frontend/backend deployments may be on different HTTPS origins.
-// SameSite=None is required for the browser to send the HttpOnly session cookie
-// on credentialed cross-origin API requests.
+// Authentication is routed through the frontend's same-origin /api proxy in
+// production. Keeping SameSite=Lax makes the session first-party and avoids
+// mobile browsers blocking a third-party authentication cookie.
 const SESSION_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: IS_PRODUCTION,
-  sameSite: IS_PRODUCTION ? "none" : "lax",
+  sameSite: "lax",
   path: "/",
 };
 const AUTH_TOKEN_TTL = Number(process.env.AUTH_TOKEN_TTL_MINUTES || 15) * 60 * 1000;

@@ -1,6 +1,12 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 
-export const API = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const configuredApi = String(import.meta.env.VITE_API_URL || "").trim().replace(/\/$/, "");
+
+// Production always uses the same-origin /api proxy. This keeps the session
+// cookie first-party on mobile browsers (especially iOS Safari).
+export const API = import.meta.env.DEV
+  ? (configuredApi || "http://localhost:4000")
+  : "";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
