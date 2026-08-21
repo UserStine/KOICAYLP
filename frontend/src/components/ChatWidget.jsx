@@ -1,14 +1,52 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import peko from "../assets/peko.png";
 import { WaveIcon } from "./Icons";
 import { useT } from "../i18n";
-import { API } from "../auth/AuthContext";
 
-/* Controlled from App so any page can open the chat via openChat() */
+const FAQ = [
+  {
+    terms: ["eligible", "eligibility", "who can apply", "requirements", "qualify"],
+    answer: "Eligibility depends on the current KOICA YLP call. Check the Eligibility page for the listed age, professional, nationality, education and track requirements before applying.",
+  },
+  {
+    terms: ["apply", "application", "how do i apply", "submit", "form"],
+    answer: "Open the Apply page, choose the Public Sector or Private Sector track, download the required form and follow the submission instructions shown there. When applications are closed, the download and submission controls are disabled.",
+  },
+  {
+    terms: ["public sector", "public track", "government"],
+    answer: "The Public Sector track is intended for eligible applicants working in government or qualifying public institutions. Use the Public Sector application option on the Apply page.",
+  },
+  {
+    terms: ["private sector", "private track", "company", "business"],
+    answer: "The Private Sector track is intended for eligible applicants from qualifying private-sector organisations. Use the Private Sector application option on the Apply page.",
+  },
+  {
+    terms: ["deadline", "close", "closing", "applications closed", "open"],
+    answer: "The Apply page shows the current application status. If applications are closed, the site displays that status and disables the application buttons.",
+  },
+  {
+    terms: ["calendar", "schedule", "programme", "program", "day", "session"],
+    answer: "Use the programme calendar in the participant portal to view the activities scheduled for each day of the programme.",
+  },
+  {
+    terms: ["login", "sign in", "pin", "portal"],
+    answer: "Use the exact participant name and KOICA PIN issued for your account. If the details are correct but sign-in still fails, contact the programme administrator so the roster entry can be checked.",
+  },
+  {
+    terms: ["contact", "email", "help", "support"],
+    answer: "For application support, use the contact details shown on the Apply page. Programme-specific decisions should be confirmed directly with KOICA or the partner university.",
+  },
+];
+
+function answerQuestion(question) {
+  const normalized = question.toLowerCase().replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
+  const match = FAQ.find((item) => item.terms.some((term) => normalized.includes(term)));
+  return match?.answer || "I can help with eligibility, applications, Public Sector and Private Sector tracks, deadlines, the programme calendar, login and contact information. Try one of those topics.";
+}
+
 export default function ChatWidget({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
-  const [sending, setSending] = useState(false);
   const bodyRef = useRef(null);
   const { t, lang } = useT();
 
@@ -16,56 +54,20 @@ export default function ChatWidget({ open, setOpen }) {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [messages, open]);
 
-  /* Clear the transcript when language changes so replies stay consistent. */
   useEffect(() => {
     setMessages([]);
   }, [lang]);
 
-  const ask = async (q) => {
+  const ask = (q) => {
     const message = q.trim();
-    if (!message || sending) return;
+    if (!message) return;
 
-    const history = messages
-      .slice(-6)
-      .map((item) => ({
-        role: item.from === "bot" ? "assistant" : "user",
-        content: item.text,
-      }));
-
-    setMessages((current) => [...current, { from: "user", text: message }]);
+    setMessages((current) => [
+      ...current,
+      { from: "user", text: message },
+      { from: "bot", text: answerQuestion(message) },
+    ]);
     setInput("");
-    setSending(true);
-
-    try {
-      const res = await fetch(`${API}/api/ai/chat`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message,
-          language: lang,
-          history,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || "AI service is unavailable.");
-
-      setMessages((current) => [
-        ...current,
-        {
-          from: "bot",
-          text: data.reply,
-          sources: Array.isArray(data.sources) ? data.sources : [],
-        },
-      ]);
-    } catch (error) {
-      setMessages((current) => [...current, { from: "bot", text: error.message, sources: [] }]);
-    } finally {
-      setSending(false);
-    }
   };
 
   return (
@@ -94,26 +96,15 @@ export default function ChatWidget({ open, setOpen }) {
 
             <div className="chat-chips">
               {t.chat.chips.map((c) => (
-                <button key={c} className="chat-chip" disabled={sending} onClick={() => ask(c)}>{c}</button>
+                <button key={c} className="chat-chip" onClick={() => ask(c)}>{c}</button>
               ))}
             </div>
 
             {messages.map((m, i) => (
-              <div key={i} className={`chat-msg ${m.from === "user" ? "user" : ""}`}>
+              <div key={`${m.from}-${i}`} className={`chat-msg ${m.from === "user" ? "user" : ""}`}>
                 <div>{m.text}</div>
-                {m.from === "bot" && m.sources?.length > 0 && (
-                  <div className="chat-sources" aria-label="Sources">
-                    {m.sources.map((source) => (
-                      <span className="chat-source" key={`${source.ref}-${source.title}`}>
-                        {source.ref} · {source.title}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
-
-            {sending && <div className="chat-msg chat-thinking">Searching the KOICA knowledge base…</div>}
           </div>
 
           <div className="chat-input">
@@ -121,12 +112,11 @@ export default function ChatWidget({ open, setOpen }) {
               type="text"
               placeholder={t.chat.placeholder}
               value={input}
-              disabled={sending}
-              maxLength={2000}
+              maxLength={500}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && ask(input)}
             />
-            <button aria-label={t.chat.send} disabled={sending || !input.trim()} onClick={() => ask(input)}>
+            <button aria-label={t.chat.send} disabled={!input.trim()} onClick={() => ask(input)}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
@@ -134,7 +124,7 @@ export default function ChatWidget({ open, setOpen }) {
             </button>
           </div>
 
-          <div className="chat-note">Answers are grounded in the KOICA YLP knowledge base. Confirm cohort-specific decisions with KOICA.</div>
+          <div className="chat-note">Quick programme guidance. Confirm official application decisions with KOICA.</div>
         </div>
       )}
     </>

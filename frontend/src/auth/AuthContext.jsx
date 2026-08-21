@@ -30,8 +30,18 @@ export function AuthProvider({ children }) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || "Login failed. Please try again.");
-    setUser(data.user);
-    return data.user;
+
+    // Confirm that the HttpOnly session cookie survived the login response
+    // before navigating into the protected portal. This prevents the UI from
+    // appearing to log in and immediately bouncing back out.
+    const sessionCheck = await fetch(`${API}/api/me`, { credentials: "include", cache: "no-store" });
+    const sessionData = await sessionCheck.json().catch(() => ({}));
+    if (!sessionCheck.ok || !sessionData.user) {
+      throw new Error("Sign-in could not create a persistent session. Please try again.");
+    }
+
+    setUser(sessionData.user);
+    return sessionData.user;
   }, []);
 
   const logout = useCallback(async () => {
