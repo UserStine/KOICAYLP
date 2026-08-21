@@ -1,7 +1,7 @@
 /* ==========================================================================
    KOICA YLP - Backend API
    Auth: participant name + KOICA PIN
-   Storage: MongoDB (local JSON files are one-time seed/import sources only)
+   Storage: JSON files
    ========================================================================== */
 
 import { loadEnvFile } from "node:process";
@@ -17,7 +17,6 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { retrieveRagContext } from "./rag.js";
-import { createMongoStore, mongoHealth } from "./mongo-store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IS_VERCEL = Boolean(process.env.VERCEL);
@@ -27,6 +26,8 @@ const RUNTIME_ROOT = IS_VERCEL
   : __dirname;
 
 const SEED_DATA = path.join(__dirname, "data");
+const DATA = path.join(RUNTIME_ROOT, "data");
+
 const RESOURCE_DIR = path.join(
   RUNTIME_ROOT,
   "uploads",
@@ -63,9 +64,52 @@ const ALLOWED_RESOURCE_EXTENSIONS = new Set([
   ".wav",
 ]);
 
-for (const dir of [RESOURCE_DIR, PRESENTATION_DIR]) {
-  fs.mkdirSync(dir, { recursive: true });
+for (const dir of [
+  DATA,
+  RESOURCE_DIR,
+  PRESENTATION_DIR,
+]) {
+  fs.mkdirSync(dir, {
+    recursive: true,
+  });
 }
+
+function seedRuntimeDataFile(fileName) {
+  const runtimeFile = path.join(DATA, fileName);
+
+  if (fs.existsSync(runtimeFile)) {
+    return;
+  }
+
+  const seedFile = path.join(
+    SEED_DATA,
+    fileName
+  );
+
+  if (fs.existsSync(seedFile)) {
+    fs.copyFileSync(
+      seedFile,
+      runtimeFile
+    );
+  }
+}
+
+for (const fileName of [
+  "content.json",
+  "participants.json",
+  "progress.json",
+]) {
+  seedRuntimeDataFile(fileName);
+}
+
+// Plaintext PINs from older roster imports are removed at runtime; only hashes remain.
+try {
+  const participantFile = path.join(DATA, "participants.json");
+  const participants = JSON.parse(fs.readFileSync(participantFile, "utf8"));
+  let changed = false;
+  for (const participant of participants) { if (Object.hasOwn(participant, "pin")) { delete participant.pin; changed = true; } }
+  if (changed) fs.writeFileSync(participantFile, JSON.stringify(participants, null, 2));
+} catch {}
 
 /* --------------------------------------------------------------------------
    Secret
@@ -84,8 +128,9 @@ if (!process.env.YLP_SECRET) {
 const SESSION_COOKIE = IS_PRODUCTION ? "__Host-ylp_session" : "ylp_session";
 const TOKEN_TTL = Number(process.env.SESSION_TTL_MINUTES || 480) * 60 * 1000;
 
-// Production uses the frontend's same-origin /api proxy, so the session
-// cookie remains first-party on desktop and mobile browsers.
+// Production frontend/backend deployments may be on different HTTPS origins.
+// SameSite=None is required for the browser to send the HttpOnly session cookie
+// on credentialed cross-origin API requests.
 const SESSION_COOKIE_OPTIONS = {
   httpOnly: true,
   secure: IS_PRODUCTION,
@@ -95,12 +140,51 @@ const SESSION_COOKIE_OPTIONS = {
 const AUTH_TOKEN_TTL = Number(process.env.AUTH_TOKEN_TTL_MINUTES || 15) * 60 * 1000;
 
 /* --------------------------------------------------------------------------
-   Persistent MongoDB store
+   JSON store
    -------------------------------------------------------------------------- */
 
-const { read, write } = createMongoStore({
-  seedDataDir: SEED_DATA,
-});
+// PRESENTATION-SAFE STORAGE MODE
+// In production, participants and course/content data are always read from the
+// bundled deployment files. Vercel /tmp can be recycled at any time, so it is
+// never trusted as the source of truth for the data needed during a demo.
+const PRESENTATION_STABLE_FILES = new Set([
+  "participants.json",
+  "content.json",
+]);
+
+const read = (fileName, fallback) => {
+  const runtimeFile = path.join(DATA, fileName);
+  const seedFile = path.join(SEED_DATA, fileName);
+
+  const candidates = IS_PRODUCTION && PRESENTATION_STABLE_FILES.has(fileName)
+    ? [seedFile, runtimeFile]
+    : [runtimeFile, seedFile];
+
+  for (const candidate of candidates) {
+    try {
+      return JSON.parse(fs.readFileSync(candidate, "utf8"));
+    } catch {
+      // Try next location.
+    }
+  }
+
+  return fallback;
+};
+
+const write = (fileName, value) => {
+  fs.mkdirSync(DATA, {
+    recursive: true,
+  });
+
+  fs.writeFileSync(
+    path.join(DATA, fileName),
+    JSON.stringify(
+      value,
+      null,
+      2
+    )
+  );
+};
 
 /* --------------------------------------------------------------------------
    PIN hashing
@@ -243,7 +327,7 @@ function readToken(token) {
   }
 }
 
-async function auth(
+function auth(
   req,
   res,
   next
@@ -269,7 +353,7 @@ async function auth(
   }
 
   const participant =
-    await read(
+    read(
       "participants.json",
       []
     ).find(
@@ -574,20 +658,20 @@ function hashSecret(secret, salt = crypto.randomBytes(16).toString("hex")) {
 function safeEqualHex(a, b) {
   try { const x = Buffer.from(String(a), "hex"), y = Buffer.from(String(b), "hex"); return x.length === y.length && crypto.timingSafeEqual(x, y); } catch { return false; }
 }
-async function setAuthToken(kind, participantId) {
+function setAuthToken(kind, participantId) {
   const raw = crypto.randomBytes(32).toString("base64url");
-  const all = await read("auth-tokens.json", []);
+  const all = read("auth-tokens.json", []);
   const digest = crypto.createHash("sha256").update(raw).digest("hex");
   all.push({ kind, participantId, digest, expiresAt: Date.now() + AUTH_TOKEN_TTL, usedAt: null });
-  await write("auth-tokens.json", all.filter((t) => !t.usedAt && t.expiresAt > Date.now()));
+  write("auth-tokens.json", all.filter((t) => !t.usedAt && t.expiresAt > Date.now()));
   return raw;
 }
-async function consumeAuthToken(kind, raw) {
+function consumeAuthToken(kind, raw) {
   const digest = crypto.createHash("sha256").update(String(raw || "")).digest("hex");
-  const all = await read("auth-tokens.json", []);
+  const all = read("auth-tokens.json", []);
   const token = all.find((t) => t.kind === kind && !t.usedAt && t.expiresAt > Date.now() && safeEqualHex(t.digest, digest));
   if (!token) return null;
-  token.usedAt = Date.now(); await write("auth-tokens.json", all); return token;
+  token.usedAt = Date.now(); write("auth-tokens.json", all); return token;
 }
 async function deliverEmail(to, subject, text) {
   const url = process.env.EMAIL_DELIVERY_WEBHOOK_URL;
@@ -602,7 +686,7 @@ async function deliverEmail(to, subject, text) {
 
 app.get(
   "/",
-  async (_req, res) => {
+  (_req, res) => {
     res.json({
       ok: true,
       service:
@@ -617,24 +701,17 @@ app.get(
 
 app.get(
   "/api/health",
-  async (_req, res) => {
-    try {
-      const mongo = await mongoHealth();
-      return res.json({
-        ok: true,
-        service: "KOICA YLP Backend API",
-        storage: "mongodb",
-        database: mongo.database,
-      });
-    } catch (error) {
-      console.error(`[health] mongodb_unavailable error=${error.message}`);
-      return res.status(503).json({
-        ok: false,
-        service: "KOICA YLP Backend API",
-        storage: "mongodb",
-        error: "Database unavailable.",
-      });
-    }
+  (_req, res) => {
+    const participants = read("participants.json", []);
+    const content = read("content.json", { modules: [] });
+
+    res.json({
+      ok: true,
+      service: "KOICA YLP Backend API",
+      mode: "presentation-safe",
+      participants: Array.isArray(participants) ? participants.length : 0,
+      modules: Array.isArray(content?.modules) ? content.modules.length : 0,
+    });
   }
 );
 
@@ -646,7 +723,7 @@ app.post(
   "/api/login",
   authLimiter,
   throttle,
-  async (req, res) => {
+  (req, res) => {
     const {
       name = "",
       pin = "",
@@ -666,7 +743,7 @@ app.post(
     }
 
     const participants =
-      await read(
+      read(
         "participants.json",
         []
       );
@@ -705,7 +782,7 @@ app.post(
   }
 );
 
-app.post("/api/logout", auth, async (req, res) => {
+app.post("/api/logout", auth, (req, res) => {
   res.clearCookie(SESSION_COOKIE, SESSION_COOKIE_OPTIONS);
   console.info(`[auth] logout user=${req.user.id} ip=${req.ip}`);
   res.json({ ok: true });
@@ -714,29 +791,29 @@ app.post("/api/logout", auth, async (req, res) => {
 app.post("/api/auth/register", signupLimiter, async (req, res) => {
   const name = cleanText(req.body?.name, 120), email = cleanText(req.body?.email, 254).toLowerCase(), password = String(req.body?.password || "");
   if (name.length < 2 || !validEmail(email) || password.length < 12 || password.length > 128) return res.status(400).json({ error: "Enter a valid name, email, and a password of at least 12 characters." });
-  const participants = await read("participants.json", []);
+  const participants = read("participants.json", []);
   if (participants.some((p) => String(p.email || "").toLowerCase() === email)) return res.status(202).json({ ok: true });
   const cred = hashSecret(password); const id = `u-${crypto.randomBytes(12).toString("hex")}`;
   participants.push({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, country: "", track: "public", cohort: "", role: "participant" });
-  await write("participants.json", participants);
+  write("participants.json", participants);
   res.status(202).json({ ok: true });
 });
 
 app.post("/api/auth/forgot-password", signupLimiter, async (req, res) => {
   const email = cleanText(req.body?.email, 254).toLowerCase();
-  const participants = await read("participants.json", []), p = participants.find((x) => String(x.email || "").toLowerCase() === email);
-  if (p) { const token = await setAuthToken("reset-password", p.id); await deliverEmail(email, "Reset your KOICA YLP password", `${process.env.FRONTEND_URL || ""}/reset-password?token=${encodeURIComponent(token)}`); }
+  const participants = read("participants.json", []), p = participants.find((x) => String(x.email || "").toLowerCase() === email);
+  if (p) { const token = setAuthToken("reset-password", p.id); await deliverEmail(email, "Reset your KOICA YLP password", `${process.env.FRONTEND_URL || ""}/reset-password?token=${encodeURIComponent(token)}`); }
   res.status(202).json({ ok: true });
 });
 
-app.post("/api/auth/reset-password", signupLimiter, async (req, res) => {
+app.post("/api/auth/reset-password", signupLimiter, (req, res) => {
   const password = String(req.body?.password || "");
   if (password.length < 12 || password.length > 128) return res.status(400).json({ error: "Password must be 12 to 128 characters." });
-  const token = await consumeAuthToken("reset-password", req.body?.token);
+  const token = consumeAuthToken("reset-password", req.body?.token);
   if (!token) return res.status(400).json({ error: "Reset token is invalid or expired." });
-  const participants = await read("participants.json", []), p = participants.find((x) => x.id === token.participantId);
+  const participants = read("participants.json", []), p = participants.find((x) => x.id === token.participantId);
   if (!p) return res.status(400).json({ error: "Reset token is invalid or expired." });
-  const cred = hashSecret(password); p.passwordSalt = cred.salt; p.passwordHash = cred.hash; delete p.pinHash; delete p.salt; delete p.pin; await write("participants.json", participants); res.json({ ok: true });
+  const cred = hashSecret(password); p.passwordSalt = cred.salt; p.passwordHash = cred.hash; delete p.pinHash; delete p.salt; delete p.pin; write("participants.json", participants); res.json({ ok: true });
 });
 
 app.post("/api/ai/chat", aiLimiter, async (req, res) => {
@@ -844,7 +921,7 @@ Respond in the language requested by the client when possible. Client language c
 app.get(
   "/api/me",
   auth,
-  async (req, res) => {
+  (req, res) => {
     res.json({
       user:
         publicUser(
@@ -861,9 +938,9 @@ app.get(
 app.get(
   "/api/dashboard",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -873,7 +950,7 @@ app.get(
       );
 
     const progress =
-      await read(
+      read(
         "progress.json",
         {}
       )[
@@ -972,8 +1049,8 @@ app.get(
   }
 );
 
-app.get("/api/calendar", auth, async (req, res) => {
-  const content = await read("content.json", { modules: [] });
+app.get("/api/calendar", auth, (req, res) => {
+  const content = read("content.json", { modules: [] });
   const months = { january:0,february:1,march:2,april:3,may:4,june:5,july:6,august:7,september:8,october:9,november:10,december:11 };
   const year = Number(process.env.PROGRAM_YEAR || 2026);
   const days = (content.modules || []).filter((m) => !m.track || m.track === req.user.track).map((m) => {
@@ -993,9 +1070,9 @@ app.get("/api/calendar", auth, async (req, res) => {
 app.get(
   "/api/modules/:id",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -1032,7 +1109,7 @@ app.get(
     }
 
     const progress =
-      await read(
+      read(
         "progress.json",
         {}
       )[
@@ -1148,9 +1225,9 @@ function resolveStoredFile(
 app.get(
   "/api/modules/:id/presentations/:presentationId/download",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -1246,7 +1323,7 @@ app.get(
 app.post(
   "/api/progress",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const {
       moduleId,
       lessonId,
@@ -1266,7 +1343,7 @@ app.post(
         });
     }
 
-    const content = await read("content.json", { modules: [] });
+    const content = read("content.json", { modules: [] });
     const module = (content.modules || []).find((item) => item.id === String(moduleId));
     const lesson = module?.lessons?.find((item) => item.id === String(lessonId));
     if (!module || !lesson || (module.track && module.track !== req.user.track)) {
@@ -1277,7 +1354,7 @@ app.post(
     }
 
     const all =
-      await read(
+      read(
         "progress.json",
         {}
       );
@@ -1309,7 +1386,7 @@ app.post(
     ] =
       mine;
 
-    await write(
+    write(
       "progress.json",
       all
     );
@@ -1331,9 +1408,9 @@ app.post(
 app.get(
   "/api/resources",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           resources: [],
@@ -1360,9 +1437,9 @@ app.get(
 app.get(
   "/api/resources/:id/download",
   auth,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           resources: [],
@@ -1501,9 +1578,9 @@ app.get(
   "/api/admin/content",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -1526,7 +1603,7 @@ app.post(
   "/api/admin/modules",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const {
       id,
       title,
@@ -1552,7 +1629,7 @@ app.post(
     }
 
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -1904,7 +1981,7 @@ app.post(
       });
     }
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -1925,9 +2002,9 @@ app.delete(
   "/api/admin/modules/:id",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
@@ -1992,7 +2069,7 @@ app.delete(
           req.params.id
       );
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -2013,7 +2090,7 @@ app.post(
   "/api/admin/announcements",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const {
       id,
       title,
@@ -2035,7 +2112,7 @@ app.post(
     }
 
     const content =
-      await read(
+      read(
         "content.json",
         {
           announcements: [],
@@ -2091,7 +2168,7 @@ app.post(
       });
     }
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -2108,9 +2185,9 @@ app.delete(
   "/api/admin/announcements/:id",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           announcements: [],
@@ -2127,7 +2204,7 @@ app.delete(
           req.params.id
       );
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -2148,7 +2225,7 @@ app.post(
   "/api/admin/resources",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const {
       id,
       title,
@@ -2172,7 +2249,7 @@ app.post(
     }
 
     const content =
-      await read(
+      read(
         "content.json",
         {
           resources: [],
@@ -2438,7 +2515,7 @@ app.post(
       });
     }
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -2455,9 +2532,9 @@ app.delete(
   "/api/admin/resources/:id",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const content =
-      await read(
+      read(
         "content.json",
         {
           resources: [],
@@ -2513,7 +2590,7 @@ app.delete(
           req.params.id
       );
 
-    await write(
+    write(
       "content.json",
       content
     );
@@ -2534,21 +2611,21 @@ app.get(
   "/api/admin/participants",
   auth,
   adminOnly,
-  async (req, res) => {
+  (req, res) => {
     const participants =
-      await read(
+      read(
         "participants.json",
         []
       );
 
     const progress =
-      await read(
+      read(
         "progress.json",
         {}
       );
 
     const content =
-      await read(
+      read(
         "content.json",
         {
           modules: [],
