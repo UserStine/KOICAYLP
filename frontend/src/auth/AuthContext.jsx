@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
       body: JSON.stringify({ name, pin }),
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.error || "Login failed. Please try again.");
+    if (!res.ok) throw new Error(data.error || `Login failed (${res.status}). Please try again.`);
 
     // Confirm that the HttpOnly session cookie survived the login response
     // before navigating into the protected portal. This prevents the UI from
