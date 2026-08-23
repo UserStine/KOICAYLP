@@ -17,8 +17,8 @@ export default {
 
   home: {
     eyebrow: "Youth Leaders Program · West Africa × Korea",
-    headingDark: "Empowering West Africa's Next Generation of Leaders",
-    headingLight: ". All Things YLP, One Click Away.",
+    headingDark: "Where West Africa's Emerging Leaders Learn, Connect, and Lead",
+    headingLight: ". Your YLP Journey Starts Here.",
     cta: "Explore the YLP Hub",
     cursorName: "Ama · Accra",
     countLabel: "Young Leaders",

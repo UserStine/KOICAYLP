@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../auth/AuthContext";
+import PekoLoader from "../components/PekoLoader";
 
 /* Small data-fetching helper shared by the LMS pages. */
 export default function useApi(path, deps = []) {
@@ -24,7 +25,7 @@ export default function useApi(path, deps = []) {
 }
 
 export function Loading() {
-  return <div className="portal-loading"><div className="spinner" /></div>;
+  return <div className="portal-loading"><PekoLoader /></div>;
 }
 
 export function ErrorNote({ children }) {

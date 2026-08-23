@@ -4,6 +4,7 @@ import peko from "../assets/peko.png";
 import koicaLogo from "../assets/koica-logo.png";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
+import PekoLoader from "../components/PekoLoader";
 
 export default function Login() {
   const { login, user } = useAuth();
@@ -82,7 +83,7 @@ export default function Login() {
           {err && <div className="login-error" role="alert">{err}</div>}
 
           <button className="btn login-btn" disabled={busy}>
-            <span>{busy ? l.working : l.submit}</span>
+            {busy ? <><PekoLoader compact /> <span>{l.working}</span></> : <span>{l.submit}</span>}
           </button>
         </form>
 

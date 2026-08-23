@@ -1,5 +1,6 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import PekoLoader from "../components/PekoLoader";
 
 export default function Protected({ children }) {
   const { user, loading } = useAuth();
@@ -8,7 +9,7 @@ export default function Protected({ children }) {
   if (loading) {
     return (
       <div className="portal-loading">
-        <div className="spinner" />
+        <PekoLoader />
       </div>
     );
   }

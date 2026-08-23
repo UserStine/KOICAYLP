@@ -17,7 +17,7 @@ export default {
 
   home: {
     eyebrow: "Programme des Jeunes Leaders · Afrique de l'Ouest × Corée",
-    headingDark: "Former la prochaine génération de leaders ouest-africains",
+    headingDark: "Là où les jeunes leaders ouest-africains apprennent, se connectent et dirigent",
     headingLight: ". Tout le YLP, à un clic.",
     cta: "Découvrir le Hub YLP",
     cursorName: "Ama · Accra",

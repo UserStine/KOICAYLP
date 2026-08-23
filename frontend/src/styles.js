@@ -1805,4 +1805,27 @@ html[data-theme="dark"] .testimonial-card p{color:#C5D2E4;}
   .calendar-line{top:29px;bottom:-16px;}
 }
 
+
+/* Peko animated loader */
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;}
+.peko-loader{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:#52647e;font-size:13px;font-weight:700;line-height:1;}
+.peko-loader-stage{position:relative;display:block;width:88px;height:88px;flex:0 0 auto;}
+.peko-loader-frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform-origin:50% 72%;animation:pekoFrame 1.2s linear infinite;filter:drop-shadow(0 8px 16px rgba(0,66,144,.12));}
+.peko-loader-frame.frame-1{animation-delay:0s;}
+.peko-loader-frame.frame-2{animation-delay:-.9s;}
+.peko-loader-frame.frame-3{animation-delay:-.6s;}
+.peko-loader-frame.frame-4{animation-delay:-.3s;}
+.peko-loader-label{letter-spacing:.01em;}
+.peko-loader.compact{display:inline-flex;flex-direction:row;gap:0;vertical-align:middle;}
+.peko-loader.compact .peko-loader-stage{width:28px;height:28px;}
+.peko-loader.compact .peko-loader-frame{filter:none;}
+@keyframes pekoFrame{
+  0%,21%{opacity:1;transform:translateY(0) scale(1);}
+  24%,100%{opacity:0;transform:translateY(1px) scale(.98);}
+}
+@media (prefers-reduced-motion:reduce){
+  .peko-loader-frame{animation:none;opacity:0;}
+  .peko-loader-frame.frame-1{opacity:1;}
+}
+
 `;

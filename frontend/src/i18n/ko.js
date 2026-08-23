@@ -17,7 +17,7 @@ export default {
 
   home: {
     eyebrow: "청년 리더 프로그램 · 서아프리카 × 대한민국",
-    headingDark: "서아프리카의 차세대 리더를 키웁니다",
+    headingDark: "서아프리카의 젊은 리더들이 배우고, 연결되고, 성장하는 곳",
     headingLight: ". YLP의 모든 것을 클릭 한 번으로.",
     cta: "YLP 허브 둘러보기",
     cursorName: "아마 · 아크라",

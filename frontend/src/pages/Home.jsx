@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import pekoMegaphone from "../assets/peko-megaphone.png";
+import pekoMascot from "../assets/peko-megaphone.png";
 import flagGh from "../assets/flag-gh.png";
 import flagNg from "../assets/flag-ng.png";
 import flagSn from "../assets/flag-sn.png";
@@ -292,7 +292,7 @@ export default function Home({ openChat }) {
               <p className="hub-sub">{t.home.hubSub}</p>
             </div>
             <div className="hub-peko">
-              <img src={pekoMegaphone} alt="Peko with a megaphone" />
+              <img src={pekoMascot} alt="Peko" />
             </div>
           </div>
           <div className="hub-grid">

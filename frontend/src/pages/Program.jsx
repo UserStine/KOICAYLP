@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import pekoMegaphone from "../assets/peko-megaphone.png";
+import pekoMascot from "../assets/peko-megaphone.png";
 import {
   LaptopIcon, GlobeIcon, PlaneIcon, SproutIcon, NetworkIcon, HeartHandIcon,
   ChatSparkIcon, Arrow,
@@ -53,7 +53,7 @@ export default function Program({ openChat }) {
             <h2 className="section-title">{p.afterTitleA}<span>{p.afterTitleB}</span></h2>
             <p className="section-sub">{p.afterSub}</p>
           </div>
-          <img className="after-peko" src={pekoMegaphone} alt="Peko" />
+          <img className="after-peko" src={pekoMascot} alt="Peko" />
         </div>
         <div className="after-grid">
           {p.after.map((a, i) => (

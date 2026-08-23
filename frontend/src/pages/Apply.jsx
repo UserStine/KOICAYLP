@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FileIcon, DownloadIcon, MailIcon } from "../components/Icons";
 import { useT } from "../i18n";
 import { API } from "../auth/AuthContext";
+import PekoLoader from "../components/PekoLoader";
 
 const CLOSED_STATUS = {
   open: false,
@@ -218,7 +219,7 @@ export default function Apply() {
                     {closed
                       ? "Applications are currently closed."
                       : downloadBusy === track.key
-                        ? "Downloading…"
+                        ? <><PekoLoader compact /> <span>Downloading…</span></>
                         : a.download}
                   </ActionButton>
                 </div>
@@ -261,7 +262,7 @@ export default function Apply() {
               </div>
               {submitError && <div className="admin-error" role="alert">{submitError}</div>}
               <button className="application-action submission-submit-button" type="submit" disabled={closed || submitBusy}>
-                {submitBusy ? "Submitting…" : `Submit ${selectedTrack === "private" ? "Private" : "Public"} Sector Application`}
+                {submitBusy ? <><PekoLoader compact /> <span>Submitting…</span></> : `Submit ${selectedTrack === "private" ? "Private" : "Public"} Sector Application`}
               </button>
             </form>
           )}
