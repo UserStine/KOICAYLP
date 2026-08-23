@@ -19,17 +19,23 @@ import { fileURLToPath } from "node:url";
 import { retrieveRagContext } from "./rag.js";
 import {
   createParticipant,
+  createApplicationSubmission,
   deleteApplicationForm,
+  deleteApplicationSubmission,
   downloadApplicationForm,
+  downloadApplicationSubmission,
   getApplicationSettings,
+  getApplicationSubmissionById,
   getParticipantByEmail,
   getParticipantById,
   getParticipantByName,
   isSupabaseConfigured,
   listParticipants,
+  listApplicationSubmissions,
   updateApplicationFormMetadata,
   updateApplicationSettings,
   uploadApplicationForm,
+  uploadApplicationSubmission,
   updateParticipant,
 } from "./supabase-store.js";
 
@@ -563,7 +569,8 @@ app.use(
           "/api/admin/resources" ||
         req.path ===
           "/api/admin/modules" ||
-        req.path.startsWith("/api/admin/application-settings/form/")
+        req.path.startsWith("/api/admin/application-settings/form/") ||
+        req.path === "/api/applications/submit"
       );
 
     return express.json({
@@ -830,6 +837,83 @@ app.get("/api/application-forms/:track/download", async (req, res) => {
     return res.status(503).json({ error: "Application form is temporarily unavailable." });
   }
 });
+
+/* --------------------------------------------------------------------------
+   Public application submission
+   -------------------------------------------------------------------------- */
+
+app.post(
+  "/api/applications/submit",
+  signupLimiter,
+  async (req, res) => {
+    let uploadedPath = "";
+    try {
+      const settings = await getApplicationSettings();
+      if (!settings) return res.status(503).json({ error: "Application service is temporarily unavailable." });
+
+      const closeAtMs = settings.close_at ? Date.parse(settings.close_at) : null;
+      const hasCloseAt = Number.isFinite(closeAtMs);
+      const open = Boolean(settings.applications_open) && (!hasCloseAt || Date.now() < closeAtMs);
+      if (!open) return res.status(403).json({ error: "Applications are currently closed." });
+
+      const track = req.body?.track === "private" ? "private" : req.body?.track === "public" ? "public" : "";
+      const fullName = cleanText(req.body?.fullName, 160);
+      const email = cleanText(req.body?.email, 254).toLowerCase();
+      const phone = cleanText(req.body?.phone, 40);
+      const country = cleanText(req.body?.country, 100);
+      const organization = cleanText(req.body?.organization, 180);
+      const file = req.body?.file || {};
+
+      if (!track) return res.status(400).json({ error: "Choose an application track." });
+      if (fullName.length < 2) return res.status(400).json({ error: "Enter your full name." });
+      if (!validEmail(email)) return res.status(400).json({ error: "Enter a valid email address." });
+      if (phone.length < 6) return res.status(400).json({ error: "Enter a valid phone number." });
+      if (!country) return res.status(400).json({ error: "Enter your country." });
+      if (!organization) return res.status(400).json({ error: "Enter your organization or institution." });
+
+      const originalFileName = path.basename(String(file.name || "completed-application"));
+      const extension = path.extname(originalFileName).toLowerCase();
+      if (![".pdf", ".doc", ".docx"].includes(extension)) {
+        return res.status(400).json({ error: "Completed applications must be PDF, DOC, or DOCX files." });
+      }
+
+      const match = String(file.dataUrl || "").match(/^data:([^;]+);base64,(.+)$/s);
+      if (!match) return res.status(400).json({ error: "Choose your completed application document." });
+
+      let buffer;
+      try { buffer = Buffer.from(match[2], "base64"); }
+      catch { return res.status(400).json({ error: "The uploaded application file is invalid." }); }
+
+      if (!buffer.length || buffer.length > 10 * 1024 * 1024) {
+        return res.status(400).json({ error: "Completed applications must be 10 MB or smaller." });
+      }
+      if (!uploadMatchesExtension(buffer, extension)) {
+        return res.status(400).json({ error: "The application file contents do not match its extension." });
+      }
+
+      const reference = `YLP-${new Date().getUTCFullYear()}-${crypto.randomBytes(5).toString("hex").toUpperCase()}`;
+      const safeBase = originalFileName.replace(/[^A-Za-z0-9._-]+/g, "-").slice(-120);
+      uploadedPath = `${track}/${new Date().toISOString().slice(0, 10)}/${reference}-${safeBase}`;
+      const mime = match[1] || file.mime || "application/octet-stream";
+
+      await uploadApplicationSubmission(uploadedPath, buffer, mime);
+      await createApplicationSubmission({
+        reference, track, fullName, email, phone, country, organization,
+        filePath: uploadedPath, fileName: originalFileName, fileMime: mime, fileSize: buffer.length,
+      });
+
+      console.info(`[applications] submitted reference=${reference} track=${track} ip=${req.ip}`);
+      return res.status(201).json({ ok: true, reference, message: "Application submitted successfully." });
+    } catch (error) {
+      if (uploadedPath) {
+        try { await deleteApplicationSubmission(uploadedPath); }
+        catch (cleanupError) { console.warn(`[applications] cleanup_failed path=${uploadedPath} message=${String(cleanupError?.message || cleanupError).slice(0, 180)}`); }
+      }
+      console.error(`[applications] submit_failed message=${String(error?.message || error).slice(0, 300)}`);
+      return res.status(503).json({ error: "We could not submit your application. Please try again." });
+    }
+  }
+);
 
 /* --------------------------------------------------------------------------
    Login
@@ -1861,6 +1945,39 @@ app.put(
     }
   }
 );
+
+/* --------------------------------------------------------------------------
+   Admin application submissions
+   -------------------------------------------------------------------------- */
+
+app.get("/api/admin/application-submissions", auth, adminOnly, async (_req, res) => {
+  try {
+    const submissions = await listApplicationSubmissions();
+    return res.json({ submissions });
+  } catch (error) {
+    console.error(`[admin-submissions] list_failed message=${String(error?.message || error).slice(0, 300)}`);
+    return res.status(503).json({ error: "Application submissions are temporarily unavailable." });
+  }
+});
+
+app.get("/api/admin/application-submissions/:id/download", auth, adminOnly, async (req, res) => {
+  try {
+    const item = await getApplicationSubmissionById(req.params.id);
+    if (!item) return res.status(404).json({ error: "Application submission not found." });
+    if (!item.file_path) return res.status(404).json({ error: "Application file not found." });
+
+    const buffer = await downloadApplicationSubmission(item.file_path);
+    const fileName = item.file_name || `${item.reference}-application`;
+    const safeName = String(fileName).replace(/[\r\n"]/g, "_");
+    res.setHeader("Content-Type", item.file_mime || "application/octet-stream");
+    res.setHeader("Content-Length", String(buffer.length));
+    res.setHeader("Content-Disposition", `attachment; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+    return res.send(buffer);
+  } catch (error) {
+    console.error(`[admin-submissions] download_failed message=${String(error?.message || error).slice(0, 300)}`);
+    return res.status(503).json({ error: "Application file is temporarily unavailable." });
+  }
+});
 
 /* --------------------------------------------------------------------------
    Admin content

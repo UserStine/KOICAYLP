@@ -80,3 +80,9 @@ Run `backend/sql/003_application_admin_settings.sql` once in the Supabase SQL Ed
 ## Application form file uploads
 
 Run `backend/sql/004_application_form_storage.sql` once in Supabase SQL Editor. It adds file metadata columns and creates a private `application-forms` Storage bucket. Admins can then upload PDF/DOC/DOCX forms directly from Admin Portal → Applications. The backend serves those files to applicants only while applications are open.
+
+## In-app application submissions
+
+Run `backend/sql/005_application_submissions.sql` once in Supabase SQL Editor. It creates the private `application-submissions` Storage bucket and the `application_submissions` table used by the public Apply page and Admin Portal → Submissions.
+
+Applicants can submit PDF, DOC, or DOCX files up to 10 MB. Files remain private in Supabase Storage and are downloaded through the authenticated admin API.

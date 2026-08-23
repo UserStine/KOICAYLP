@@ -194,6 +194,87 @@ export async function updateApplicationFormMetadata(track, file) {
   return data;
 }
 
+
+
+const APPLICATION_SUBMISSIONS_BUCKET = "application-submissions";
+
+export async function uploadApplicationSubmission(storagePath, buffer, contentType) {
+  const supabase = requireClient();
+  const { error } = await supabase.storage
+    .from(APPLICATION_SUBMISSIONS_BUCKET)
+    .upload(storagePath, buffer, {
+      contentType,
+      upsert: false,
+      cacheControl: "3600",
+    });
+  if (error) throw new Error(`Unable to upload application submission: ${error.message}`);
+  return storagePath;
+}
+
+export async function downloadApplicationSubmission(storagePath) {
+  const supabase = requireClient();
+  const { data, error } = await supabase.storage
+    .from(APPLICATION_SUBMISSIONS_BUCKET)
+    .download(storagePath);
+  if (error) throw new Error(`Unable to download application submission: ${error.message}`);
+  return Buffer.from(await data.arrayBuffer());
+}
+
+export async function deleteApplicationSubmission(storagePath) {
+  if (!storagePath) return;
+  const supabase = requireClient();
+  const { error } = await supabase.storage
+    .from(APPLICATION_SUBMISSIONS_BUCKET)
+    .remove([storagePath]);
+  if (error) throw new Error(`Unable to remove application submission: ${error.message}`);
+}
+
+export async function createApplicationSubmission(values) {
+  const supabase = requireClient();
+  const row = {
+    reference: String(values.reference || "").trim(),
+    track: values.track === "private" ? "private" : "public",
+    full_name: String(values.fullName || "").trim(),
+    email: String(values.email || "").trim().toLowerCase(),
+    phone: String(values.phone || "").trim(),
+    country: String(values.country || "").trim(),
+    organization: String(values.organization || "").trim(),
+    file_path: String(values.filePath || "").trim(),
+    file_name: String(values.fileName || "").trim(),
+    file_mime: String(values.fileMime || "application/octet-stream").trim(),
+    file_size: Number(values.fileSize || 0),
+    status: "submitted",
+  };
+  const { data, error } = await supabase
+    .from("application_submissions")
+    .insert(row)
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to save application submission: ${error.message}`);
+  return data;
+}
+
+export async function getApplicationSubmissionById(id) {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("application_submissions")
+    .select("*")
+    .eq("id", id)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to read application submission: ${error.message}`);
+  return data;
+}
+
+export async function listApplicationSubmissions() {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("application_submissions")
+    .select("id,reference,track,full_name,email,phone,country,organization,file_name,file_mime,file_size,status,submitted_at")
+    .order("submitted_at", { ascending: false });
+  if (error) throw new Error(`Unable to list application submissions: ${error.message}`);
+  return data || [];
+}
+
 export async function listParticipants() {
   const supabase = requireClient();
   const { data, error } = await supabase

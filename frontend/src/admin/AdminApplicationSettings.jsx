@@ -11,8 +11,6 @@ const blank = {
   closeAt: "",
   publicFormName: "",
   privateFormName: "",
-  publicSubmitUrl: "",
-  privateSubmitUrl: "",
 };
 
 function toLocalDateTime(value) {
@@ -76,16 +74,12 @@ export default function AdminApplicationSettings() {
     applicationsOpen: form.applicationsOpen,
     closedMessage: form.closedMessage,
     closeAt: form.closeAt,
-    publicSubmitUrl: form.publicSubmitUrl,
-    privateSubmitUrl: form.privateSubmitUrl,
   }), [form]);
 
   const editableInitial = useMemo(() => ({
     applicationsOpen: initial.applicationsOpen,
     closedMessage: initial.closedMessage,
     closeAt: initial.closeAt,
-    publicSubmitUrl: initial.publicSubmitUrl,
-    privateSubmitUrl: initial.privateSubmitUrl,
   }), [initial]);
 
   const changed = useMemo(
@@ -172,8 +166,6 @@ export default function AdminApplicationSettings() {
         applicationsOpen: form.applicationsOpen,
         closedMessage: form.closedMessage,
         closeAt: fromLocalDateTime(form.closeAt),
-        publicSubmitUrl: form.publicSubmitUrl,
-        privateSubmitUrl: form.privateSubmitUrl,
       };
       const data = await api("/api/admin/application-settings", { method: "PUT", body: JSON.stringify(payload) });
       applySettings(data.settings);
@@ -237,7 +229,7 @@ export default function AdminApplicationSettings() {
         <div>
           <p className="portal-eyebrow">Admin</p>
           <h1>Application Settings</h1>
-          <p className="portal-sub">Open or close applications, upload the application documents, and manage submission links.</p>
+          <p className="portal-sub">Open or close applications and upload the application documents. Completed applications are submitted directly through the website.</p>
         </div>
         <span className={`app-status-pill ${form.applicationsOpen ? "open" : "closed"}`}>
           {form.applicationsOpen ? "Applications open" : "Applications closed"}
@@ -271,23 +263,15 @@ export default function AdminApplicationSettings() {
         </label>
 
         <div className="settings-section-title">Public Sector</div>
-        <div className="application-track-settings">
+        <div className="application-track-settings single">
           {renderUpload("public")}
-          <label className="field grow">
-            <span>Submission URL</span>
-            <input type="url" placeholder="https://..." value={form.publicSubmitUrl} onChange={(e) => set("publicSubmitUrl", e.target.value)} />
-            <small className="field-hint">Paste the external page where applicants submit the completed form.</small>
-          </label>
+          <div className="application-inline-note"><strong>Submission is handled in the app.</strong><span>Applicants complete this form, then upload it on the public Apply page.</span></div>
         </div>
 
         <div className="settings-section-title">Private Sector</div>
-        <div className="application-track-settings">
+        <div className="application-track-settings single">
           {renderUpload("private")}
-          <label className="field grow">
-            <span>Submission URL</span>
-            <input type="url" placeholder="https://..." value={form.privateSubmitUrl} onChange={(e) => set("privateSubmitUrl", e.target.value)} />
-            <small className="field-hint">Paste the external page where applicants submit the completed form.</small>
-          </label>
+          <div className="application-inline-note"><strong>Submission is handled in the app.</strong><span>Applicants complete this form, then upload it on the public Apply page.</span></div>
         </div>
 
         <div className="form-actions settings-save-row">
