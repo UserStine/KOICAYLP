@@ -1637,6 +1637,25 @@ html,body{max-width:100%;}
 html{color-scheme:light;}html[data-theme="dark"]{color-scheme:dark;--ink:#F4F8FF;--grey:#B2BED1;--line:#29405F;--white:#101B2B;--koica:#69B8FF;--koica-deep:#B9DEFF;--sky:#54C7F7;--sky-soft:#173E58;}
 html[data-theme="dark"] body{background:#08111E;color:var(--ink);}
 html[data-theme="dark"] .app{background:radial-gradient(800px 600px at 80% 42%,rgba(57,188,242,.09),transparent 62%),radial-gradient(520px 420px at 10% 90%,rgba(0,102,204,.12),transparent 60%),#08111E;}
+
+.app-status-pill{display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;font-size:12px;font-weight:700;border:1px solid var(--line);white-space:nowrap;}
+.app-status-pill.open{background:#EAF8EF;color:#176B3A;border-color:#BDE6CB;}
+.app-status-pill.closed{background:#FFF0F0;color:#A12A2A;border-color:#F2C5C5;}
+.admin-success{margin:0 0 18px;padding:12px 14px;border:1px solid #BDE6CB;border-radius:12px;background:#EAF8EF;color:#176B3A;font-size:14px;font-weight:600;}
+.application-switch-row{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid var(--line);}
+.application-switch-row h2{margin-bottom:5px;}
+.app-setting-hint{margin:0;max-width:650px;}
+.switch-control{display:inline-flex;align-items:center;gap:10px;cursor:pointer;font-size:13px;font-weight:700;white-space:nowrap;}
+.switch-control input{position:absolute;opacity:0;pointer-events:none;width:1px!important;height:1px!important;}
+.switch-track{width:48px;height:27px;border-radius:20px;background:#BFC9D5;padding:3px;display:inline-flex;align-items:center;transition:background .2s ease;}
+.switch-thumb{width:21px;height:21px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:transform .2s ease;}
+.switch-control input:checked + .switch-track{background:var(--koica);}
+.switch-control input:checked + .switch-track .switch-thumb{transform:translateX(21px);}
+.switch-control input:focus-visible + .switch-track{outline:3px solid rgba(57,188,242,.25);outline-offset:2px;}
+.settings-section-title{font-size:12px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--koica);margin:22px 0 10px;padding-top:18px;border-top:1px solid var(--line);}
+.settings-save-row{align-items:center;margin-top:22px;}
+.unsaved-note{font-size:12.5px;color:#9A6610;font-weight:600;}
+@media (max-width:640px){.application-switch-row{flex-direction:column;}.switch-control{width:100%;justify-content:flex-start;}}
 html[data-theme="dark"] header,html[data-theme="dark"] .mobile-menu,html[data-theme="dark"] footer,html[data-theme="dark"] .portal-side,html[data-theme="dark"] .portal-topbar,html[data-theme="dark"] .pcard,html[data-theme="dark"] .next-card,html[data-theme="dark"] .ann-card,html[data-theme="dark"] .mod-card,html[data-theme="dark"] .lesson,html[data-theme="dark"] .session,html[data-theme="dark"] .res-card,html[data-theme="dark"] .admin-form,html[data-theme="dark"] .admin-row,html[data-theme="dark"] .ppl-table,html[data-theme="dark"] .login-card,html[data-theme="dark"] .contact-card,html[data-theme="dark"] .dl-card,html[data-theme="dark"] .elig-card,html[data-theme="dark"] .faq-item,html[data-theme="dark"] .tl-card,html[data-theme="dark"] .hub-card,html[data-theme="dark"] .cta-card{background:#101B2B;color:var(--ink);border-color:var(--line);}
 html[data-theme="dark"] .portal{background:#08111E;}html[data-theme="dark"] .portal-user{background:linear-gradient(140deg,#102946,#102237);}html[data-theme="dark"] .portal-link{color:#C6D2E4;}html[data-theme="dark"] .portal-link:hover{background:#142A43;color:#8FD0FF;}html[data-theme="dark"] .portal-link.active{background:#1165AE;color:#fff;}
 html[data-theme="dark"] .portal-logout,html[data-theme="dark"] .lesson-check,html[data-theme="dark"] .le-del,html[data-theme="dark"] .btn.ghost,html[data-theme="dark"] .btn.danger{background:#111F31;color:#D6E3F4;border-color:var(--line);}html[data-theme="dark"] .lesson.done{background:#102A22;border-color:#285B47;}html[data-theme="dark"] .lesson.done .lesson-title{color:#B9D9C6;}html[data-theme="dark"] .lessons-editor{background:#0C1725;border-color:var(--line);}html[data-theme="dark"] .le-num{background:#17304B;color:#9CD5FF;}
@@ -1690,3 +1709,6 @@ html[data-theme="dark"] .testimonial-card p{color:#C5D2E4;}
 .application-action.secondary{background:#fff;color:var(--koica);border:1px solid var(--koica);}
 .application-action.disabled,.application-action:disabled{cursor:not-allowed;opacity:.45;transform:none;pointer-events:none;}
 `;
+
+/* Application form upload controls */
+.application-track-settings{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(260px,.8fr);gap:18px;align-items:start}.application-form-upload{border:1px solid var(--line);border-radius:16px;padding:16px;background:#F8FBFF}.field-label{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:8px}.application-file-picker input[type="file"]{width:100%;font:inherit;font-size:13px;color:var(--ink);padding:10px;border:1px dashed var(--line);border-radius:12px;background:#fff}.application-file-picker input[type="file"]::file-selector-button{border:0;border-radius:8px;padding:8px 11px;margin-right:10px;background:var(--koica);color:#fff;font:700 12px/1 inherit;cursor:pointer}.application-file-current{display:flex;align-items:center;gap:10px;margin-top:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:#fff}.application-file-current.pending{border-color:#8FB8E8;background:#F1F7FF}.application-file-badge{width:42px;height:32px;display:grid;place-items:center;border-radius:8px;background:var(--koica);color:#fff;font-size:10px;font-weight:800;letter-spacing:.4px;flex:0 0 auto}.application-file-current>div{min-width:0}.application-file-current strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.application-file-current small{display:block;color:var(--grey);font-size:11.5px;margin-top:2px}.application-no-file{font-size:12px;color:var(--grey);margin:11px 0 0}.application-upload-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}html[data-theme="dark"] .application-form-upload{background:#0C1725}html[data-theme="dark"] .application-file-picker input[type="file"],html[data-theme="dark"] .application-file-current{background:#101B2B}@media(max-width:760px){.application-track-settings{grid-template-columns:1fr}}

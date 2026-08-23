@@ -44,10 +44,12 @@ function ActionButton({
     );
   }
 
+  const resolvedHref = href?.startsWith("/api/") ? `${API}${href}` : href;
+
   return (
     <a
       className={className}
-      href={href}
+      href={resolvedHref}
       target="_blank"
       rel="noopener noreferrer"
     >

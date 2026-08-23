@@ -84,7 +84,7 @@ export async function getApplicationSettings() {
 
   const { data, error } = await supabase
     .from("application_settings")
-    .select("id, applications_open, closed_message, updated_at")
+    .select("*")
     .order("id", { ascending: true })
     .limit(1)
     .maybeSingle();
@@ -93,15 +93,33 @@ export async function getApplicationSettings() {
   return data;
 }
 
-export async function updateApplicationSettings({ applicationsOpen, closedMessage }) {
+export async function updateApplicationSettings({
+  applicationsOpen,
+  closedMessage,
+  closeAt = null,
+  publicFormUrl = "",
+  privateFormUrl = "",
+  publicSubmitUrl = "",
+  privateSubmitUrl = "",
+}) {
   const supabase = requireClient();
   const existing = await getApplicationSettings();
   const message = String(closedMessage || "Applications are currently closed.").trim();
+  const values = {
+    applications_open: Boolean(applicationsOpen),
+    closed_message: message,
+    close_at: closeAt || null,
+    public_form_url: String(publicFormUrl || "").trim() || null,
+    private_form_url: String(privateFormUrl || "").trim() || null,
+    public_submit_url: String(publicSubmitUrl || "").trim() || null,
+    private_submit_url: String(privateSubmitUrl || "").trim() || null,
+    updated_at: new Date().toISOString(),
+  };
 
   if (!existing) {
     const { data, error } = await supabase
       .from("application_settings")
-      .insert({ applications_open: Boolean(applicationsOpen), closed_message: message })
+      .insert(values)
       .select()
       .single();
     if (error) throw new Error(`Unable to create application settings: ${error.message}`);
@@ -110,16 +128,69 @@ export async function updateApplicationSettings({ applicationsOpen, closedMessag
 
   const { data, error } = await supabase
     .from("application_settings")
-    .update({
-      applications_open: Boolean(applicationsOpen),
-      closed_message: message,
-      updated_at: new Date().toISOString(),
-    })
+    .update(values)
     .eq("id", existing.id)
     .select()
     .single();
 
   if (error) throw new Error(`Unable to update application settings: ${error.message}`);
+  return data;
+}
+
+
+const APPLICATION_FORMS_BUCKET = "application-forms";
+
+export async function uploadApplicationForm(storagePath, buffer, contentType) {
+  const supabase = requireClient();
+  const { error } = await supabase.storage
+    .from(APPLICATION_FORMS_BUCKET)
+    .upload(storagePath, buffer, {
+      contentType,
+      upsert: false,
+      cacheControl: "3600",
+    });
+  if (error) throw new Error(`Unable to upload application form: ${error.message}`);
+  return storagePath;
+}
+
+export async function downloadApplicationForm(storagePath) {
+  const supabase = requireClient();
+  const { data, error } = await supabase.storage
+    .from(APPLICATION_FORMS_BUCKET)
+    .download(storagePath);
+  if (error) throw new Error(`Unable to download application form: ${error.message}`);
+  const bytes = Buffer.from(await data.arrayBuffer());
+  return bytes;
+}
+
+export async function deleteApplicationForm(storagePath) {
+  if (!storagePath) return;
+  const supabase = requireClient();
+  const { error } = await supabase.storage
+    .from(APPLICATION_FORMS_BUCKET)
+    .remove([storagePath]);
+  if (error) throw new Error(`Unable to remove application form: ${error.message}`);
+}
+
+export async function updateApplicationFormMetadata(track, file) {
+  const supabase = requireClient();
+  const existing = await getApplicationSettings();
+  if (!existing) throw new Error("Application settings have not been created yet.");
+  const prefix = track === "private" ? "private" : "public";
+  const values = {
+    [`${prefix}_form_path`]: file?.path || null,
+    [`${prefix}_form_name`]: file?.name || null,
+    [`${prefix}_form_mime`]: file?.mime || null,
+    [`${prefix}_form_url`]: null,
+    updated_at: new Date().toISOString(),
+  };
+  const { data, error } = await supabase
+    .from("application_settings")
+    .update(values)
+    .eq("id", existing.id)
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to update application form metadata: ${error.message}`);
   return data;
 }
 

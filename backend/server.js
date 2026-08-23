@@ -19,12 +19,17 @@ import { fileURLToPath } from "node:url";
 import { retrieveRagContext } from "./rag.js";
 import {
   createParticipant,
+  deleteApplicationForm,
+  downloadApplicationForm,
   getApplicationSettings,
   getParticipantByEmail,
   getParticipantById,
   getParticipantByName,
   isSupabaseConfigured,
   listParticipants,
+  updateApplicationFormMetadata,
+  updateApplicationSettings,
+  uploadApplicationForm,
   updateParticipant,
 } from "./supabase-store.js";
 
@@ -557,7 +562,8 @@ app.use(
         req.path ===
           "/api/admin/resources" ||
         req.path ===
-          "/api/admin/modules"
+          "/api/admin/modules" ||
+        req.path.startsWith("/api/admin/application-settings/form/")
       );
 
     return express.json({
@@ -755,14 +761,29 @@ app.get("/api/application-status", async (_req, res) => {
       });
     }
 
-    const open = Boolean(settings.applications_open);
+    const closeAtMs = settings.close_at ? Date.parse(settings.close_at) : null;
+    const hasCloseAt = Number.isFinite(closeAtMs);
+    const open = Boolean(settings.applications_open) && (!hasCloseAt || Date.now() < closeAtMs);
 
     return res.json({
       ...fallback,
       open,
+      closeAt: hasCloseAt ? new Date(closeAtMs).toISOString() : null,
       message: open
         ? "Applications are currently open."
         : settings.closed_message || "Applications are currently closed.",
+      forms: {
+        public: settings.public_form_path
+          ? "/api/application-forms/public/download"
+          : cleanPublicUrl(settings.public_form_url) || fallback.forms.public,
+        private: settings.private_form_path
+          ? "/api/application-forms/private/download"
+          : cleanPublicUrl(settings.private_form_url) || fallback.forms.private,
+      },
+      submissions: {
+        public: cleanPublicUrl(settings.public_submit_url) || fallback.submissions.public,
+        private: cleanPublicUrl(settings.private_submit_url) || fallback.submissions.private,
+      },
       source: "supabase",
     });
   } catch (error) {
@@ -775,6 +796,38 @@ app.get("/api/application-status", async (_req, res) => {
       message: "Applications are currently closed.",
       source: "fallback",
     });
+  }
+});
+
+
+app.get("/api/application-forms/:track/download", async (req, res) => {
+  try {
+    const track = req.params.track === "private" ? "private" : req.params.track === "public" ? "public" : "";
+    if (!track) return res.status(404).json({ error: "Application form not found." });
+
+    const settings = await getApplicationSettings();
+    if (!settings) return res.status(404).json({ error: "Application form not found." });
+
+    const closeAtMs = settings.close_at ? Date.parse(settings.close_at) : null;
+    const hasCloseAt = Number.isFinite(closeAtMs);
+    const open = Boolean(settings.applications_open) && (!hasCloseAt || Date.now() < closeAtMs);
+    if (!open) return res.status(403).json({ error: "Applications are currently closed." });
+
+    const prefix = track === "private" ? "private" : "public";
+    const storagePath = settings[`${prefix}_form_path`];
+    const fileName = settings[`${prefix}_form_name`] || `${track}-sector-application-form`;
+    const mime = settings[`${prefix}_form_mime`] || "application/octet-stream";
+    if (!storagePath) return res.status(404).json({ error: "Application form not found." });
+
+    const buffer = await downloadApplicationForm(storagePath);
+    const safeName = String(fileName).replace(/[\r\n"]/g, "_");
+    res.setHeader("Content-Type", mime);
+    res.setHeader("Content-Length", String(buffer.length));
+    res.setHeader("Content-Disposition", `attachment; filename="${safeName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+    return res.send(buffer);
+  } catch (error) {
+    console.error(`[application-form-download] failed message=${String(error?.message || error).slice(0, 300)}`);
+    return res.status(503).json({ error: "Application form is temporarily unavailable." });
   }
 });
 
@@ -1636,6 +1689,178 @@ const nextId = (
 
   return `${prefix}${number}`;
 };
+
+/* --------------------------------------------------------------------------
+   Admin application settings
+   -------------------------------------------------------------------------- */
+
+function normalizeOptionalHttpUrl(value) {
+  const raw = cleanText(value, 2000);
+  if (!raw) return "";
+  const cleaned = cleanPublicUrl(raw);
+  if (!cleaned) throw new Error("Use a valid http:// or https:// URL.");
+  return cleaned;
+}
+
+function serializeApplicationSettings(settings) {
+  return {
+    applicationsOpen: Boolean(settings?.applications_open),
+    closedMessage: settings?.closed_message || "Applications are currently closed.",
+    closeAt: settings?.close_at || null,
+    publicFormUrl: settings?.public_form_url || "",
+    privateFormUrl: settings?.private_form_url || "",
+    publicFormPath: settings?.public_form_path || "",
+    publicFormName: settings?.public_form_name || "",
+    publicFormMime: settings?.public_form_mime || "",
+    privateFormPath: settings?.private_form_path || "",
+    privateFormName: settings?.private_form_name || "",
+    privateFormMime: settings?.private_form_mime || "",
+    publicSubmitUrl: settings?.public_submit_url || "",
+    privateSubmitUrl: settings?.private_submit_url || "",
+    updatedAt: settings?.updated_at || null,
+  };
+}
+
+app.get(
+  "/api/admin/application-settings",
+  auth,
+  adminOnly,
+  async (_req, res) => {
+    try {
+      const settings = await getApplicationSettings();
+      return res.json({ settings: serializeApplicationSettings(settings) });
+    } catch (error) {
+      console.error(`[admin-application-settings] read_failed message=${String(error?.message || error).slice(0, 300)}`);
+      return res.status(503).json({ error: "Application settings are temporarily unavailable." });
+    }
+  }
+);
+
+
+const APPLICATION_FORM_MAX_BYTES = 10 * 1024 * 1024;
+const APPLICATION_FORM_EXTENSIONS = new Set([".pdf", ".doc", ".docx"]);
+
+app.post(
+  "/api/admin/application-settings/form/:track",
+  auth,
+  adminOnly,
+  async (req, res) => {
+    let uploadedPath = "";
+    try {
+      const track = req.params.track === "private" ? "private" : req.params.track === "public" ? "public" : "";
+      if (!track) return res.status(404).json({ error: "Application track not found." });
+
+      const file = req.body?.file || {};
+      const originalFileName = path.basename(String(file.name || "application-form"));
+      const extension = path.extname(originalFileName).toLowerCase();
+      if (!APPLICATION_FORM_EXTENSIONS.has(extension)) {
+        return res.status(400).json({ error: "Application forms must be PDF, DOC, or DOCX files." });
+      }
+
+      const match = String(file.dataUrl || "").match(/^data:([^;]+);base64,(.+)$/s);
+      if (!match) return res.status(400).json({ error: "The selected application form could not be read." });
+      const buffer = Buffer.from(match[2], "base64");
+      if (!buffer.length || buffer.length > APPLICATION_FORM_MAX_BYTES) {
+        return res.status(400).json({ error: "Application forms must be 10 MB or smaller." });
+      }
+      if (!uploadMatchesExtension(buffer, extension)) {
+        return res.status(400).json({ error: "Application form contents do not match the file extension." });
+      }
+
+      const settings = await getApplicationSettings();
+      if (!settings) return res.status(409).json({ error: "Save application settings before uploading a form." });
+      const prefix = track === "private" ? "private" : "public";
+      const previousPath = settings[`${prefix}_form_path`] || "";
+      const mime = match[1] || file.mime || "application/octet-stream";
+      uploadedPath = `${track}/${Date.now()}-${crypto.randomBytes(8).toString("hex")}${extension}`;
+
+      await uploadApplicationForm(uploadedPath, buffer, mime);
+      const saved = await updateApplicationFormMetadata(track, {
+        path: uploadedPath,
+        name: originalFileName,
+        mime,
+      });
+      if (previousPath && previousPath !== uploadedPath) {
+        try { await deleteApplicationForm(previousPath); } catch (cleanupError) {
+          console.warn(`[admin-application-settings] old_form_cleanup_failed path=${previousPath} message=${String(cleanupError?.message || cleanupError).slice(0, 200)}`);
+        }
+      }
+      console.info(`[admin] application_form_uploaded admin=${req.user.id} track=${track} name=${originalFileName}`);
+      return res.json({ ok: true, settings: serializeApplicationSettings(saved) });
+    } catch (error) {
+      if (uploadedPath) {
+        try { await deleteApplicationForm(uploadedPath); } catch {}
+      }
+      console.error(`[admin-application-settings] form_upload_failed admin=${req.user?.id || "unknown"} message=${String(error?.message || error).slice(0, 300)}`);
+      return res.status(503).json({ error: "Could not upload the application form." });
+    }
+  }
+);
+
+app.delete(
+  "/api/admin/application-settings/form/:track",
+  auth,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const track = req.params.track === "private" ? "private" : req.params.track === "public" ? "public" : "";
+      if (!track) return res.status(404).json({ error: "Application track not found." });
+      const settings = await getApplicationSettings();
+      if (!settings) return res.status(404).json({ error: "Application settings not found." });
+      const prefix = track === "private" ? "private" : "public";
+      const previousPath = settings[`${prefix}_form_path`] || "";
+      const saved = await updateApplicationFormMetadata(track, null);
+      if (previousPath) await deleteApplicationForm(previousPath);
+      console.info(`[admin] application_form_removed admin=${req.user.id} track=${track}`);
+      return res.json({ ok: true, settings: serializeApplicationSettings(saved) });
+    } catch (error) {
+      console.error(`[admin-application-settings] form_remove_failed admin=${req.user?.id || "unknown"} message=${String(error?.message || error).slice(0, 300)}`);
+      return res.status(503).json({ error: "Could not remove the application form." });
+    }
+  }
+);
+
+app.put(
+  "/api/admin/application-settings",
+  auth,
+  adminOnly,
+  async (req, res) => {
+    try {
+      const body = req.body || {};
+      const closedMessage = cleanText(body.closedMessage, 300) || "Applications are currently closed.";
+      const closeAtRaw = cleanText(body.closeAt, 80);
+      let closeAt = null;
+
+      if (closeAtRaw) {
+        const parsed = Date.parse(closeAtRaw);
+        if (!Number.isFinite(parsed)) {
+          return res.status(400).json({ error: "Enter a valid application closing date and time." });
+        }
+        closeAt = new Date(parsed).toISOString();
+      }
+
+      const saved = await updateApplicationSettings({
+        applicationsOpen: Boolean(body.applicationsOpen),
+        closedMessage,
+        closeAt,
+        publicFormUrl: normalizeOptionalHttpUrl(body.publicFormUrl),
+        privateFormUrl: normalizeOptionalHttpUrl(body.privateFormUrl),
+        publicSubmitUrl: normalizeOptionalHttpUrl(body.publicSubmitUrl),
+        privateSubmitUrl: normalizeOptionalHttpUrl(body.privateSubmitUrl),
+      });
+
+      console.info(`[admin] application_settings_updated admin=${req.user.id} open=${Boolean(saved.applications_open)}`);
+      return res.json({ ok: true, settings: serializeApplicationSettings(saved) });
+    } catch (error) {
+      const message = String(error?.message || error);
+      if (message.includes("valid http:// or https://")) {
+        return res.status(400).json({ error: message });
+      }
+      console.error(`[admin-application-settings] update_failed admin=${req.user?.id || "unknown"} message=${message.slice(0, 300)}`);
+      return res.status(503).json({ error: "Could not save application settings." });
+    }
+  }
+);
 
 /* --------------------------------------------------------------------------
    Admin content

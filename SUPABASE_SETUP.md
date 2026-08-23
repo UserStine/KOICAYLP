@@ -72,3 +72,11 @@ npm start
 5. Test an existing KOICA participant login. Login, session account lookup, registration, password reset participant lookup, and the admin participant list now read participants from Supabase.
 
 Do not delete `backend/data/participants.json` until you have verified the imported row count and tested at least one participant and one admin login. The JSON file is retained only as a migration/rollback source during this stage.
+
+## Admin application settings migration
+
+Run `backend/sql/003_application_admin_settings.sql` once in the Supabase SQL Editor before using **Admin → Applications**. This adds the closing date and the public/private form and submission URL fields to `application_settings`.
+
+## Application form file uploads
+
+Run `backend/sql/004_application_form_storage.sql` once in Supabase SQL Editor. It adds file metadata columns and creates a private `application-forms` Storage bucket. Admins can then upload PDF/DOC/DOCX forms directly from Admin Portal → Applications. The backend serves those files to applicants only while applications are open.
