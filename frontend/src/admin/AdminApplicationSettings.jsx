@@ -265,13 +265,11 @@ export default function AdminApplicationSettings() {
         <div className="settings-section-title">Public Sector</div>
         <div className="application-track-settings single">
           {renderUpload("public")}
-          <div className="application-inline-note"><strong>Submission is handled in the app.</strong><span>Applicants complete this form, then upload it on the public Apply page.</span></div>
         </div>
 
         <div className="settings-section-title">Private Sector</div>
         <div className="application-track-settings single">
           {renderUpload("private")}
-          <div className="application-inline-note"><strong>Submission is handled in the app.</strong><span>Applicants complete this form, then upload it on the public Apply page.</span></div>
         </div>
 
         <div className="form-actions settings-save-row">

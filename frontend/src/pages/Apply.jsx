@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { FileIcon, DownloadIcon, MailIcon } from "../components/Icons";
 import { useT } from "../i18n";
 import { API } from "../auth/AuthContext";
@@ -58,7 +58,8 @@ export default function Apply() {
   const [submitBusy, setSubmitBusy] = useState(false);
   const [submitError, setSubmitError] = useState("");
   const [submitSuccess, setSubmitSuccess] = useState(null);
-  const submissionRef = useRef(null);
+  const [downloadBusy, setDownloadBusy] = useState("");
+  const [downloadError, setDownloadError] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -94,15 +95,42 @@ export default function Apply() {
   ];
 
   const tracks = [
-    { key: "public", title: a.formPublic, text: a.formPublicText, submitLabel: "Submit Public Sector Application" },
-    { key: "private", title: a.formPrivate, text: a.formPrivateText, submitLabel: "Submit Private Sector Application" },
+    { key: "public", title: a.formPublic, text: a.formPublicText },
+    { key: "private", title: a.formPrivate, text: a.formPrivateText },
   ];
 
-  function openSubmission(track) {
-    setSelectedTrack(track);
-    setSubmitError("");
-    setSubmitSuccess(null);
-    setTimeout(() => submissionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  async function downloadForm(track, formUrl) {
+    if (closed || !formUrl || downloadBusy) return;
+    setDownloadBusy(track);
+    setDownloadError("");
+    try {
+      const resolvedUrl = formUrl.startsWith("/api/") ? `${API}${formUrl}` : formUrl;
+      const response = await fetch(resolvedUrl, { credentials: "include" });
+      if (!response.ok) {
+        const payload = await response.json().catch(() => ({}));
+        throw new Error(payload.error || "The application form could not be downloaded.");
+      }
+      const blob = await response.blob();
+      const disposition = response.headers.get("content-disposition") || "";
+      let fileName = `${track}-sector-application-form`;
+      const utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+      const plainMatch = disposition.match(/filename="?([^";]+)"?/i);
+      if (utf8Match?.[1]) fileName = decodeURIComponent(utf8Match[1]);
+      else if (plainMatch?.[1]) fileName = plainMatch[1];
+
+      const objectUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = objectUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(objectUrl), 1000);
+    } catch (error) {
+      setDownloadError(error.message || "The application form could not be downloaded.");
+    } finally {
+      setDownloadBusy("");
+    }
   }
 
   function updateField(name, value) {
@@ -185,11 +213,13 @@ export default function Apply() {
                 <div className="dl-icon"><FileIcon /></div>
                 <div className="dl-copy"><h3>{track.title}</h3><p>{track.text}</p></div>
                 <div className="application-actions">
-                  <ActionButton href={formUrl} disabled={closed || !formUrl}>
-                    {!closed && <DownloadIcon />}{closed ? "Applications are currently closed." : a.download}
-                  </ActionButton>
-                  <ActionButton disabled={closed} secondary onClick={() => openSubmission(track.key)}>
-                    {track.submitLabel}
+                  <ActionButton disabled={closed || !formUrl || downloadBusy === track.key} onClick={() => downloadForm(track.key, formUrl)}>
+                    {!closed && <DownloadIcon />}
+                    {closed
+                      ? "Applications are currently closed."
+                      : downloadBusy === track.key
+                        ? "Downloading…"
+                        : a.download}
                   </ActionButton>
                 </div>
               </article>
@@ -197,7 +227,9 @@ export default function Apply() {
           })}
         </div>
 
-        <div className={`public-submission-panel ${closed ? "is-disabled" : ""}`} ref={submissionRef}>
+        {downloadError && <div className="admin-error" role="alert">{downloadError}</div>}
+
+        <div className={`public-submission-panel ${closed ? "is-disabled" : ""}`}>
           <div className="public-submission-head">
             <div>
               <span className="submission-kicker">Online submission</span>
