@@ -1,7 +1,7 @@
 /* ==========================================================================
    KOICA YLP - Backend API
    Auth: participant name + KOICA PIN
-   Storage: JSON files
+   Storage: Supabase participants/auth + JSON course data (migration in progress)
    ========================================================================== */
 
 import { loadEnvFile } from "node:process";
@@ -17,6 +17,16 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { retrieveRagContext } from "./rag.js";
+import {
+  createParticipant,
+  getApplicationSettings,
+  getParticipantByEmail,
+  getParticipantById,
+  getParticipantByName,
+  isSupabaseConfigured,
+  listParticipants,
+  updateParticipant,
+} from "./supabase-store.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const IS_VERCEL = Boolean(process.env.VERCEL);
@@ -362,54 +372,36 @@ function readToken(token) {
   }
 }
 
-function auth(
+async function auth(
   req,
   res,
   next
 ) {
-  const cookies = Object.fromEntries(
-    String(req.headers.cookie || "").split(";").map((part) => part.trim()).filter(Boolean).map((part) => {
-      const index = part.indexOf("=");
-      return index < 0 ? [part, ""] : [decodeURIComponent(part.slice(0, index)), decodeURIComponent(part.slice(index + 1))];
-    })
-  );
-  const token = cookies[SESSION_COOKIE] || "";
-
-  const data =
-    readToken(token);
-
-  if (!data) {
-    return res
-      .status(401)
-      .json({
-        error:
-          "Session expired. Please log in again.",
-      });
-  }
-
-  const participant =
-    read(
-      "participants.json",
-      []
-    ).find(
-      (participant) =>
-        participant.id ===
-        data.id
+  try {
+    const cookies = Object.fromEntries(
+      String(req.headers.cookie || "").split(";").map((part) => part.trim()).filter(Boolean).map((part) => {
+        const index = part.indexOf("=");
+        return index < 0 ? [part, ""] : [decodeURIComponent(part.slice(0, index)), decodeURIComponent(part.slice(index + 1))];
+      })
     );
+    const token = cookies[SESSION_COOKIE] || "";
+    const data = readToken(token);
 
-  if (!participant) {
-    return res
-      .status(401)
-      .json({
-        error:
-          "Account not found.",
-      });
+    if (!data) {
+      return res.status(401).json({ error: "Session expired. Please log in again." });
+    }
+
+    const participant = await getParticipantById(data.id);
+    if (!participant) {
+      return res.status(401).json({ error: "Account not found." });
+    }
+
+    req.user = participant;
+    return next();
+  } catch (error) {
+    console.error(`[auth] participant_lookup_failed ip=${req.ip} message=${String(error?.message || error).slice(0, 300)}`);
+    return res.status(503).json({ error: "Authentication service is temporarily unavailable." });
   }
-
-  req.user =
-    participant;
-
-  next();
 }
 
 /* --------------------------------------------------------------------------
@@ -750,8 +742,40 @@ app.get(
   }
 );
 
-app.get("/api/application-status", (_req, res) => {
-  res.json(applicationStatus());
+app.get("/api/application-status", async (_req, res) => {
+  const fallback = applicationStatus();
+
+  try {
+    const settings = await getApplicationSettings();
+
+    if (!settings) {
+      return res.json({
+        ...fallback,
+        source: isSupabaseConfigured() ? "supabase-empty" : "environment",
+      });
+    }
+
+    const open = Boolean(settings.applications_open);
+
+    return res.json({
+      ...fallback,
+      open,
+      message: open
+        ? "Applications are currently open."
+        : settings.closed_message || "Applications are currently closed.",
+      source: "supabase",
+    });
+  } catch (error) {
+    console.error("[application-status] Supabase lookup failed:", error?.message || error);
+
+    // Fail closed: database/network errors must never accidentally open applications.
+    return res.status(200).json({
+      ...fallback,
+      open: false,
+      message: "Applications are currently closed.",
+      source: "fallback",
+    });
+  }
 });
 
 /* --------------------------------------------------------------------------
@@ -762,7 +786,7 @@ app.post(
   "/api/login",
   authLimiter,
   throttle,
-  (req, res) => {
+  async (req, res) => {
     const {
       name = "",
       pin = "",
@@ -781,17 +805,13 @@ app.post(
         });
     }
 
-    const participants =
-      read(
-        "participants.json",
-        []
-      );
-
-    const match =
-      participants.find(
-        (participant) =>
-          normalizeName(participant.name) === normalizeName(name)
-      );
+    let match;
+    try {
+      match = await getParticipantByName(name);
+    } catch (error) {
+      console.error(`[auth] supabase_login_lookup_failed ip=${req.ip} message=${String(error?.message || error).slice(0, 300)}`);
+      return res.status(503).json({ error: "Login service is temporarily unavailable." });
+    }
 
     const credentialOk = match && (match.passwordHash
       ? (() => { const attempt = hashSecret(pin, match.passwordSalt); return safeEqualHex(attempt.hash, match.passwordHash); })()
@@ -830,29 +850,37 @@ app.post("/api/logout", auth, (req, res) => {
 app.post("/api/auth/register", signupLimiter, async (req, res) => {
   const name = cleanText(req.body?.name, 120), email = cleanText(req.body?.email, 254).toLowerCase(), password = String(req.body?.password || "");
   if (name.length < 2 || !validEmail(email) || password.length < 12 || password.length > 128) return res.status(400).json({ error: "Enter a valid name, email, and a password of at least 12 characters." });
-  const participants = read("participants.json", []);
-  if (participants.some((p) => String(p.email || "").toLowerCase() === email)) return res.status(202).json({ ok: true });
-  const cred = hashSecret(password); const id = `u-${crypto.randomBytes(12).toString("hex")}`;
-  participants.push({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, country: "", track: "public", cohort: "", role: "participant" });
-  write("participants.json", participants);
+
+  if (await getParticipantByEmail(email)) return res.status(202).json({ ok: true });
+
+  const cred = hashSecret(password);
+  const id = `u-${crypto.randomBytes(12).toString("hex")}`;
+  await createParticipant({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, country: "", track: "public", cohort: "", role: "participant" });
   res.status(202).json({ ok: true });
 });
 
 app.post("/api/auth/forgot-password", signupLimiter, async (req, res) => {
   const email = cleanText(req.body?.email, 254).toLowerCase();
-  const participants = read("participants.json", []), p = participants.find((x) => String(x.email || "").toLowerCase() === email);
-  if (p) { const token = setAuthToken("reset-password", p.id); await deliverEmail(email, "Reset your KOICA YLP password", `${process.env.FRONTEND_URL || ""}/reset-password?token=${encodeURIComponent(token)}`); }
+  const participant = await getParticipantByEmail(email);
+  if (participant) {
+    const token = setAuthToken("reset-password", participant.id);
+    await deliverEmail(email, "Reset your KOICA YLP password", `${process.env.FRONTEND_URL || ""}/reset-password?token=${encodeURIComponent(token)}`);
+  }
   res.status(202).json({ ok: true });
 });
 
-app.post("/api/auth/reset-password", signupLimiter, (req, res) => {
+app.post("/api/auth/reset-password", signupLimiter, async (req, res) => {
   const password = String(req.body?.password || "");
   if (password.length < 12 || password.length > 128) return res.status(400).json({ error: "Password must be 12 to 128 characters." });
   const token = consumeAuthToken("reset-password", req.body?.token);
   if (!token) return res.status(400).json({ error: "Reset token is invalid or expired." });
-  const participants = read("participants.json", []), p = participants.find((x) => x.id === token.participantId);
-  if (!p) return res.status(400).json({ error: "Reset token is invalid or expired." });
-  const cred = hashSecret(password); p.passwordSalt = cred.salt; p.passwordHash = cred.hash; delete p.pinHash; delete p.salt; delete p.pin; write("participants.json", participants); res.json({ ok: true });
+
+  const participant = await getParticipantById(token.participantId);
+  if (!participant) return res.status(400).json({ error: "Reset token is invalid or expired." });
+
+  const cred = hashSecret(password);
+  await updateParticipant(participant.id, { passwordSalt: cred.salt, passwordHash: cred.hash, pinHash: "", salt: "" });
+  res.json({ ok: true });
 });
 
 app.post("/api/ai/chat", aiLimiter, async (req, res) => {
@@ -2650,12 +2678,8 @@ app.get(
   "/api/admin/participants",
   auth,
   adminOnly,
-  (req, res) => {
-    const participants =
-      read(
-        "participants.json",
-        []
-      );
+  async (req, res) => {
+    const participants = await listParticipants();
 
     const progress =
       read(

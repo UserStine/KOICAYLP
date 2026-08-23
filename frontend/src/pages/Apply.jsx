@@ -312,7 +312,7 @@ export default function Apply() {
                     }
                     secondary
                   >
-                    {closed ? "Applications are currently closed." : track.submitLabel}
+                    {track.submitLabel}
                   </ActionButton>
                 </div>
               </article>

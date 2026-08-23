@@ -58,7 +58,7 @@ header{
 }
 .header-left{display:flex;align-items:center;gap:44px;min-width:0;}
 .logo{display:flex;align-items:center;gap:12px;flex:0 0 auto;}
-.logo-img{height:30px;width:auto;object-fit:contain;}
+.logo-img{height:40px;width:auto;object-fit:contain;}
 .logo-divider{width:1px;height:22px;background:var(--line);}
 .logo-ylp{
   font-family:'Urbanist',sans-serif;font-weight:700;font-size:19px;
@@ -937,7 +937,7 @@ html[lang="fr"] h1{overflow-wrap:break-word;hyphens:auto;}
   animation:fadeUp .7s var(--ease-out) both;
 }
 .login-brand{display:flex;align-items:center;justify-content:center;gap:11px;margin-bottom:6px;}
-.login-logo{height:26px;width:auto;object-fit:contain;}
+.login-logo{height:34px;width:auto;object-fit:contain;}
 .login-peko{
   width:84px;height:84px;margin:14px auto 6px;border-radius:50%;
   background:#EAF7FE;display:grid;place-items:center;overflow:hidden;
@@ -1437,7 +1437,7 @@ html,body{max-width:100%;}
   :root{--stage-scale:.44;--page-pad:20px;}
   .header-right{gap:12px;}
   .header-right .btn-border-wrap{display:none;}
-  .logo-img{height:24px;}
+  .logo-img{height:30px;}
   .logo-ylp{font-size:16px;}
   .hero-cta .btn.btn-lg{width:100%;justify-content:center;}
   .hero-cta .btn-border-wrap{width:100%;}

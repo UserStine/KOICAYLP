@@ -9,12 +9,14 @@
     "import-roster": "node scripts/import-roster.mjs",
     "db:migrate": "node migrate-json-to-mongodb.js",
     "db:check": "node scripts/check-mongo.mjs",
-    "rag:build": "node scripts/build-rag-index.mjs"
+    "rag:build": "node scripts/build-rag-index.mjs",
+    "supabase:migrate-participants": "node scripts/migrate-participants-to-supabase.mjs"
   },
   "engines": {
     "node": ">=20.12"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "mongodb": "^6.10.0"
