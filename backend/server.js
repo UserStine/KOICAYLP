@@ -139,6 +139,41 @@ const SESSION_COOKIE_OPTIONS = {
 };
 const AUTH_TOKEN_TTL = Number(process.env.AUTH_TOKEN_TTL_MINUTES || 15) * 60 * 1000;
 
+// Public application controls. Closed by default; explicitly opt in when a cohort opens.
+const APPLICATIONS_ENABLED = String(process.env.APPLICATIONS_OPEN || "false").toLowerCase() === "true";
+const APPLICATION_CLOSE_AT = process.env.APPLICATION_CLOSE_AT ? Date.parse(process.env.APPLICATION_CLOSE_AT) : null;
+
+function cleanPublicUrl(value) {
+  if (!value) return "";
+  try {
+    const url = new URL(String(value));
+    return ["https:", "http:"].includes(url.protocol) ? url.toString() : "";
+  } catch {
+    return "";
+  }
+}
+
+function applicationStatus() {
+  const now = Date.now();
+  const hasValidDeadline = Number.isFinite(APPLICATION_CLOSE_AT);
+  const open = APPLICATIONS_ENABLED && (!hasValidDeadline || now < APPLICATION_CLOSE_AT);
+
+  return {
+    open,
+    closeAt: hasValidDeadline ? new Date(APPLICATION_CLOSE_AT).toISOString() : null,
+    message: open ? "Applications are currently open." : "Applications are currently closed.",
+    forms: {
+      public: cleanPublicUrl(process.env.PUBLIC_SECTOR_FORM_URL),
+      private: cleanPublicUrl(process.env.PRIVATE_SECTOR_FORM_URL),
+    },
+    submissions: {
+      public: cleanPublicUrl(process.env.PUBLIC_SECTOR_SUBMIT_URL),
+      private: cleanPublicUrl(process.env.PRIVATE_SECTOR_SUBMIT_URL),
+    },
+  };
+}
+
+
 /* --------------------------------------------------------------------------
    JSON store
    -------------------------------------------------------------------------- */
@@ -714,6 +749,10 @@ app.get(
     });
   }
 );
+
+app.get("/api/application-status", (_req, res) => {
+  res.json(applicationStatus());
+});
 
 /* --------------------------------------------------------------------------
    Login

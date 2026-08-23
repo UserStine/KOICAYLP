@@ -35,9 +35,7 @@ export default function Login() {
     <main className="login-wrap">
       <div className="login-card">
         <div className="login-brand">
-          <img className="login-logo" src={koicaLogo} alt="KOICA" />
-          <span className="logo-divider" />
-          <span className="logo-ylp">YLP</span>
+          <img className="login-logo" src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
         </div>
 
         <div className="login-peko"><img src={peko} alt="" /></div>

@@ -41,9 +41,7 @@ export default function Header() {
       <header>
         <div className="header-left">
           <Link className="logo" to="/">
-            <img className="logo-img" src={koicaLogo} alt="KOICA" />
-            <span className="logo-divider" />
-            <span className="logo-ylp">YLP</span>
+            <img className="logo-img" src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
           </Link>
           <nav className="desktop-nav">{NAV_LINKS.map(navItem)}</nav>
         </div>

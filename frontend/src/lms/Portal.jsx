@@ -49,9 +49,7 @@ export default function Portal() {
     <div className="portal">
       <aside className={`portal-side${navOpen ? " open" : ""}`}>
         <Link className="portal-brand" to="/">
-          <img src={koicaLogo} alt="KOICA" />
-          <span className="logo-divider" />
-          <span className="logo-ylp">YLP</span>
+          <img src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
         </Link>
 
         <div className="portal-user">
