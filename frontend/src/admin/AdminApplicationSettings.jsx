@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useAuth } from "../auth/AuthContext";
+import { useT } from "../i18n";
 import { Loading, ErrorNote } from "../lms/useApi";
 
 const MAX_FORM_BYTES = 10 * 1024 * 1024;
@@ -44,6 +45,8 @@ function formatBytes(bytes) {
 
 export default function AdminApplicationSettings() {
   const { api } = useAuth();
+  const { t } = useT();
+  const x = t.admin.appSettings;
   const [form, setForm] = useState(blank);
   const [initial, setInitial] = useState(blank);
   const [selectedFiles, setSelectedFiles] = useState({ public: null, private: null });
@@ -186,7 +189,7 @@ export default function AdminApplicationSettings() {
     const inputRef = isPublic ? publicInput : privateInput;
     return (
       <div className="application-form-upload">
-        <span className="field-label">Application form</span>
+        <span className="field-label">{x.form}</span>
         <div className="application-file-picker">
           <input
             ref={inputRef}
@@ -194,7 +197,7 @@ export default function AdminApplicationSettings() {
             accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={(e) => chooseForm(track, e.target.files?.[0] || null)}
           />
-          <p className="field-hint">Upload PDF, DOC, or DOCX. Maximum 10 MB.</p>
+          <p className="field-hint">{x.uploadHint}</p>
         </div>
         {selected && (
           <div className="application-file-current pending">
@@ -205,10 +208,10 @@ export default function AdminApplicationSettings() {
         {currentName && !selected && (
           <div className="application-file-current">
             <span className="application-file-badge">FILE</span>
-            <div><strong>{currentName}</strong><small>Currently available to applicants when applications are open.</small></div>
+            <div><strong>{currentName}</strong><small>{x.currentFile}</small></div>
           </div>
         )}
-        {!currentName && !selected && <p className="application-no-file">No application form uploaded.</p>}
+        {!currentName && !selected && <p className="application-no-file">{x.noFile}</p>}
         <div className="application-upload-actions">
           <button type="button" className="btn small" disabled={!selected || uploading === track} onClick={() => uploadForm(track)}>
             <span>{uploading === track ? "Uploading..." : currentName ? "Replace form" : "Upload form"}</span>
@@ -227,9 +230,9 @@ export default function AdminApplicationSettings() {
     <div className="portal-page">
       <header className="portal-head admin-head">
         <div>
-          <p className="portal-eyebrow">Admin</p>
-          <h1>Application Settings</h1>
-          <p className="portal-sub">Open or close applications and upload the application documents. Completed applications are submitted directly through the website.</p>
+          <p className="portal-eyebrow">{t.admin.badge}</p>
+          <h1>{x.title}</h1>
+          <p className="portal-sub">{x.sub}</p>
         </div>
         <span className={`app-status-pill ${form.applicationsOpen ? "open" : "closed"}`}>
           {form.applicationsOpen ? "Applications open" : "Applications closed"}
@@ -242,8 +245,8 @@ export default function AdminApplicationSettings() {
       <div className="admin-form application-settings-form">
         <div className="application-switch-row">
           <div>
-            <h2>Application availability</h2>
-            <p className="field-hint app-setting-hint">Turn this on only when applicants should be able to use the Download and Submit buttons.</p>
+            <h2>{x.availability}</h2>
+            <p className="field-hint app-setting-hint">{x.availabilityHint}</p>
           </div>
           <label className="switch-control">
             <input type="checkbox" checked={form.applicationsOpen} onChange={(e) => set("applicationsOpen", e.target.checked)} />
@@ -253,28 +256,28 @@ export default function AdminApplicationSettings() {
         </div>
 
         <label className="field">
-          <span>Closed message</span>
+          <span>{x.closedMessage}</span>
           <textarea rows="3" maxLength="300" value={form.closedMessage} onChange={(e) => set("closedMessage", e.target.value)} />
         </label>
 
         <label className="field">
-          <span>Automatic closing date and time <small>(optional)</small></span>
+          <span>{x.closeAt} <small>({x.optional})</small></span>
           <input type="datetime-local" value={form.closeAt} onChange={(e) => set("closeAt", e.target.value)} />
         </label>
 
-        <div className="settings-section-title">Public Sector</div>
+        <div className="settings-section-title">{t.portal.trackPublic}</div>
         <div className="application-track-settings single">
           {renderUpload("public")}
         </div>
 
-        <div className="settings-section-title">Private Sector</div>
+        <div className="settings-section-title">{t.portal.trackPrivate}</div>
         <div className="application-track-settings single">
           {renderUpload("private")}
         </div>
 
         <div className="form-actions settings-save-row">
           <button className="btn" onClick={save} disabled={saving || !changed}><span>{saving ? "Saving..." : "Save settings"}</span></button>
-          {changed && <span className="unsaved-note">Unsaved changes</span>}
+          {changed && <span className="unsaved-note">{x.unsaved}</span>}
         </div>
       </div>
     </div>

@@ -124,7 +124,7 @@ export default function ChatWidget({ open, setOpen }) {
             </button>
           </div>
 
-          <div className="chat-note">Quick programme guidance. Confirm official application decisions with KOICA.</div>
+          <div className="chat-note">{t.chat.note}</div>
         </div>
       )}
     </>

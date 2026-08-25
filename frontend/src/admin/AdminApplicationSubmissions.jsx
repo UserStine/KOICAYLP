@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useT } from "../i18n";
 import useApi, { Loading, ErrorNote } from "../lms/useApi";
 import { API } from "../auth/AuthContext";
 
@@ -16,6 +17,8 @@ function formatSize(bytes) {
 }
 
 export default function AdminApplicationSubmissions() {
+  const { t } = useT();
+  const x = t.admin.submissions;
   const { data, error, loading } = useApi("/api/admin/application-submissions");
   const [q, setQ] = useState("");
   const [track, setTrack] = useState("all");
@@ -39,11 +42,11 @@ export default function AdminApplicationSubmissions() {
     <div className="portal-page">
       <header className="portal-head admin-submissions-head">
         <div>
-          <p className="portal-eyebrow">Admin console</p>
-          <h1>Application Submissions</h1>
-          <p className="portal-sub">Review and download completed applications submitted through the website.</p>
+          <p className="portal-eyebrow">{x.eyebrow}</p>
+          <h1>{x.title}</h1>
+          <p className="portal-sub">{x.sub}</p>
         </div>
-        <span className="submission-count">{rows.length} submission{rows.length === 1 ? "" : "s"}</span>
+        <span className="submission-count">{rows.length} {rows.length === 1 ? x.countOne : x.countMany}</span>
       </header>
 
       <div className="submission-filters">
@@ -51,12 +54,12 @@ export default function AdminApplicationSubmissions() {
           className="admin-search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search name, email, country or reference"
+          placeholder={x.search}
         />
         <select value={track} onChange={(e) => setTrack(e.target.value)}>
-          <option value="all">All tracks</option>
-          <option value="public">Public Sector</option>
-          <option value="private">Private Sector</option>
+          <option value="all">{x.allTracks}</option>
+          <option value="public">{t.portal.trackPublic}</option>
+          <option value="private">{t.portal.trackPrivate}</option>
         </select>
       </div>
 
@@ -64,12 +67,12 @@ export default function AdminApplicationSubmissions() {
         <table className="submission-table">
           <thead>
             <tr>
-              <th>Reference</th>
-              <th>Applicant</th>
-              <th>Track</th>
-              <th>Country / Organization</th>
-              <th>Submitted</th>
-              <th>File</th>
+              <th>{x.reference}</th>
+              <th>{x.applicant}</th>
+              <th>{x.track}</th>
+              <th>{x.countryOrg}</th>
+              <th>{x.submitted}</th>
+              <th>{x.file}</th>
             </tr>
           </thead>
           <tbody>
@@ -81,7 +84,7 @@ export default function AdminApplicationSubmissions() {
                   <small>{item.email}</small>
                   <small>{item.phone}</small>
                 </td>
-                <td><span className={`track-pill ${item.track}`}>{item.track === "private" ? "Private" : "Public"}</span></td>
+                <td><span className={`track-pill ${item.track}`}>{item.track === "private" ? t.portal.trackPrivate : t.portal.trackPublic}</span></td>
                 <td>
                   <span>{item.country || "-"}</span>
                   <small>{item.organization || "-"}</small>
@@ -94,7 +97,7 @@ export default function AdminApplicationSubmissions() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Download
+                    {t.portal.download}
                   </a>
                   <small>{item.file_name} · {formatSize(item.file_size)}</small>
                 </td>
@@ -102,7 +105,7 @@ export default function AdminApplicationSubmissions() {
             ))}
           </tbody>
         </table>
-        {!rows.length && <p className="ppl-empty">No application submissions found.</p>}
+        {!rows.length && <p className="ppl-empty">{x.empty}</p>}
       </div>
     </div>
   );

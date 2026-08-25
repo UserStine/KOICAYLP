@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useT } from "../i18n";
 
 const ThemeIcon = ({ dark }) => dark ? (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
@@ -8,6 +9,8 @@ const ThemeIcon = ({ dark }) => dark ? (
 const EyeIcon = () => <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6z"/><circle cx="12" cy="12" r="2.5"/></svg>;
 
 export default function AccessibilityTools(){
+  const { t } = useT();
+  const a = t.accessibility;
   const [theme,setTheme]=useState(()=>localStorage.getItem("ylp-theme")||(window.matchMedia?.("(prefers-color-scheme: dark)").matches?"dark":"light"));
   const [open,setOpen]=useState(false);
   const [textSize,setTextSize]=useState(()=>localStorage.getItem("ylp-text-size")||"normal");
@@ -24,18 +27,18 @@ export default function AccessibilityTools(){
   const readPage=()=>{if(!("speechSynthesis" in window))return;if(speaking){window.speechSynthesis.cancel();setSpeaking(false);return;}const target=document.querySelector("main, .portal-main, .login-shell, .app")||document.body;const text=target.innerText.replace(/\s+/g," ").trim().slice(0,12000);if(!text)return;window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.rate=.95;u.onend=()=>setSpeaking(false);u.onerror=()=>setSpeaking(false);setSpeaking(true);window.speechSynthesis.speak(u);};
   const reset=()=>{setTextSize("normal");setContrast(false);setGrayscale(false);setUnderline(false);setReduceMotion(false);window.speechSynthesis?.cancel();setSpeaking(false);};
 
-  return <div className="access-tools" aria-label="Display and accessibility tools">
-    <button className="access-fab" type="button" onClick={()=>setTheme(theme==="dark"?"light":"dark")} aria-label={theme==="dark"?"Switch to light mode":"Switch to dark mode"} title={theme==="dark"?"Light mode":"Dark mode"}><ThemeIcon dark={theme==="dark"}/></button>
-    <button className="access-fab" type="button" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-controls="accessibility-panel" aria-label="Open visual accessibility tools" title="Accessibility tools"><EyeIcon/></button>
-    {open&&<section id="accessibility-panel" className="access-panel" role="dialog" aria-label="Visual accessibility tools">
-      <div className="access-panel-head"><div><strong>Accessibility</strong><small>Adjust how the site looks and reads.</small></div><button type="button" className="access-close" onClick={()=>setOpen(false)} aria-label="Close accessibility tools">×</button></div>
-      <div className="access-group"><span className="access-label">Text size</span><div className="access-segmented"><button type="button" className={textSize==="normal"?"active":""} onClick={()=>setTextSize("normal")}>A</button><button type="button" className={textSize==="large"?"active":""} onClick={()=>setTextSize("large")}>A+</button><button type="button" className={textSize==="xlarge"?"active":""} onClick={()=>setTextSize("xlarge")}>A++</button></div></div>
-      <label className="access-toggle"><span><strong>High contrast</strong><small>Increase separation between text and backgrounds.</small></span><input type="checkbox" checked={contrast} onChange={e=>setContrast(e.target.checked)}/></label>
-      <label className="access-toggle"><span><strong>Grayscale</strong><small>Remove colour distractions.</small></span><input type="checkbox" checked={grayscale} onChange={e=>setGrayscale(e.target.checked)}/></label>
-      <label className="access-toggle"><span><strong>Underline links</strong><small>Make interactive links easier to identify.</small></span><input type="checkbox" checked={underline} onChange={e=>setUnderline(e.target.checked)}/></label>
-      <label className="access-toggle"><span><strong>Reduce motion</strong><small>Stop non-essential animation.</small></span><input type="checkbox" checked={reduceMotion} onChange={e=>setReduceMotion(e.target.checked)}/></label>
-      <button type="button" className="access-read" onClick={readPage}>{speaking?"Stop reading":"Read page aloud"}</button>
-      <button type="button" className="access-reset" onClick={reset}>Reset accessibility settings</button>
+  return <div className="access-tools" aria-label={a.tools}>
+    <button className="access-fab" type="button" onClick={()=>setTheme(theme==="dark"?"light":"dark")} aria-label={theme==="dark"?a.lightMode:a.darkMode} title={theme==="dark"?a.lightMode:a.darkMode}><ThemeIcon dark={theme==="dark"}/></button>
+    <button className="access-fab" type="button" onClick={()=>setOpen(v=>!v)} aria-expanded={open} aria-controls="accessibility-panel" aria-label={a.open} title={a.title}><EyeIcon/></button>
+    {open&&<section id="accessibility-panel" className="access-panel" role="dialog" aria-label={a.title}>
+      <div className="access-panel-head"><div><strong>{a.title}</strong><small>{a.sub}</small></div><button type="button" className="access-close" onClick={()=>setOpen(false)} aria-label={a.close}>×</button></div>
+      <div className="access-group"><span className="access-label">{a.textSize}</span><div className="access-segmented"><button type="button" className={textSize==="normal"?"active":""} onClick={()=>setTextSize("normal")}>A</button><button type="button" className={textSize==="large"?"active":""} onClick={()=>setTextSize("large")}>A+</button><button type="button" className={textSize==="xlarge"?"active":""} onClick={()=>setTextSize("xlarge")}>A++</button></div></div>
+      <label className="access-toggle"><span><strong>{a.highContrast}</strong><small>{a.highContrastSub}</small></span><input type="checkbox" checked={contrast} onChange={e=>setContrast(e.target.checked)}/></label>
+      <label className="access-toggle"><span><strong>{a.grayscale}</strong><small>{a.grayscaleSub}</small></span><input type="checkbox" checked={grayscale} onChange={e=>setGrayscale(e.target.checked)}/></label>
+      <label className="access-toggle"><span><strong>{a.underline}</strong><small>{a.underlineSub}</small></span><input type="checkbox" checked={underline} onChange={e=>setUnderline(e.target.checked)}/></label>
+      <label className="access-toggle"><span><strong>{a.reduceMotion}</strong><small>{a.reduceMotionSub}</small></span><input type="checkbox" checked={reduceMotion} onChange={e=>setReduceMotion(e.target.checked)}/></label>
+      <button type="button" className="access-read" onClick={readPage}>{speaking?a.stopReading:a.readAloud}</button>
+      <button type="button" className="access-reset" onClick={reset}>{a.reset}</button>
     </section>}
   </div>;
 }

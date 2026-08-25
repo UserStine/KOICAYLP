@@ -5,6 +5,7 @@ import koicaLogo from "../assets/koica-logo.png";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
 import PekoLoader from "../components/PekoLoader";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 export default function Login() {
   const { login, user } = useAuth();
@@ -35,6 +36,7 @@ export default function Login() {
   return (
     <main className="login-wrap">
       <div className="login-card">
+        <div className="login-language"><LanguageSwitcher /></div>
         <div className="login-brand">
           <img className="login-logo" src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
         </div>

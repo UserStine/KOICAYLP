@@ -54,6 +54,9 @@ export default {
         link: "질문하기",
       },
     },
+    tracksTeaser: { titleA: "두 개의 트랙,", titleB: "하나의 목표", sub: "정책을 설계하든 제품을 만들든 여러분에게 맞는 트랙이 있습니다. 두 트랙 모두 온라인 교육, 가나 현지 교육, 한국 초청 연수의 동일한 3단계 여정을 이수합니다.", publicGhost: "공공", publicKicker: "공공부문 트랙", publicTitle: "정책을 만드는 리더를 위해", publicText: "AI 기반 디지털 정부 혁신을 이끄는 공무원, 정책 실무자 및 공공부문 종사자를 위한 트랙입니다.", privateGhost: "민간", privateKicker: "민간부문 트랙", privateTitle: "솔루션을 만드는 리더를 위해", privateText: "아이디어를 MVP와 노코드 AI 애플리케이션으로 발전시키는 기업가, 개발자, 스타트업 창업자 및 학계 전문가를 위한 트랙입니다.", explore: "트랙 살펴보기" },
+    testimonials: { eyebrow: "수료생 이야기", titleA: "이전", titleB: "수료생의 목소리", sub: "검증된 수료생 후기를 현재 레이아웃을 변경하지 않고 이곳에 게시할 수 있습니다.", roles: ["공공부문 수료생", "민간부문 수료생", "지역 수료생"], comingSoon: "검증된 후기가 곧 공개됩니다.", program: "KOICA 청년 리더 프로그램" },
+    gallery: { eyebrow: "이전 수료생", titleA: "커뮤니티의", titleB: "순간들" },
   },
 
   program: {
@@ -264,6 +267,7 @@ export default {
     statusOpenBody: "지원서를 내려받을 수 있으며, 작성 완료한 지원서는 아래에서 제출할 수 있습니다.",
     statusClosedButton: "현재 지원 접수가 마감되었습니다.",
     downloading: "다운로드 중…",
+    calendar: { eyebrow: "프로그램 일정", title: "프로그램 캘린더", sub: "세션, 시간, 진행자를 날짜별로 한눈에 확인하세요.", summaryAria: "프로그램 캘린더 요약", days: "프로그램 일수", sessions: "세션", range: "기간", day: "Day", session: "세션", sessionsLower: "세션", allDay: "종일", emptyTitle: "아직 등록된 프로그램 일정이 없습니다", emptyText: "날짜가 지정된 프로그램 일정이 설정되면 여기에 표시됩니다." },
     submissionKicker: "온라인 제출",
     submissionTitle: "작성 완료한 지원서를 제출하세요",
     submissionIntro: "위에서 내려받아 작성한 지원서를 업로드하세요. 파일과 신청자 정보는 KOICA YLP 운영팀에 안전하게 전달됩니다.",
@@ -349,6 +353,7 @@ export default {
 
   portal: {
     nav: {
+      calendar: "캘린더",
       dashboard: "대시보드",
       modules: "학습 모듈",
       resources: "자료실",
@@ -383,7 +388,7 @@ export default {
     badge: "관리자",
     role: "관리자",
     viewAsParticipant: "참가자 포털 보기",
-    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자" },
+    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자", applications: "지원 관리", submissions: "지원서" },
     modulesTitle: "강의 및 모듈",
     modulesSub: "모듈을 추가한 뒤 레슨을 등록하세요. 참가자에게는 본인 트랙의 모듈과 공통 모듈이 표시됩니다.",
     newModule: "새 모듈", editModule: "모듈 수정",
@@ -413,7 +418,11 @@ export default {
     save: "저장", saving: "저장 중…", cancel: "취소",
     edit: "수정", delete: "삭제", remove: "제거",
     confirmDelete: "영구적으로 삭제하시겠습니까?",
+    appSettings: { title: "지원 설정", sub: "지원 접수를 열거나 닫고 지원서 양식을 업로드합니다. 작성된 지원서는 웹사이트에서 직접 제출됩니다.", availability: "지원 가능 여부", availabilityHint: "지원자가 지원서를 다운로드하고 제출할 수 있을 때만 활성화하세요.", closedMessage: "마감 안내 문구", closeAt: "자동 마감 날짜 및 시간", optional: "선택", form: "지원서 양식", uploadHint: "PDF, DOC 또는 DOCX 파일을 업로드하세요. 최대 10MB입니다.", currentFile: "지원 접수 기간에 지원자가 사용할 수 있습니다.", noFile: "업로드된 지원서 양식이 없습니다.", unsaved: "저장되지 않은 변경사항" },
+    submissions: { eyebrow: "관리자 콘솔", title: "지원서 제출 내역", sub: "웹사이트를 통해 제출된 완료 지원서를 검토하고 다운로드합니다.", countOne: "건", countMany: "건", search: "이름, 이메일, 국가 또는 접수번호 검색", allTracks: "전체 트랙", reference: "접수번호", applicant: "지원자", track: "트랙", countryOrg: "국가 / 기관", submitted: "제출일", file: "파일", empty: "제출된 지원서가 없습니다." },
   },
+
+  accessibility: { tools: "화면 및 접근성 도구", lightMode: "라이트 모드로 전환", darkMode: "다크 모드로 전환", open: "시각 접근성 도구 열기", title: "접근성", sub: "사이트의 표시 방식과 가독성을 조정하세요.", close: "접근성 도구 닫기", textSize: "글자 크기", highContrast: "고대비", highContrastSub: "텍스트와 배경의 구분을 더 선명하게 합니다.", grayscale: "회색조", grayscaleSub: "색상으로 인한 시각적 방해를 줄입니다.", underline: "링크 밑줄", underlineSub: "클릭 가능한 링크를 더 쉽게 구분합니다.", reduceMotion: "모션 줄이기", reduceMotionSub: "필수적이지 않은 애니메이션을 중지합니다.", readAloud: "페이지 읽어주기", stopReading: "읽기 중지", reset: "접근성 설정 초기화" },
 
   footer: {
     brand: "청년 리더 프로그램 · 대한민국 국민의 마음을 담아",

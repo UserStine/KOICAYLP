@@ -1933,4 +1933,36 @@ html[data-theme="dark"] .calendar-dot{border-color:#274560;box-shadow:0 0 0 4px 
 html[data-theme="dark"] .calendar-line{background:linear-gradient(#315778,#1B2C42);}
 html[data-theme="dark"] .peko-loader{color:#C8D6E8;}
 
+/* ============ Dark mode: full-surface visual consistency ============ */
+html[data-theme="dark"] .hub{background:linear-gradient(180deg,#091522 0%,#0B1726 22%,#0B1726 100%);border-top-color:#24384F;}
+html[data-theme="dark"] .hub-peko,html[data-theme="dark"] .hub-tag,html[data-theme="dark"] .lang-btn,html[data-theme="dark"] .lang-menu{background:#101B2B;border-color:#31506F;color:#DCE8F7;}
+html[data-theme="dark"] .lang-btn:hover,html[data-theme="dark"] .lang-opt:hover{background:#16283C;}
+html[data-theme="dark"] .split-panel{background:#101B2B;border-color:#31506F;color:#F4F8FF;box-shadow:0 12px 32px rgba(0,0,0,.2);}
+html[data-theme="dark"] .split-panel:not(.is-active) .split-name{color:#F4F8FF;}
+html[data-theme="dark"] .split-panel:not(.is-active) .split-tagline{color:#B9C7DA;}
+html[data-theme="dark"] .split-panel:not(.is-active) .split-hint{color:#91A4BE;}
+html[data-theme="dark"] .split-panel:not(.is-active) .split-badge{background:#14263A;border-color:#3D5876;color:#8FD2FF;}
+html[data-theme="dark"] .split-panel:not(.is-active) .split-icon{background:#132A42;border-color:#355573;color:#76C8FF;}
+html[data-theme="dark"] .split-panel.is-active{border-color:#4D8BC1;}
+html[data-theme="dark"] .split-panel.public::before{background:linear-gradient(145deg,#0D5E9F 0%,#153F6A 100%);}
+html[data-theme="dark"] .split-panel.private::before{background:linear-gradient(145deg,#176FA2 0%,#244773 100%);}
+html[data-theme="dark"] .split-panel.is-active .split-list li svg{color:#B7E7FF;}
+html[data-theme="dark"] .page,html[data-theme="dark"] main.page{background:#08111E;color:var(--ink);}
+html[data-theme="dark"] .page-hero{background:transparent;}
+html[data-theme="dark"] .section:not(.alt){background:transparent;}
+html[data-theme="dark"] .hub h2,html[data-theme="dark"] .section-title,html[data-theme="dark"] .page-hero h1,html[data-theme="dark"] .portal-head h1{color:#F4F8FF;}
+html[data-theme="dark"] .hub-sub,html[data-theme="dark"] .section-sub,html[data-theme="dark"] .page-sub,html[data-theme="dark"] .portal-sub{color:#B7C5D8;}
+html[data-theme="dark"] .hub-card{background:#101B2B;border-color:#2D4967;box-shadow:0 12px 30px rgba(0,0,0,.18);}
+html[data-theme="dark"] .hub-card:hover{border-color:#4A8FBE;box-shadow:0 18px 44px rgba(0,0,0,.28);}
+html[data-theme="dark"] .hub-card h3{color:#F3F7FD;}html[data-theme="dark"] .hub-card p{color:#BBC8DA;}html[data-theme="dark"] .hub-link{color:#78C9FF;}html[data-theme="dark"] .hub-icon{background:#132A42;border-color:#315574;color:#76C8FF;}
+html[data-theme="dark"] .tt-head .section-title,html[data-theme="dark"] .section-heading .section-title{color:#F4F8FF;}
+html[data-theme="dark"] .ts-panel{border-color:#31506F;}html[data-theme="dark"] .ts-private{background:#111E2E;color:#F4F8FF;}html[data-theme="dark"] .ts-private p{color:#C1CEE0;}html[data-theme="dark"] .ts-private .ts-kicker,html[data-theme="dark"] .ts-private .ts-cta{color:#79CCFF;}html[data-theme="dark"] .ts-private .ts-ghost{color:rgba(105,184,255,.07);}
+html[data-theme="dark"] footer{background:#091522;color:#AFC0D5;}html[data-theme="dark"] .access-panel{background:#101B2B;border-color:#31506F;}html[data-theme="dark"] .access-toggle,html[data-theme="dark"] .access-group{border-color:#2A435F;}html[data-theme="dark"] .access-toggle small,html[data-theme="dark"] .access-panel-head small{color:#AFC0D5;}
+html[data-theme="dark"] .calendar-date-card{background:linear-gradient(160deg,#122C45,#0D2135);border-color:#315778;}html[data-theme="dark"] .calendar-month{color:#8FD4FF;}html[data-theme="dark"] .calendar-weekday{color:#B8C9DC;}
+html[data-theme="dark"] .submission-table td,html[data-theme="dark"] .submission-table th{border-color:#263B53;}html[data-theme="dark"] .settings-section-title{color:#9AD9FF;}
+
+.portal-topbar-actions{display:flex;align-items:center;gap:12px;margin-left:auto;}
+.login-language{display:flex;justify-content:flex-end;margin-bottom:10px;}
+html[data-theme="dark"] .portal-topbar .lang-btn,html[data-theme="dark"] .login-card .lang-btn{background:#14263A;border-color:#355573;color:#9DD9FF;}
+
 `;

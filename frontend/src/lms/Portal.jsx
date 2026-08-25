@@ -5,6 +5,7 @@ import koicaLogo from "../assets/koica-logo.png";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
 import { MenuIcon } from "../components/Icons";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 import Dashboard from "./Dashboard";
 import Modules from "./Modules";
 import ModuleDetail from "./ModuleDetail";
@@ -39,7 +40,7 @@ export default function Portal() {
     { to: "/portal", end: true, label: p.nav.dashboard, icon: <HomeIcon /> },
     { to: "/portal/modules", label: p.nav.modules, icon: <BooksIcon /> },
     { to: "/portal/resources", label: p.nav.resources, icon: <FolderIcon /> },
-    { to: "/portal/calendar", label: "Calendar", icon: <CalendarIcon /> },
+    { to: "/portal/calendar", label: p.nav.calendar, icon: <CalendarIcon /> },
   ];
 
   const initials = (user?.name || "?")
@@ -87,7 +88,7 @@ export default function Portal() {
             aria-label={navOpen ? t.nav.closeMenu : t.nav.openMenu}>
             <MenuIcon open={navOpen} />
           </button>
-          <img className="portal-peko" src={peko} alt="" />
+          <div className="portal-topbar-actions"><LanguageSwitcher /><img className="portal-peko" src={peko} alt="" /></div>
         </div>
 
         <Routes>

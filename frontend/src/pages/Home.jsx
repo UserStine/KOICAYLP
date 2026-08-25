@@ -210,33 +210,23 @@ export default function Home({ openChat }) {
       <section className="tracks-teaser">
         <div className="tt-inner">
           <div className="tt-head" data-reveal>
-            <h2 className="section-title">Two tracks, <span>one mission</span></h2>
-            <p className="section-sub">
-              Whether you shape policy or build products, there is a track for you. Both complete
-              the same three-phase journey: online training, local training in Ghana, and
-              invitational training in Korea.
-            </p>
+            <h2 className="section-title">{t.home.tracksTeaser.titleA} <span>{t.home.tracksTeaser.titleB}</span></h2>
+            <p className="section-sub">{t.home.tracksTeaser.sub}</p>
           </div>
           <div className="track-split">
             <Link className="ts-panel ts-public" to="/tracks">
-              <span className="ts-ghost">PUBLIC</span>
-              <span className="ts-kicker">Public Sector Track</span>
-              <h2>For those shaping policy</h2>
-              <p>
-                Government officials, policy practitioners, and public sector employees driving
-                AI-powered digital government innovation.
-              </p>
-              <span className="ts-cta">Explore the track <Arrow /></span>
+              <span className="ts-ghost">{t.home.tracksTeaser.publicGhost}</span>
+              <span className="ts-kicker">{t.home.tracksTeaser.publicKicker}</span>
+              <h2>{t.home.tracksTeaser.publicTitle}</h2>
+              <p>{t.home.tracksTeaser.publicText}</p>
+              <span className="ts-cta">{t.home.tracksTeaser.explore} <Arrow /></span>
             </Link>
             <Link className="ts-panel ts-private" to="/tracks">
-              <span className="ts-ghost">PRIVATE</span>
-              <span className="ts-kicker">Private Sector Track</span>
-              <h2>For those building solutions</h2>
-              <p>
-                Entrepreneurs, developers, startup founders, and academic professionals turning
-                ideas into MVPs and no-code AI applications.
-              </p>
-              <span className="ts-cta">Explore the track <Arrow /></span>
+              <span className="ts-ghost">{t.home.tracksTeaser.privateGhost}</span>
+              <span className="ts-kicker">{t.home.tracksTeaser.privateKicker}</span>
+              <h2>{t.home.tracksTeaser.privateTitle}</h2>
+              <p>{t.home.tracksTeaser.privateText}</p>
+              <span className="ts-cta">{t.home.tracksTeaser.explore} <Arrow /></span>
             </Link>
           </div>
         </div>
@@ -246,16 +236,16 @@ export default function Home({ openChat }) {
       <section className="fellows-section">
         <div className="section-shell">
           <div className="section-heading" data-reveal>
-            <span className="eyebrow">Fellow stories</span>
-            <h2 className="section-title">Hear from previous <span>fellows</span></h2>
-            <p className="section-sub">Verified fellow testimonials can be published here without changing the page layout.</p>
+            <span className="eyebrow">{t.home.testimonials.eyebrow}</span>
+            <h2 className="section-title">{t.home.testimonials.titleA} <span>{t.home.testimonials.titleB}</span></h2>
+            <p className="section-sub">{t.home.testimonials.sub}</p>
           </div>
           <div className="testimonial-grid">
-            {["Public Sector Fellow", "Private Sector Fellow", "Regional Fellow"].map((label) => (
+            {t.home.testimonials.roles.map((label) => (
               <article className="testimonial-card" data-reveal key={label}>
                 <span className="testimonial-quote">“</span>
-                <p>Verified testimonial coming soon.</p>
-                <div><strong>{label}</strong><span>KOICA Youth Leaders Program</span></div>
+                <p>{t.home.testimonials.comingSoon}</p>
+                <div><strong>{label}</strong><span>{t.home.testimonials.program}</span></div>
               </article>
             ))}
           </div>
@@ -266,8 +256,8 @@ export default function Home({ openChat }) {
       <section className="fellow-gallery-section">
         <div className="section-shell">
           <div className="section-heading" data-reveal>
-            <span className="eyebrow">Previous fellows</span>
-            <h2 className="section-title">Moments from the <span>community</span></h2>
+            <span className="eyebrow">{t.home.gallery.eyebrow}</span>
+            <h2 className="section-title">{t.home.gallery.titleA} <span>{t.home.gallery.titleB}</span></h2>
           </div>
           <div className="fellow-gallery">
             {FELLOW_GALLERY.map((photo, index) => (

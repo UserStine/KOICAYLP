@@ -4,6 +4,7 @@ import koicaLogo from "../assets/koica-logo.png";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
 import { MenuIcon } from "../components/Icons";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 import AdminModules from "./AdminModules";
 import AdminAnnouncements from "./AdminAnnouncements";
 import AdminResources from "./AdminResources";
@@ -35,8 +36,8 @@ export default function AdminLayout() {
     { to: "/admin/announcements", label: a.nav.announcements, icon: <MegaIcon /> },
     { to: "/admin/resources", label: a.nav.resources, icon: <FolderIcon /> },
     { to: "/admin/participants", label: a.nav.participants, icon: <PeopleIcon /> },
-    { to: "/admin/applications", label: "Applications", icon: <SettingsIcon /> },
-    { to: "/admin/submissions", label: "Submissions", icon: <InboxIcon /> },
+    { to: "/admin/applications", label: a.nav.applications, icon: <SettingsIcon /> },
+    { to: "/admin/submissions", label: a.nav.submissions, icon: <InboxIcon /> },
   ];
 
   return (
@@ -80,6 +81,7 @@ export default function AdminLayout() {
             aria-label={navOpen ? t.nav.closeMenu : t.nav.openMenu}>
             <MenuIcon open={navOpen} />
           </button>
+          <LanguageSwitcher />
         </div>
 
         <Routes>

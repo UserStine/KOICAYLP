@@ -54,6 +54,9 @@ export default {
         link: "Ask a question",
       },
     },
+    tracksTeaser: { titleA: "Two tracks,", titleB: "one mission", sub: "Whether you shape policy or build products, there is a track for you. Both complete the same three-phase journey: online training, local training in Ghana, and invitational training in Korea.", publicGhost: "PUBLIC", publicKicker: "Public Sector Track", publicTitle: "For those shaping policy", publicText: "Government officials, policy practitioners, and public sector employees driving AI-powered digital government innovation.", privateGhost: "PRIVATE", privateKicker: "Private Sector Track", privateTitle: "For those building solutions", privateText: "Entrepreneurs, developers, startup founders, and academic professionals turning ideas into MVPs and no-code AI applications.", explore: "Explore the track" },
+    testimonials: { eyebrow: "Fellow stories", titleA: "Hear from previous", titleB: "fellows", sub: "Verified fellow testimonials can be published here without changing the page layout.", roles: ["Public Sector Fellow", "Private Sector Fellow", "Regional Fellow"], comingSoon: "Verified testimonial coming soon.", program: "KOICA Youth Leaders Program" },
+    gallery: { eyebrow: "Previous fellows", titleA: "Moments from the", titleB: "community" },
   },
 
   program: {
@@ -264,6 +267,7 @@ export default {
     statusOpenBody: "Application forms are available for download and completed applications can be submitted below.",
     statusClosedButton: "Applications are currently closed.",
     downloading: "Downloading…",
+    calendar: { eyebrow: "PROGRAM SCHEDULE", title: "Programme Calendar", sub: "A clear day-by-day view of sessions, times, and facilitators.", summaryAria: "Programme calendar summary", days: "Programme days", sessions: "Sessions", range: "Date range", day: "Day", session: "session", sessionsLower: "sessions", allDay: "All day", emptyTitle: "No programme dates yet", emptyText: "Dated programme days will appear here once they are configured." },
     submissionKicker: "Online submission",
     submissionTitle: "Submit your completed application",
     submissionIntro: "Upload the completed form you downloaded above. Your file and details will be sent securely to the KOICA YLP admin team.",
@@ -349,6 +353,7 @@ export default {
 
   portal: {
     nav: {
+      calendar: "Calendar",
       dashboard: "Dashboard",
       modules: "Modules",
       resources: "Resources",
@@ -383,7 +388,7 @@ export default {
     badge: "Admin",
     role: "Administrator",
     viewAsParticipant: "View participant portal",
-    nav: { modules: "Courses", announcements: "Announcements", resources: "Resources", participants: "Participants" },
+    nav: { modules: "Courses", announcements: "Announcements", resources: "Resources", participants: "Participants", applications: "Applications", submissions: "Submissions" },
     modulesTitle: "Courses & modules",
     modulesSub: "Add a module, then list its lessons. Participants see modules for their track plus anything marked for both.",
     newModule: "New module", editModule: "Edit module",
@@ -416,7 +421,11 @@ export default {
     save: "Save", saving: "Saving…", cancel: "Cancel",
     edit: "Edit", delete: "Delete", remove: "Remove",
     confirmDelete: "Delete this permanently?",
+    appSettings: { title: "Application Settings", sub: "Open or close applications and upload the application documents. Completed applications are submitted directly through the website.", availability: "Application availability", availabilityHint: "Turn this on only when applicants should be able to download and submit applications.", closedMessage: "Closed message", closeAt: "Automatic closing date and time", optional: "optional", form: "Application form", uploadHint: "Upload PDF, DOC, or DOCX. Maximum 10 MB.", currentFile: "Currently available to applicants when applications are open.", noFile: "No application form uploaded.", unsaved: "Unsaved changes" },
+    submissions: { eyebrow: "Admin console", title: "Application Submissions", sub: "Review and download completed applications submitted through the website.", countOne: "submission", countMany: "submissions", search: "Search name, email, country or reference", allTracks: "All tracks", reference: "Reference", applicant: "Applicant", track: "Track", countryOrg: "Country / Organization", submitted: "Submitted", file: "File", empty: "No application submissions found." },
   },
+
+  accessibility: { tools: "Display and accessibility tools", lightMode: "Switch to light mode", darkMode: "Switch to dark mode", open: "Open visual accessibility tools", title: "Accessibility", sub: "Adjust how the site looks and reads.", close: "Close accessibility tools", textSize: "Text size", highContrast: "High contrast", highContrastSub: "Increase separation between text and backgrounds.", grayscale: "Grayscale", grayscaleSub: "Remove colour distractions.", underline: "Underline links", underlineSub: "Make interactive links easier to identify.", reduceMotion: "Reduce motion", reduceMotionSub: "Stop non-essential animation.", readAloud: "Read page aloud", stopReading: "Stop reading", reset: "Reset accessibility settings" },
 
   footer: {
     brand: "Youth Leaders Program · From the Korean People",
