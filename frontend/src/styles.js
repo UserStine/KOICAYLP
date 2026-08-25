@@ -1828,4 +1828,109 @@ html[data-theme="dark"] .testimonial-card p{color:#C5D2E4;}
   .peko-loader-frame.frame-1{opacity:1;}
 }
 
+
+/* ============ Dark mode contrast hardening ============ */
+html[data-theme="dark"] .section.alt,
+html[data-theme="dark"] .tracks-teaser,
+html[data-theme="dark"] .fellows-section,
+html[data-theme="dark"] .fellow-gallery-section{
+  background:linear-gradient(180deg,#0C1726,#0A1422);
+  border-color:var(--line);
+}
+html[data-theme="dark"] .phase-card,
+html[data-theme="dark"] .after-card,
+html[data-theme="dark"] .compare-table,
+html[data-theme="dark"] .acc-item,
+html[data-theme="dark"] .calendar-summary-item,
+html[data-theme="dark"] .calendar-day-content,
+html[data-theme="dark"] .module-presentation-card,
+html[data-theme="dark"] .testimonial-card,
+html[data-theme="dark"] .fellow-gallery-card{
+  background:#101B2B;
+  border-color:var(--line);
+  color:var(--ink);
+}
+html[data-theme="dark"] .cta-card{
+  background:linear-gradient(120deg,#101B2B,#12243A);
+}
+html[data-theme="dark"] .doc-list li,
+html[data-theme="dark"] .ct-row > .ct-label,
+html[data-theme="dark"] .application-inline-note,
+html[data-theme="dark"] .application-form-upload,
+html[data-theme="dark"] .calendar-empty{
+  background:#0C1725;
+  border-color:var(--line);
+  color:var(--ink);
+}
+html[data-theme="dark"] .doc-list li,
+html[data-theme="dark"] .elig-card li,
+html[data-theme="dark"] .ct-row > div{
+  color:#DCE7F5;
+}
+html[data-theme="dark"] .ct-row > div{
+  border-color:var(--line);
+}
+html[data-theme="dark"] .compare-table{background:#101B2B;}
+html[data-theme="dark"] .warn-box{
+  background:#321B20;
+  border-color:#6F3540;
+  color:#FFBBC5;
+}
+html[data-theme="dark"] .note-banner{
+  background:#2B2414;
+  border-color:#5A4B24;
+  color:#FFE29A;
+}
+html[data-theme="dark"] .contact-tag,
+html[data-theme="dark"] .elig-chip.sky{
+  color:#9BDAFF;
+}
+html[data-theme="dark"] .elig-chip.gold{color:#FFD979;}
+html[data-theme="dark"] .elig-chip{color:#8FE0B4;}
+html[data-theme="dark"] .application-status.open{
+  background:#102A22;
+  border-color:#285B47;
+  color:#A8E8C3;
+}
+html[data-theme="dark"] .application-status.closed{
+  background:#321B20;
+  border-color:#6F3540;
+  color:#FFC0C8;
+}
+html[data-theme="dark"] .application-action.secondary,
+html[data-theme="dark"] .application-action.disabled,
+html[data-theme="dark"] .application-action:disabled{
+  background:#17283D;
+  border-color:#39526E;
+  color:#C7D6E8;
+}
+html[data-theme="dark"] .dl-icon{
+  background:#17304B;
+  color:#9CD5FF;
+}
+html[data-theme="dark"] .public-submission-panel.is-disabled{opacity:.82;}
+html[data-theme="dark"] .public-submission-form .field input::placeholder,
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder{color:#7F90A7;}
+html[data-theme="dark"] .application-submit-success{
+  background:#102A22;
+  border-color:#285B47;
+  color:#B9E7CB;
+}
+html[data-theme="dark"] .submission-count,
+html[data-theme="dark"] .calendar-session-count,
+html[data-theme="dark"] .track-chip.public,
+html[data-theme="dark"] .res-dl{
+  background:#17304B;
+  color:#9CD5FF;
+  border-color:#315778;
+}
+html[data-theme="dark"] .track-pill{background:#17304B;color:#9CD5FF;}
+html[data-theme="dark"] .track-pill.private{background:#32284A;color:#D6BCFF;}
+html[data-theme="dark"] .calendar-event{border-bottom-color:#24384F;}
+html[data-theme="dark"] .calendar-event-number{background:#17304B;color:#B5D8F5;}
+html[data-theme="dark"] .calendar-dot{border-color:#274560;box-shadow:0 0 0 4px #0D1B2A;}
+html[data-theme="dark"] .calendar-line{background:linear-gradient(#315778,#1B2C42);}
+html[data-theme="dark"] .peko-loader{color:#C8D6E8;}
+
 `;

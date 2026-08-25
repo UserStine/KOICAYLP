@@ -191,8 +191,8 @@ export default function Apply() {
         <h1>{a.titleA}<span className="shimmer">{a.titleB}</span></h1>
         <p className="page-sub">{a.sub}</p>
         <div className={`application-status ${closed ? "closed" : "open"}`} role="status">
-          <strong>{closed ? "Applications are currently closed." : "Applications are open"}</strong>
-          <span>{closed ? "Downloads and submissions are currently disabled. Please follow your regional KOICA office for the next application window." : applicationStatus.message}</span>
+          <strong>{closed ? a.statusClosedTitle : a.statusOpenTitle}</strong>
+          <span>{closed ? a.statusClosedBody : a.statusOpenBody}</span>
         </div>
       </section>
 
@@ -204,7 +204,7 @@ export default function Apply() {
 
       <section className="section alt">
         <h2 className="section-title">{a.formsTitle}</h2>
-        <p className="section-sub">Download the correct application form, complete it, then upload the completed document below.</p>
+        <p className="section-sub">{a.formsInstruction}</p>
 
         <div className="dl-grid">
           {tracks.map((track) => {
@@ -217,9 +217,9 @@ export default function Apply() {
                   <ActionButton disabled={closed || !formUrl || downloadBusy === track.key} onClick={() => downloadForm(track.key, formUrl)}>
                     {!closed && <DownloadIcon />}
                     {closed
-                      ? "Applications are currently closed."
+                      ? a.statusClosedButton
                       : downloadBusy === track.key
-                        ? <><PekoLoader compact /> <span>Downloading…</span></>
+                        ? <><PekoLoader compact /> <span>{a.downloading}</span></>
                         : a.download}
                   </ActionButton>
                 </div>
@@ -233,36 +233,36 @@ export default function Apply() {
         <div className={`public-submission-panel ${closed ? "is-disabled" : ""}`}>
           <div className="public-submission-head">
             <div>
-              <span className="submission-kicker">Online submission</span>
-              <h2>Submit your completed application</h2>
-              <p>Upload the completed form you downloaded above. Your file and details will be sent securely to the KOICA YLP admin team.</p>
+              <span className="submission-kicker">{a.submissionKicker}</span>
+              <h2>{a.submissionTitle}</h2>
+              <p>{a.submissionIntro}</p>
             </div>
-            <div className="submission-track-toggle" aria-label="Application track">
-              <button type="button" className={selectedTrack === "public" ? "active" : ""} onClick={() => setSelectedTrack("public")}>Public Sector</button>
-              <button type="button" className={selectedTrack === "private" ? "active" : ""} onClick={() => setSelectedTrack("private")}>Private Sector</button>
+            <div className="submission-track-toggle" aria-label={a.trackLabel}>
+              <button type="button" className={selectedTrack === "public" ? "active" : ""} onClick={() => setSelectedTrack("public")}>{a.publicSector}</button>
+              <button type="button" className={selectedTrack === "private" ? "active" : ""} onClick={() => setSelectedTrack("private")}>{a.privateSector}</button>
             </div>
           </div>
 
           {submitSuccess ? (
             <div className="application-submit-success" role="status">
               <strong>{submitSuccess.message}</strong>
-              <span>Reference: <b>{submitSuccess.reference}</b></span>
-              <p>Keep this reference for your records.</p>
-              <button type="button" className="btn" onClick={() => setSubmitSuccess(null)}>Submit another application</button>
+              <span>{a.referenceLabel}: <b>{submitSuccess.reference}</b></span>
+              <p>{a.referenceHelp}</p>
+              <button type="button" className="btn" onClick={() => setSubmitSuccess(null)}>{a.submitAnother}</button>
             </div>
           ) : (
             <form className="public-submission-form" onSubmit={submitApplication}>
               <div className="submission-form-grid">
-                <label className="field"><span>Full name</span><input required maxLength="160" value={submission.fullName} onChange={(e) => updateField("fullName", e.target.value)} /></label>
-                <label className="field"><span>Email address</span><input required type="email" maxLength="254" value={submission.email} onChange={(e) => updateField("email", e.target.value)} /></label>
-                <label className="field"><span>Phone number</span><input required maxLength="40" value={submission.phone} onChange={(e) => updateField("phone", e.target.value)} /></label>
-                <label className="field"><span>Country</span><input required maxLength="100" value={submission.country} onChange={(e) => updateField("country", e.target.value)} /></label>
-                <label className="field submission-wide"><span>Organization / institution</span><input required maxLength="180" value={submission.organization} onChange={(e) => updateField("organization", e.target.value)} /></label>
-                <label className="field submission-wide"><span>Completed application form</span><input id="completed-application-file" required type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(e) => updateField("file", e.target.files?.[0] || null)} /><small>PDF, DOC or DOCX · maximum 10 MB</small></label>
+                <label className="field"><span>{a.fullName}</span><input required maxLength="160" value={submission.fullName} onChange={(e) => updateField("fullName", e.target.value)} /></label>
+                <label className="field"><span>{a.emailAddress}</span><input required type="email" maxLength="254" value={submission.email} onChange={(e) => updateField("email", e.target.value)} /></label>
+                <label className="field"><span>{a.phoneNumber}</span><input required maxLength="40" value={submission.phone} onChange={(e) => updateField("phone", e.target.value)} /></label>
+                <label className="field"><span>{a.country}</span><input required maxLength="100" value={submission.country} onChange={(e) => updateField("country", e.target.value)} /></label>
+                <label className="field submission-wide"><span>{a.organization}</span><input required maxLength="180" value={submission.organization} onChange={(e) => updateField("organization", e.target.value)} /></label>
+                <label className="field submission-wide"><span>{a.completedForm}</span><input id="completed-application-file" required type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" onChange={(e) => updateField("file", e.target.files?.[0] || null)} /><small>{a.fileHelp}</small></label>
               </div>
               {submitError && <div className="admin-error" role="alert">{submitError}</div>}
               <button className="application-action submission-submit-button" type="submit" disabled={closed || submitBusy}>
-                {submitBusy ? <><PekoLoader compact /> <span>Submitting…</span></> : `Submit ${selectedTrack === "private" ? "Private" : "Public"} Sector Application`}
+                {submitBusy ? <><PekoLoader compact /> <span>{a.submitting}</span></> : (selectedTrack === "private" ? a.submitPrivate : a.submitPublic)}
               </button>
             </form>
           )}
