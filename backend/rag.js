@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-const DEFAULT_TOP_K = 5;
+const DEFAULT_TOP_K = 6;
 const DEFAULT_MIN_SCORE = 0.08;
-const MAX_SOURCE_CHARS = 1800;
-const MAX_CONTEXT_CHARS = 7000;
+const MAX_SOURCE_CHARS = 2200;
+const MAX_CONTEXT_CHARS = 10000;
 
 function clean(value, max = 5000) {
   return String(value ?? "")
@@ -15,13 +15,13 @@ function clean(value, max = 5000) {
 }
 
 function tokenize(value) {
-  return clean(value, 10000)
+  return clean(value, 12000)
     .toLowerCase()
     .normalize("NFKD")
     .replace(/[^\p{L}\p{N}\s-]/gu, " ")
     .split(/\s+/)
     .filter((token) => token.length > 1)
-    .slice(0, 250);
+    .slice(0, 350);
 }
 
 function makeChunk({ id, title, category, text, source = "KOICA YLP knowledge base" }) {
@@ -34,18 +34,20 @@ function makeChunk({ id, title, category, text, source = "KOICA YLP knowledge ba
   };
 }
 
-export function buildRagChunks(baseDir) {
+export function buildRagChunks(baseDir, databaseKnowledge = []) {
   const chunks = [];
-  const knowledgePath = path.join(baseDir, "knowledge", "public-knowledge.json");
 
-  try {
-    const docs = JSON.parse(fs.readFileSync(knowledgePath, "utf8"));
-    for (const doc of docs) {
-      const chunk = makeChunk(doc);
-      if (chunk.id && chunk.text) chunks.push(chunk);
-    }
-  } catch (error) {
-    console.error(`[rag] knowledge_load_failed error=${error.message}`);
+  // Curated knowledge now lives in Supabase. JSON files under /knowledge are
+  // retained only as migration/seed material and are not read at runtime.
+  for (const doc of databaseKnowledge || []) {
+    const chunk = makeChunk({
+      id: `knowledge:${doc.id}`,
+      title: doc.title,
+      category: doc.category,
+      source: doc.source || "KOICA YLP knowledge base",
+      text: doc.content || doc.text,
+    });
+    if (chunk.id && chunk.text) chunks.push(chunk);
   }
 
   const contentPath = path.join(baseDir, "data", "content.json");
@@ -69,7 +71,6 @@ export function buildRagChunks(baseDir) {
           return `${lesson.title}${details ? ` (${details})` : ""}`;
         })
         .join(". ");
-
       chunks.push(makeChunk({
         id: `module:${module.id}`,
         title: module.title,
@@ -85,7 +86,7 @@ export function buildRagChunks(baseDir) {
         title: resource.title,
         category: "resource",
         source: "Learning resources",
-        text: `${resource.title}. ${resource.description || ""} ${resource.type ? `Type: ${resource.type}.` : ""}`,
+        text: `${resource.title}. ${resource.description || resource.note || ""} ${resource.type ? `Type: ${resource.type}.` : ""}`,
       }));
     }
   } catch (error) {
@@ -93,24 +94,25 @@ export function buildRagChunks(baseDir) {
   }
 
   const unique = new Map();
-  for (const chunk of chunks) {
-    if (chunk.id && chunk.text) unique.set(chunk.id, chunk);
-  }
+  for (const chunk of chunks) if (chunk.id && chunk.text) unique.set(chunk.id, chunk);
   return [...unique.values()];
 }
 
 function lexicalScores(query, chunks) {
   const queryTokens = tokenize(query);
   const querySet = new Set(queryTokens);
-  const normalizedQuery = clean(query, 500).toLowerCase();
+  const normalizedQuery = clean(query, 700).toLowerCase();
 
   const expansions = [
-    { match: /\bapply|application|submit|submission|documents?\b/, terms: ["apply", "application", "submission", "documents", "screening"] },
-    { match: /\beligib|qualif|criteria|age\b/, terms: ["eligible", "eligibility", "criteria", "required", "age"] },
-    { match: /\btrack|public sector|private sector\b/, terms: ["track", "public", "private", "sector"] },
-    { match: /\bschedule|calendar|when|date|day|august|session\b/, terms: ["schedule", "timetable", "day", "session", "time"] },
-    { match: /\bvisa|passport|travel\b/, terms: ["visa", "passport", "ghana", "korea"] },
-    { match: /\bcost|pay|fee|fund|covered\b/, terms: ["cost", "pay", "funded", "covered"] },
+    { match: /\bapply|application|submit|submission|documents?|form\b/, terms: ["apply", "application", "submission", "documents", "form", "screening", "download"] },
+    { match: /\beligib|qualif|criteria|age|degree|experience\b/, terms: ["eligible", "eligibility", "criteria", "required", "age", "experience"] },
+    { match: /\btrack|public sector|private sector|government|startup|entrepreneur\b/, terms: ["track", "public", "private", "sector", "government", "entrepreneur"] },
+    { match: /\bschedule|calendar|when|date|day|august|session|training\b/, terms: ["schedule", "timetable", "day", "session", "time", "training"] },
+    { match: /\bvisa|passport|travel|korea|ghana\b/, terms: ["visa", "passport", "travel", "ghana", "korea"] },
+    { match: /\bcost|pay|fee|fund|covered|scholarship\b/, terms: ["cost", "pay", "funded", "covered", "fee"] },
+    { match: /\bcontact|email|help|support|office\b/, terms: ["contact", "email", "support", "office"] },
+    { match: /\bphase|online|local|invitational\b/, terms: ["phase", "online", "local", "invitational", "training"] },
+    { match: /\balumni|after|community|club|network\b/, terms: ["alumni", "community", "club", "networking"] },
   ];
 
   for (const expansion of expansions) {
@@ -143,17 +145,17 @@ function lexicalScores(query, chunks) {
       score += (1 + Math.log(tf)) * idf;
     }
 
-    const exactPhrase = normalizedQuery;
-    const haystack = `${chunks[index].title} ${chunks[index].text}`.toLowerCase();
-    if (exactPhrase.length >= 4 && haystack.includes(exactPhrase)) score += 4;
+    const haystack = `${chunks[index].title} ${chunks[index].category} ${chunks[index].text}`.toLowerCase();
+    if (normalizedQuery.length >= 4 && haystack.includes(normalizedQuery)) score += 5;
 
     const dateMatch = normalizedQuery.match(/\b(\d{1,2})\s+(january|february|march|april|may|june|july|august|september|october|november|december)\b/);
     if (dateMatch && haystack.includes(dateMatch[0])) score += 8;
 
-    if (/\bapply|application|submit|submission|documents?\b/.test(normalizedQuery) && chunks[index].category === "application") score += 3;
-    if (/\beligib|qualif|criteria|age\b/.test(normalizedQuery) && chunks[index].category === "eligibility") score += 3;
-    if (/\btrack|public sector|private sector\b/.test(normalizedQuery) && chunks[index].category === "tracks") score += 3;
-    if (/\bschedule|calendar|when|date|day|august|session\b/.test(normalizedQuery) && chunks[index].category === "schedule") score += 3;
+    if (/\bapply|application|submit|submission|documents?|form\b/.test(normalizedQuery) && chunks[index].category === "application") score += 4;
+    if (/\beligib|qualif|criteria|age\b/.test(normalizedQuery) && chunks[index].category === "eligibility") score += 4;
+    if (/\btrack|public sector|private sector\b/.test(normalizedQuery) && chunks[index].category === "tracks") score += 4;
+    if (/\bschedule|calendar|when|date|day|session\b/.test(normalizedQuery) && chunks[index].category === "schedule") score += 4;
+    if (/\bcontact|email|support\b/.test(normalizedQuery) && chunks[index].category === "support") score += 4;
 
     return score;
   });
@@ -174,26 +176,34 @@ function cosineSimilarity(a, b) {
 }
 
 async function embedText(text, apiKey, model) {
-  const response = await fetch("https://api.openai.com/v1/embeddings", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({ model, input: clean(text, 8000) }),
-  });
+  const modelName = String(model || "gemini-embedding-001").replace(/^models\//, "");
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(modelName)}:embedContent`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
+      },
+      body: JSON.stringify({
+        model: `models/${modelName}`,
+        content: { parts: [{ text: clean(text, 8000) }] },
+      }),
+    }
+  );
 
   if (!response.ok) {
-    throw new Error(`embedding request failed with status ${response.status}`);
+    const detail = await response.text().catch(() => "");
+    throw new Error(`Gemini embedding request failed (${response.status}) ${detail.slice(0, 180)}`);
   }
 
   const data = await response.json();
-  return data.data?.[0]?.embedding || null;
+  return data.embedding?.values || null;
 }
 
-export async function createEmbeddingIndex({ baseDir, apiKey, model = "text-embedding-3-small" }) {
-  const chunks = buildRagChunks(baseDir);
-  if (!apiKey) throw new Error("OPENAI_API_KEY is required to build the RAG index.");
+export async function createEmbeddingIndex({ baseDir, apiKey, model = "gemini-embedding-001", databaseKnowledge = [] }) {
+  const chunks = buildRagChunks(baseDir, databaseKnowledge);
+  if (!apiKey) throw new Error("GEMINI_API_KEY is required to build the RAG index.");
 
   const index = [];
   for (const chunk of chunks) {
@@ -202,7 +212,8 @@ export async function createEmbeddingIndex({ baseDir, apiKey, model = "text-embe
   }
 
   return {
-    version: 1,
+    version: 2,
+    provider: "gemini",
     embeddingModel: model,
     generatedAt: new Date().toISOString(),
     chunks: index,
@@ -230,12 +241,13 @@ export async function retrieveRagContext({
   query,
   baseDir,
   apiKey,
-  embeddingModel = "text-embedding-3-small",
+  embeddingModel = "gemini-embedding-001",
   topK = DEFAULT_TOP_K,
   minScore = DEFAULT_MIN_SCORE,
   indexPath = path.join(baseDir, "data", "rag-index.json"),
+  databaseKnowledge = [],
 }) {
-  const liveChunks = buildRagChunks(baseDir);
+  const liveChunks = buildRagChunks(baseDir, databaseKnowledge);
   const lexical = lexicalScores(query, liveChunks);
   const maxLexical = Math.max(0, ...lexical);
   const lexicalById = new Map(liveChunks.map((chunk, index) => [chunk.id, maxLexical ? lexical[index] / maxLexical : 0]));
@@ -250,17 +262,23 @@ export async function retrieveRagContext({
     }
   }
 
-  const candidates = (index?.chunks?.length ? index.chunks : liveChunks).map((chunk) => {
+  const indexMatchesCurrentProvider = !index?.provider || index.provider === "gemini";
+  const indexedCandidates = index?.chunks?.length && indexMatchesCurrentProvider ? index.chunks : [];
+  const indexedIds = new Set(indexedCandidates.map((item) => item.id));
+  const liveOnly = liveChunks.filter((item) => !indexedIds.has(item.id));
+  const baseCandidates = indexedCandidates.length ? [...indexedCandidates, ...liveOnly] : liveChunks;
+
+  const candidates = baseCandidates.map((chunk) => {
     const lexicalScore = lexicalById.get(chunk.id) || 0;
     const vectorScore = queryEmbedding && chunk.embedding ? Math.max(0, cosineSimilarity(queryEmbedding, chunk.embedding)) : 0;
-    const score = queryEmbedding ? (vectorScore * 0.82) + (lexicalScore * 0.18) : lexicalScore;
+    const score = queryEmbedding ? (vectorScore * 0.80) + (lexicalScore * 0.20) : lexicalScore;
     return { ...chunk, score, vectorScore, lexicalScore };
   });
 
   const selected = candidates
     .filter((item) => item.score >= Number(minScore))
     .sort((a, b) => b.score - a.score)
-    .slice(0, Math.max(1, Math.min(Number(topK) || DEFAULT_TOP_K, 8)));
+    .slice(0, Math.max(1, Math.min(Number(topK) || DEFAULT_TOP_K, 10)));
 
   let totalChars = 0;
   const sources = [];
@@ -278,6 +296,7 @@ export async function retrieveRagContext({
   return {
     context: contextParts.join("\n\n"),
     sources,
-    mode: queryEmbedding ? "hybrid-vector" : "lexical-fallback",
+    mode: queryEmbedding ? "gemini-hybrid-vector" : "lexical-fallback",
+    chunkCount: liveChunks.length,
   };
 }

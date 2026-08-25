@@ -58,3 +58,8 @@ From the backend folder:
 ```bash
 npm run import-roster -- data/roster.csv
 ```
+
+
+## Peko AI assistant
+
+Peko is connected to Google Gemini and a KOICA YLP retrieval knowledge base. Configure `GEMINI_API_KEY` in the backend environment. See `RAG_SETUP.md` for setup, knowledge editing, testing, and optional Gemini embedding-index generation.

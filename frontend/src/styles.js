@@ -1965,4 +1965,80 @@ html[data-theme="dark"] .submission-table td,html[data-theme="dark"] .submission
 .login-language{display:flex;justify-content:flex-end;margin-bottom:10px;}
 html[data-theme="dark"] .portal-topbar .lang-btn,html[data-theme="dark"] .login-card .lang-btn{background:#14263A;border-color:#355573;color:#9DD9FF;}
 
+
+/* Gemini-backed Peko chat */
+.chat-answer-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-sources{display:flex;flex-direction:column;gap:4px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
+.chat-sources span{font-size:10.5px;line-height:1.35;color:#64748B}
+.chat-thinking{display:flex;align-items:center;gap:8px;min-height:48px}
+.chat-thinking .peko-loader.compact{flex:0 0 auto}
+.chat-msg.error{border-color:#F2B8B5;background:#FFF4F3;color:#8B1E1E}
+.chat-chip:disabled,.chat-input button:disabled{opacity:.5;cursor:not-allowed}
+html[data-theme="dark"] .chat-panel,html[data-theme="dark"] .chat-input,html[data-theme="dark"] .chat-note{background:#0F1B2B;color:#E8EEF8}
+html[data-theme="dark"] .chat-body{background:#081422}
+html[data-theme="dark"] .chat-msg{background:#132238;border-color:#28405D;color:#E8EEF8}
+html[data-theme="dark"] .chat-msg.user{background:var(--koica);border-color:var(--koica);color:#fff}
+html[data-theme="dark"] .chat-chip{background:#132238;color:#7BC4FF;border-color:#4AAAF0}
+html[data-theme="dark"] .chat-input{border-color:#28405D}
+html[data-theme="dark"] .chat-input input{background:#132238;color:#F4F7FB;border-color:#36516F}
+html[data-theme="dark"] .chat-note,html[data-theme="dark"] .chat-sources span{color:#9FB0C8}
+html[data-theme="dark"] .chat-msg.error{background:#311719;border-color:#7B3434;color:#FFD1D1}
+
+
+
+/* ============ Partner identity: KOICA → Hallym University → CIAT ============ */
+.partner-logos{
+  display:flex;align-items:center;gap:10px;min-width:0;
+}
+.partner-logo{display:block;width:auto;object-fit:contain;flex:0 0 auto;}
+.koica-partner-logo{height:34px;max-width:112px;}
+.hallym-partner-logo{height:42px;max-width:42px;}
+.ciat-partner-logo{height:35px;max-width:88px;}
+.partner-separator{width:1px;height:28px;background:var(--line);flex:0 0 auto;}
+.partner-logos.compact{gap:7px;}
+.partner-logos.compact .koica-partner-logo{height:25px;max-width:82px;}
+.partner-logos.compact .hallym-partner-logo{height:31px;max-width:31px;}
+.partner-logos.compact .ciat-partner-logo{height:26px;max-width:66px;}
+.partner-logos.compact .partner-separator{height:22px;}
+.logo .partner-logos{max-width:205px;}
+.footer-brand .partner-logos{margin-right:4px;}
+.portal-brand .partner-logos{width:100%;justify-content:flex-start;}
+.portal-brand .partner-logo{height:auto;}
+.portal-brand .koica-partner-logo{width:74px;}
+.portal-brand .hallym-partner-logo{width:30px;}
+.portal-brand .ciat-partner-logo{width:61px;}
+.login-logo-lockup{justify-content:center;margin:0 auto;}
+.login-logo-lockup .koica-partner-logo{height:31px;}
+.login-logo-lockup .hallym-partner-logo{height:39px;}
+.login-logo-lockup .ciat-partner-logo{height:32px;}
+
+.programme-cycle-badge{
+  display:inline-flex;align-items:center;width:max-content;max-width:100%;
+  margin-top:12px;padding:8px 13px;border-radius:999px;
+  border:1px solid rgba(0,66,144,.18);background:rgba(57,188,242,.08);
+  color:var(--koica);font-size:12px;font-weight:750;letter-spacing:.04em;
+}
+html[data-theme="dark"] .programme-cycle-badge{
+  color:#A9E3FF;border-color:#31506F;background:#10283E;
+}
+html[data-theme="dark"] .partner-separator{background:#31506F;}
+
+@media (max-width:1180px){
+  .partner-logos.compact .koica-partner-logo{height:22px;max-width:70px;}
+  .partner-logos.compact .hallym-partner-logo{height:27px;max-width:27px;}
+  .partner-logos.compact .ciat-partner-logo{height:23px;max-width:58px;}
+  .logo .partner-logos{max-width:175px;}
+}
+@media (max-width:720px){
+  .partner-logos.compact{gap:5px;}
+  .partner-logos.compact .partner-separator{height:18px;}
+  .partner-logos.compact .koica-partner-logo{height:18px;max-width:58px;}
+  .partner-logos.compact .hallym-partner-logo{height:22px;max-width:22px;}
+  .partner-logos.compact .ciat-partner-logo{height:19px;max-width:48px;}
+  .programme-cycle-badge{font-size:10.5px;padding:7px 10px;}
+}
+
+
+/* Admin: Peko knowledge base */
+.knowledge-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px}.knowledge-toolbar input{flex:1;max-width:520px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:var(--paper);color:var(--ink)}.knowledge-toolbar span{font-size:12px;color:var(--muted);font-weight:700}.knowledge-row{align-items:flex-start}.knowledge-row .ar-main p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:850px}.knowledge-row .ar-main small{display:block;margin-top:8px;color:var(--muted)}.knowledge-meta{display:flex;align-items:center;gap:7px;margin-bottom:7px}.knowledge-meta>span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);padding:4px 7px;border-radius:999px}.knowledge-status.live{background:#EAF9F0!important;color:#137A42!important;border-color:#BFE8CD!important}.knowledge-status.draft{background:#F5F7FA!important;color:#69778A!important}.knowledge-publish-check{display:flex;align-items:center;gap:9px;align-self:end;padding:11px 0;font-weight:700;color:var(--ink)}.knowledge-publish-check input{width:18px;height:18px}.knowledge-form textarea{min-height:210px}.admin-empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px}html[data-theme="dark"] .knowledge-toolbar input{background:#101B2B;border-color:#31506F;color:#F4F8FF}html[data-theme="dark"] .knowledge-status.live{background:#123423!important;color:#8EE6B0!important;border-color:#275B3D!important}html[data-theme="dark"] .knowledge-status.draft{background:#172437!important;color:#AFC0D5!important;border-color:#31506F!important}
 `;

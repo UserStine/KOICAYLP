@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NavLink, Routes, Route, Link } from "react-router-dom";
 import peko from "../assets/peko.png";
-import koicaLogo from "../assets/koica-logo.png";
+import BrandLogos from "../components/BrandLogos";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
 import { MenuIcon } from "../components/Icons";
@@ -50,7 +50,7 @@ export default function Portal() {
     <div className="portal">
       <aside className={`portal-side${navOpen ? " open" : ""}`}>
         <Link className="portal-brand" to="/">
-          <img src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
+          <BrandLogos compact />
         </Link>
 
         <div className="portal-user">

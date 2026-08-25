@@ -1,4 +1,4 @@
-import koicaLogo from "../assets/koica-logo.png";
+import BrandLogos from "./BrandLogos";
 import { useT } from "../i18n";
 
 export default function Footer() {
@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer>
       <div className="footer-brand">
-        <img src={koicaLogo} alt="KOICA" />
+        <BrandLogos compact />
         <span>{t.footer.brand}</span>
       </div>
       <div className="footer-links">

@@ -366,3 +366,80 @@ export async function upsertParticipants(participants) {
   if (error) throw new Error(`Unable to import participants: ${error.message}`);
   return (data || []).map(fromParticipantRow);
 }
+
+
+/* --------------------------------------------------------------------------
+   Peko knowledge base
+   -------------------------------------------------------------------------- */
+
+function fromKnowledgeRow(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    title: row.title || "",
+    category: row.category || "program",
+    content: row.content || "",
+    language: row.language || "en",
+    source: row.source || "KOICA YLP knowledge base",
+    isPublished: Boolean(row.is_published),
+    createdAt: row.created_at || null,
+    updatedAt: row.updated_at || null,
+  };
+}
+
+export async function listKnowledgeArticles({ publishedOnly = false } = {}) {
+  const supabase = requireClient();
+  let query = supabase
+    .from("knowledge_articles")
+    .select("id,title,category,content,language,source,is_published,created_at,updated_at")
+    .order("updated_at", { ascending: false });
+  if (publishedOnly) query = query.eq("is_published", true);
+  const { data, error } = await query;
+  if (error) throw new Error(`Unable to list knowledge articles: ${error.message}`);
+  return (data || []).map(fromKnowledgeRow);
+}
+
+export async function listPublishedKnowledgeArticles() {
+  return listKnowledgeArticles({ publishedOnly: true });
+}
+
+export async function saveKnowledgeArticle(values) {
+  const supabase = requireClient();
+  const row = {
+    title: String(values.title || "").trim(),
+    category: String(values.category || "program").trim().toLowerCase() || "program",
+    content: String(values.content || "").trim(),
+    language: ["en", "fr", "ko", "all"].includes(String(values.language || "en").toLowerCase())
+      ? String(values.language || "en").toLowerCase()
+      : "en",
+    source: String(values.source || "KOICA YLP knowledge base").trim() || "KOICA YLP knowledge base",
+    is_published: Boolean(values.isPublished),
+    updated_at: new Date().toISOString(),
+  };
+  if (!row.title || !row.content) throw new Error("Knowledge title and content are required.");
+
+  if (values.id) {
+    const { data, error } = await supabase
+      .from("knowledge_articles")
+      .update(row)
+      .eq("id", values.id)
+      .select()
+      .single();
+    if (error) throw new Error(`Unable to update knowledge article: ${error.message}`);
+    return fromKnowledgeRow(data);
+  }
+
+  const { data, error } = await supabase
+    .from("knowledge_articles")
+    .insert(row)
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to create knowledge article: ${error.message}`);
+  return fromKnowledgeRow(data);
+}
+
+export async function deleteKnowledgeArticle(id) {
+  const supabase = requireClient();
+  const { error } = await supabase.from("knowledge_articles").delete().eq("id", id);
+  if (error) throw new Error(`Unable to delete knowledge article: ${error.message}`);
+}

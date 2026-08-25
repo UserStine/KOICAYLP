@@ -16,7 +16,8 @@ export default {
   },
 
   home: {
-    eyebrow: "Programme des Jeunes Leaders · Afrique de l'Ouest × Corée",
+    eyebrow: "Afrique de l'Ouest × Corée",
+    programmeName: "Programme 2026–27 KOICA Youth Leaders",
     headingDark: "Là où les jeunes leaders ouest-africains apprennent, se connectent et dirigent",
     headingLight: ". Tout le YLP, à un clic.",
     cta: "Découvrir le Hub YLP",
@@ -54,7 +55,7 @@ export default {
         link: "Poser une question",
       },
     },
-    tracksTeaser: { titleA: "Deux filières,", titleB: "une même mission", sub: "Que vous façonnniez les politiques publiques ou développiez des solutions, une filière vous correspond. Les deux suivent le même parcours en trois phases : formation en ligne, formation locale au Ghana et formation sur invitation en Corée.", publicGhost: "PUBLIC", publicKicker: "Filière Secteur public", publicTitle: "Pour ceux qui façonnent les politiques", publicText: "Agents publics, praticiens des politiques et employés du secteur public qui portent l'innovation numérique publique grâce à l'IA.", privateGhost: "PRIVÉ", privateKicker: "Filière Secteur privé", privateTitle: "Pour ceux qui bâtissent des solutions", privateText: "Entrepreneurs, développeurs, fondateurs de start-up et professionnels du monde académique qui transforment des idées en MVP et applications d'IA sans code.", explore: "Découvrir la filière" },
+    tracksTeaser: { titleA: "Deux filières,", titleB: "une même mission", sub: "Que vous façonnniez les politiques publiques ou développiez des solutions, une filière vous correspond. Les deux suivent le même parcours en trois phases : formation en ligne, formation locale au Ghana et formation sur invitation en Corée.", publicGhost: "PUBLIC", publicKicker: "Filière Secteur public", publicTitle: "Pour ceux qui façonnent les politiques", publicText: "Agents publics, praticiens des politiques et employés du secteur public qui portent l'innovation numérique publique grâce à l'IA.", privateGhost: "PRIVÉ", privateKicker: "Filière Secteur privé", privateTitle: "Pour ceux qui bâtissent des solutions", privateText: "Entrepreneurs, développeurs, fondateurs de start-up et professionnels du monde académique qui transforment des idées en MVP et applications d'IA sans code.", publicEnter: "Entrer dans le Secteur public", privateEnter: "Entrer dans le Secteur privé", explore: "Découvrir la filière" },
     testimonials: { eyebrow: "Paroles d'anciens", titleA: "Écoutez les anciens", titleB: "participants", sub: "Les témoignages vérifiés des anciens participants peuvent être publiés ici sans modifier la mise en page.", roles: ["Ancien du secteur public", "Ancien du secteur privé", "Ancien régional"], comingSoon: "Témoignage vérifié à venir.", program: "Programme des Jeunes Leaders de la KOICA" },
     gallery: { eyebrow: "Anciens participants", titleA: "Moments de la", titleB: "communauté" },
   },
@@ -388,7 +389,7 @@ export default {
     badge: "Admin",
     role: "Administrateur",
     viewAsParticipant: "Voir le portail participant",
-    nav: { modules: "Cours", announcements: "Annonces", resources: "Ressources", participants: "Participants", applications: "Candidatures", submissions: "Soumissions" },
+    nav: { modules: "Cours", announcements: "Annonces", resources: "Ressources", participants: "Participants", applications: "Candidatures", submissions: "Soumissions", knowledge: "Base de connaissances" },
     modulesTitle: "Cours et modules",
     modulesSub: "Ajoutez un module, puis listez ses leçons. Les participants voient les modules de leur filière ainsi que ceux marqués pour les deux.",
     newModule: "Nouveau module", editModule: "Modifier le module",
@@ -420,12 +421,13 @@ export default {
     confirmDelete: "Supprimer définitivement ?",
     appSettings: { title: "Paramètres des candidatures", sub: "Ouvrez ou fermez les candidatures et importez les documents de candidature. Les dossiers complétés sont soumis directement sur le site.", availability: "Disponibilité des candidatures", availabilityHint: "Activez cette option uniquement lorsque les candidats doivent pouvoir télécharger et soumettre leur dossier.", closedMessage: "Message de fermeture", closeAt: "Date et heure de fermeture automatique", optional: "facultatif", form: "Formulaire de candidature", uploadHint: "Importez un PDF, DOC ou DOCX. Maximum 10 Mo.", currentFile: "Disponible pour les candidats lorsque les candidatures sont ouvertes.", noFile: "Aucun formulaire de candidature importé.", unsaved: "Modifications non enregistrées" },
     submissions: { eyebrow: "Console admin", title: "Dossiers de candidature", sub: "Consultez et téléchargez les candidatures complètes soumises sur le site.", countOne: "soumission", countMany: "soumissions", search: "Rechercher par nom, e-mail, pays ou référence", allTracks: "Toutes les filières", reference: "Référence", applicant: "Candidat", track: "Filière", countryOrg: "Pays / Organisation", submitted: "Soumis le", file: "Fichier", empty: "Aucune candidature trouvée." },
+    knowledge: { title: "Base de connaissances Peko", sub: "Gérez les informations vérifiées que Gemini peut utiliser pour répondre aux questions de Peko.", newArticle: "Nouvel article", editArticle: "Modifier l’article", articleTitle: "Titre", category: "Catégorie", language: "Langue", allLanguages: "Toutes les langues", content: "Contenu vérifié", source: "Source", published: "Publié", search: "Rechercher dans la base…", live: "Publié", draft: "Brouillon", publish: "Publier", unpublish: "Dépublier", publishedCount: "publiés", required: "Saisissez un titre et un contenu vérifié.", confirmDelete: "Supprimer définitivement cet article ?", empty: "Aucun article trouvé." },
   },
 
   accessibility: { tools: "Outils d'affichage et d'accessibilité", lightMode: "Passer en mode clair", darkMode: "Passer en mode sombre", open: "Ouvrir les outils d'accessibilité visuelle", title: "Accessibilité", sub: "Ajustez l'affichage et la lisibilité du site.", close: "Fermer les outils d'accessibilité", textSize: "Taille du texte", highContrast: "Contraste élevé", highContrastSub: "Augmenter la séparation entre le texte et les arrière-plans.", grayscale: "Niveaux de gris", grayscaleSub: "Supprimer les distractions liées aux couleurs.", underline: "Souligner les liens", underlineSub: "Rendre les liens interactifs plus faciles à repérer.", reduceMotion: "Réduire les animations", reduceMotionSub: "Arrêter les animations non essentielles.", readAloud: "Lire la page à voix haute", stopReading: "Arrêter la lecture", reset: "Réinitialiser les réglages d'accessibilité" },
 
   footer: {
-    brand: "Programme des Jeunes Leaders · Offert par le peuple coréen",
+    brand: "Programme 2026–27 KOICA Youth Leaders · Université Hallym",
     inquiries: "Renseignements :",
     regional: "Bureau régional de la KOICA",
   },
@@ -440,7 +442,10 @@ export default {
     chips: ["Suis-je éligible ?", "Comment postuler ?", "Public ou privé ?", "Après le programme"],
     placeholder: "Écrivez votre question…",
     send: "Envoyer",
-    reply: "Excellente question ! Connectez-moi à votre backend IA et je répondrai en détail.",
-    note: "Interface de démonstration. Connectez ce panneau à votre backend IA. Pour toute confirmation officielle, contactez le bureau de la KOICA.",
+    reply: "Je n'ai pas trouvé suffisamment d'informations KOICA vérifiées pour répondre avec certitude.",
+    thinking: "Peko consulte la base de connaissances KOICA…",
+    error: "Peko ne peut pas joindre le service IA pour le moment. Réessayez.",
+    sources: "Sources",
+    note: "Propulsé par Gemini et fondé sur la base de connaissances KOICA YLP. Confirmez les décisions propres à une cohorte auprès de la KOICA.",
   },
 };

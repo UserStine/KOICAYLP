@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import koicaLogo from "../assets/koica-logo.png";
+import BrandLogos from "./BrandLogos";
 import { MenuIcon } from "./Icons";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { useT } from "../i18n";
@@ -41,7 +41,7 @@ export default function Header() {
       <header>
         <div className="header-left">
           <Link className="logo" to="/">
-            <img className="logo-img" src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
+            <BrandLogos compact />
           </Link>
           <nav className="desktop-nav">{NAV_LINKS.map(navItem)}</nav>
         </div>

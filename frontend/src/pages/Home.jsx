@@ -147,6 +147,7 @@ export default function Home({ openChat }) {
         <section className="hero">
           <div className="hero-left">
             <div className="eyebrow">{t.home.eyebrow}</div>
+            <div className="programme-cycle-badge">{t.home.programmeName}</div>
             <TypewriterHeading dark={t.home.headingDark} light={t.home.headingLight} />
             <div className="hero-cta">
               <div className="btn-border-wrap">
@@ -214,19 +215,19 @@ export default function Home({ openChat }) {
             <p className="section-sub">{t.home.tracksTeaser.sub}</p>
           </div>
           <div className="track-split">
-            <Link className="ts-panel ts-public" to="/tracks">
+            <Link className="ts-panel ts-public" to="/tracks?sector=public">
               <span className="ts-ghost">{t.home.tracksTeaser.publicGhost}</span>
               <span className="ts-kicker">{t.home.tracksTeaser.publicKicker}</span>
               <h2>{t.home.tracksTeaser.publicTitle}</h2>
               <p>{t.home.tracksTeaser.publicText}</p>
-              <span className="ts-cta">{t.home.tracksTeaser.explore} <Arrow /></span>
+              <span className="ts-cta">{t.home.tracksTeaser.publicEnter} <Arrow /></span>
             </Link>
-            <Link className="ts-panel ts-private" to="/tracks">
+            <Link className="ts-panel ts-private" to="/tracks?sector=private">
               <span className="ts-ghost">{t.home.tracksTeaser.privateGhost}</span>
               <span className="ts-kicker">{t.home.tracksTeaser.privateKicker}</span>
               <h2>{t.home.tracksTeaser.privateTitle}</h2>
               <p>{t.home.tracksTeaser.privateText}</p>
-              <span className="ts-cta">{t.home.tracksTeaser.explore} <Arrow /></span>
+              <span className="ts-cta">{t.home.tracksTeaser.privateEnter} <Arrow /></span>
             </Link>
           </div>
         </div>

@@ -1,36 +1,76 @@
-# Peko RAG Backend
+# Peko Knowledge Base + Gemini Setup
 
-The chatbot now uses retrieval-augmented generation instead of sending questions directly to the language model.
+Peko now uses Google Gemini for answer generation and can use Gemini embeddings for semantic retrieval.
 
-## Retrieval flow
+## 1. Create a Gemini API key
 
-1. `backend/knowledge/public-knowledge.json` contains curated public KOICA YLP facts.
-2. `backend/data/content.json` contributes current announcements, programme modules/timetable entries, and learning-resource metadata.
-3. `backend/rag.js` retrieves the most relevant chunks for each user question.
-4. If `backend/data/rag-index.json` exists, retrieval uses OpenAI embeddings plus lexical scoring.
-5. If no vector index exists, retrieval safely falls back to local lexical scoring.
-6. Only retrieved public context is sent to the generation model. Participant records are never included.
-7. Responses return source labels (`S1`, `S2`, etc.) and the UI displays those sources.
+Create a Gemini API key in Google AI Studio. Keep it server-side only.
 
-## Environment
-
-Set these only on the backend:
+Add these values to `backend/.env` locally and to the backend project's Vercel Environment Variables in production:
 
 ```env
-OPENAI_API_KEY=
-OPENAI_MODEL=gpt-5.6
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-RAG_TOP_K=5
+GEMINI_API_KEY=your_real_server_key
+GEMINI_MODEL=gemini-3.7-flash
+GEMINI_EMBEDDING_MODEL=gemini-embedding-001
+RAG_TOP_K=6
 RAG_MIN_SCORE=0.08
 ```
 
-Never expose `OPENAI_API_KEY` through a `VITE_` variable.
+Never add the key to a variable beginning with `VITE_`.
 
-## Build the semantic index
+## 2. Knowledge sources
 
-From the backend folder, after setting `OPENAI_API_KEY`:
+Peko automatically reads:
+
+- `backend/knowledge/*.json` — curated KOICA YLP facts.
+- `backend/data/content.json` announcements.
+- `backend/data/content.json` programme modules and timetable.
+- `backend/data/content.json` resources.
+- The live Supabase `application_settings` record for current open/closed application status.
+
+The main curated file is:
+
+```text
+backend/knowledge/public-knowledge.json
+```
+
+See `backend/knowledge/README.md` for the chunk format and editing rules.
+
+## 3. Test without an embedding index
+
+Peko works immediately using lexical retrieval. Start the backend:
 
 ```bash
+cd backend
+npm install
+npm start
+```
+
+Open:
+
+```text
+http://localhost:4000/api/ai/health
+```
+
+Expected shape:
+
+```json
+{
+  "ok": true,
+  "provider": "gemini",
+  "configured": true,
+  "knowledgeChunks": 40
+}
+```
+
+The exact chunk count can be higher because programme modules and announcements are added automatically.
+
+## 4. Build the Gemini embedding index
+
+For better semantic matching, run:
+
+```bash
+cd backend
 npm run rag:build
 ```
 
@@ -40,18 +80,46 @@ This creates:
 backend/data/rag-index.json
 ```
 
-Commit that generated index if you want Vercel/serverless deployments to use semantic retrieval immediately without rebuilding embeddings on cold starts. The index contains embeddings of public programme content, not API keys or participant credentials.
+The generated index uses `gemini-embedding-001`. Commit the index if you want Vercel deployments to use it without rebuilding on every deployment.
 
-Re-run `npm run rag:build` whenever the public knowledge base or programme content changes substantially.
+If the index is absent, Peko safely falls back to lexical retrieval.
 
-## Add knowledge
+## 5. Chat API
 
-Add approved public facts to:
+The frontend Peko widget now calls:
 
 ```text
-backend/knowledge/public-knowledge.json
+POST /api/ai/chat
 ```
 
-Programme modules, announcements, and resource metadata are loaded automatically from `backend/data/content.json`.
+Example request:
 
-Do not add participant records, passwords, PINs, tokens, private application data, or internal administrative notes to the RAG knowledge base.
+```json
+{
+  "message": "What documents do I need to apply?",
+  "language": "en",
+  "history": []
+}
+```
+
+The API returns the Gemini answer plus the KOICA source chunks used:
+
+```json
+{
+  "reply": "... [S1]",
+  "sources": [
+    {
+      "ref": "S1",
+      "title": "Application documents",
+      "category": "application"
+    }
+  ],
+  "provider": "gemini"
+}
+```
+
+## 6. Safety behaviour
+
+Peko is instructed to answer only from retrieved KOICA YLP sources. If the knowledge base does not support a claim, it should say that it does not have enough verified information and direct the user to the regional KOICA office or partner university.
+
+Do not put participant records, PINs, passwords, application records, API keys, or other private information in the public knowledge files.

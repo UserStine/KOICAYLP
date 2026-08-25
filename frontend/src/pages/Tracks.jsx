@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { Arrow, CheckIcon, GlobeIcon, LaptopIcon } from "../components/Icons";
 import { useT } from "../i18n";
 
@@ -9,7 +9,9 @@ const TRACK_ICONS = [<GlobeIcon />, <LaptopIcon />];
 const TRACK_IDS = ["public", "private"];
 
 export default function Tracks() {
-  const [active, setActive] = useState("public");
+  const [searchParams] = useSearchParams();
+  const initialSector = searchParams.get("sector") === "private" ? "private" : "public";
+  const [active, setActive] = useState(initialSector);
   const { t } = useT();
   const tr = t.tracks;
 

@@ -16,7 +16,8 @@ export default {
   },
 
   home: {
-    eyebrow: "청년 리더 프로그램 · 서아프리카 × 대한민국",
+    eyebrow: "서아프리카 × 대한민국",
+    programmeName: "2026–27 KOICA Youth Leaders Program",
     headingDark: "서아프리카의 젊은 리더들이 배우고, 연결되고, 성장하는 곳",
     headingLight: ". YLP의 모든 것을 클릭 한 번으로.",
     cta: "YLP 허브 둘러보기",
@@ -54,7 +55,7 @@ export default {
         link: "질문하기",
       },
     },
-    tracksTeaser: { titleA: "두 개의 트랙,", titleB: "하나의 목표", sub: "정책을 설계하든 제품을 만들든 여러분에게 맞는 트랙이 있습니다. 두 트랙 모두 온라인 교육, 가나 현지 교육, 한국 초청 연수의 동일한 3단계 여정을 이수합니다.", publicGhost: "공공", publicKicker: "공공부문 트랙", publicTitle: "정책을 만드는 리더를 위해", publicText: "AI 기반 디지털 정부 혁신을 이끄는 공무원, 정책 실무자 및 공공부문 종사자를 위한 트랙입니다.", privateGhost: "민간", privateKicker: "민간부문 트랙", privateTitle: "솔루션을 만드는 리더를 위해", privateText: "아이디어를 MVP와 노코드 AI 애플리케이션으로 발전시키는 기업가, 개발자, 스타트업 창업자 및 학계 전문가를 위한 트랙입니다.", explore: "트랙 살펴보기" },
+    tracksTeaser: { titleA: "두 개의 트랙,", titleB: "하나의 목표", sub: "정책을 설계하든 제품을 만들든 여러분에게 맞는 트랙이 있습니다. 두 트랙 모두 온라인 교육, 가나 현지 교육, 한국 초청 연수의 동일한 3단계 여정을 이수합니다.", publicGhost: "공공", publicKicker: "공공부문 트랙", publicTitle: "정책을 만드는 리더를 위해", publicText: "AI 기반 디지털 정부 혁신을 이끄는 공무원, 정책 실무자 및 공공부문 종사자를 위한 트랙입니다.", privateGhost: "민간", privateKicker: "민간부문 트랙", privateTitle: "솔루션을 만드는 리더를 위해", privateText: "아이디어를 MVP와 노코드 AI 애플리케이션으로 발전시키는 기업가, 개발자, 스타트업 창업자 및 학계 전문가를 위한 트랙입니다.", publicEnter: "공공부문으로 들어가기", privateEnter: "민간부문으로 들어가기", explore: "트랙 살펴보기" },
     testimonials: { eyebrow: "수료생 이야기", titleA: "이전", titleB: "수료생의 목소리", sub: "검증된 수료생 후기를 현재 레이아웃을 변경하지 않고 이곳에 게시할 수 있습니다.", roles: ["공공부문 수료생", "민간부문 수료생", "지역 수료생"], comingSoon: "검증된 후기가 곧 공개됩니다.", program: "KOICA 청년 리더 프로그램" },
     gallery: { eyebrow: "이전 수료생", titleA: "커뮤니티의", titleB: "순간들" },
   },
@@ -388,7 +389,7 @@ export default {
     badge: "관리자",
     role: "관리자",
     viewAsParticipant: "참가자 포털 보기",
-    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자", applications: "지원 관리", submissions: "지원서" },
+    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자", applications: "지원 관리", submissions: "지원서", knowledge: "지식 베이스" },
     modulesTitle: "강의 및 모듈",
     modulesSub: "모듈을 추가한 뒤 레슨을 등록하세요. 참가자에게는 본인 트랙의 모듈과 공통 모듈이 표시됩니다.",
     newModule: "새 모듈", editModule: "모듈 수정",
@@ -420,12 +421,13 @@ export default {
     confirmDelete: "영구적으로 삭제하시겠습니까?",
     appSettings: { title: "지원 설정", sub: "지원 접수를 열거나 닫고 지원서 양식을 업로드합니다. 작성된 지원서는 웹사이트에서 직접 제출됩니다.", availability: "지원 가능 여부", availabilityHint: "지원자가 지원서를 다운로드하고 제출할 수 있을 때만 활성화하세요.", closedMessage: "마감 안내 문구", closeAt: "자동 마감 날짜 및 시간", optional: "선택", form: "지원서 양식", uploadHint: "PDF, DOC 또는 DOCX 파일을 업로드하세요. 최대 10MB입니다.", currentFile: "지원 접수 기간에 지원자가 사용할 수 있습니다.", noFile: "업로드된 지원서 양식이 없습니다.", unsaved: "저장되지 않은 변경사항" },
     submissions: { eyebrow: "관리자 콘솔", title: "지원서 제출 내역", sub: "웹사이트를 통해 제출된 완료 지원서를 검토하고 다운로드합니다.", countOne: "건", countMany: "건", search: "이름, 이메일, 국가 또는 접수번호 검색", allTracks: "전체 트랙", reference: "접수번호", applicant: "지원자", track: "트랙", countryOrg: "국가 / 기관", submitted: "제출일", file: "파일", empty: "제출된 지원서가 없습니다." },
+    knowledge: { title: "Peko 지식 베이스", sub: "Peko가 답변할 때 Gemini가 사용할 수 있는 검증된 정보를 관리합니다.", newArticle: "새 문서", editArticle: "문서 수정", articleTitle: "제목", category: "카테고리", language: "언어", allLanguages: "모든 언어", content: "검증된 내용", source: "출처", published: "게시됨", search: "지식 베이스 검색…", live: "게시됨", draft: "초안", publish: "게시", unpublish: "게시 해제", publishedCount: "게시됨", required: "제목과 검증된 내용을 입력하세요.", confirmDelete: "이 지식 문서를 영구 삭제하시겠습니까?", empty: "지식 문서가 없습니다." },
   },
 
   accessibility: { tools: "화면 및 접근성 도구", lightMode: "라이트 모드로 전환", darkMode: "다크 모드로 전환", open: "시각 접근성 도구 열기", title: "접근성", sub: "사이트의 표시 방식과 가독성을 조정하세요.", close: "접근성 도구 닫기", textSize: "글자 크기", highContrast: "고대비", highContrastSub: "텍스트와 배경의 구분을 더 선명하게 합니다.", grayscale: "회색조", grayscaleSub: "색상으로 인한 시각적 방해를 줄입니다.", underline: "링크 밑줄", underlineSub: "클릭 가능한 링크를 더 쉽게 구분합니다.", reduceMotion: "모션 줄이기", reduceMotionSub: "필수적이지 않은 애니메이션을 중지합니다.", readAloud: "페이지 읽어주기", stopReading: "읽기 중지", reset: "접근성 설정 초기화" },
 
   footer: {
-    brand: "청년 리더 프로그램 · 대한민국 국민의 마음을 담아",
+    brand: "2026–27 KOICA Youth Leaders Program · 한림대학교",
     inquiries: "문의:",
     regional: "해당 국가 KOICA 사무소",
   },
@@ -440,7 +442,10 @@ export default {
     chips: ["지원 자격이 되나요?", "어떻게 지원하나요?", "공공 vs 민간 트랙", "프로그램 이후"],
     placeholder: "질문을 입력하세요…",
     send: "보내기",
-    reply: "좋은 질문이에요! AI 백엔드에 연결해 주시면 자세히 답변해 드릴게요.",
-    note: "데모 화면입니다, 이 패널을 AI 백엔드에 연결하세요. 공식 확인은 KOICA 사무소에 문의하시기 바랍니다.",
+    reply: "확인된 KOICA 정보가 충분하지 않아 확실하게 답변하기 어렵습니다.",
+    thinking: "페코가 KOICA 지식 베이스를 확인하고 있어요…",
+    error: "현재 AI 서비스에 연결할 수 없습니다. 다시 시도해 주세요.",
+    sources: "출처",
+    note: "Gemini를 사용하며 KOICA YLP 지식 베이스에 근거해 답변합니다. 기수별 공식 결정은 KOICA에 확인해 주세요.",
   },
 };

@@ -1,56 +1,191 @@
 [
   {
+    "id": "programme-identity-2026-27",
+    "title": "2026–27 KOICA Youth Leaders Program identity",
+    "category": "program",
+    "source": "Hallym University programme feedback",
+    "text": "The current website should present the programme as the 2026–27 KOICA Youth Leaders Program (YLP). It is jointly operated by KOICA and Hallym University. Where programme partner logos are shown together, the intended order is KOICA, Hallym University, then the CIAT/KOICA Fellowship Program mark."
+  },
+  {
+    "id": "programme-hallym-partner",
+    "title": "Hallym University partnership",
+    "category": "program",
+    "source": "Hallym University programme feedback",
+    "text": "Hallym University is the partner university jointly operating the KOICA Youth Leaders Program with KOICA. Programme and curriculum questions may be handled through the partner-university contact channels published for the cohort."
+  },
+  {
+    "id": "track-outcomes-public-private",
+    "title": "Public and Private Sector outcome emphasis",
+    "category": "tracks",
+    "source": "Hallym University programme feedback",
+    "text": "The Public Sector and Private Sector tracks should be clearly separated in the participant journey. The Public Sector places stronger emphasis on solving public issues, public governance, policy, and digital-government improvement. The Private Sector places stronger emphasis on employment, career opportunities, entrepreneurship, product development, and practical market-facing solutions. Applicants should enter and apply through the track that matches their background and goals."
+  },
+  {
     "id": "program-overview",
     "title": "KOICA Youth Leaders Program overview",
     "category": "program",
-    "text": "The KOICA Youth Leaders Program empowers young leaders from Ghana, Nigeria, Senegal, Côte d'Ivoire, and Cameroon to drive digital transformation, innovation, and sustainable development through leadership, governance, AI, and digital-skills training. Every cohort follows three phases: online training for both tracks, local sector-specific training in Ghana, and invitational training in the Republic of Korea for outstanding trainees. Exact dates are announced for each cohort by regional KOICA offices."
+    "source": "KOICA YLP website",
+    "text": "The KOICA Youth Leaders Program (YLP) supports young leaders from Ghana, Nigeria, Senegal, Côte d'Ivoire, and Cameroon to strengthen leadership, governance, digital transformation, innovation, AI, and digital skills. The programme connects participants across five West African countries and combines shared learning with sector-specific training. Cohort-specific dates, selection details, and application requirements can change, so the current cohort announcement should always be treated as the final authority."
   },
   {
-    "id": "tracks",
-    "title": "Public and Private Sector tracks",
+    "id": "program-countries",
+    "title": "Participating countries",
+    "category": "program",
+    "source": "KOICA YLP website",
+    "text": "The KOICA Youth Leaders Program serves participants from five West African countries: Ghana, Nigeria, Senegal, Côte d'Ivoire, and Cameroon. Regional KOICA offices are important points of contact for application and eligibility questions."
+  },
+  {
+    "id": "program-phases",
+    "title": "Three programme phases",
+    "category": "program",
+    "source": "KOICA YLP programme guide",
+    "text": "Each cohort follows a three-stage journey: 1) Online Training, a common virtual foundation for both tracks covering leadership, governance, AI, and digital skills; 2) Local Training in Ghana, an on-site sector-specific practical phase where participants develop Action Plans; and 3) Invitational Training in the Republic of Korea, an advanced training and exposure phase for outstanding trainees from both tracks. Exact dates are announced per cohort."
+  },
+  {
+    "id": "track-public",
+    "title": "Public Sector track",
     "category": "tracks",
-    "text": "The program has two tracks. The Public Sector track is for government officials, policy practitioners, and public-sector employees and focuses on public governance, policy development, and AI-driven digital-government innovation. The Private Sector track is for aspiring entrepreneurs, developers, startup founders, and academic professionals and focuses on startup capabilities, customer journey mapping, MVP design and validation, and no-code AI applications. Applicants should choose the one track that best matches their profile."
+    "source": "KOICA YLP tracks page",
+    "text": "The Public Sector track is designed for government officials, policy practitioners, and public-sector employees. Its focus includes strengthening public governance, policy planning and development, AI-driven digital-government innovation (DX/AX), and Action Plans that participants can take back to their institutions. Participant numbers are indicative and may vary by cohort."
+  },
+  {
+    "id": "track-private",
+    "title": "Private Sector track",
+    "category": "tracks",
+    "source": "KOICA YLP tracks page",
+    "text": "The Private Sector track is designed for aspiring entrepreneurs, developers, startup founders, and academic professionals. Its focus includes startup capability building, customer journey mapping, MVP design and validation, no-code AI applications, and practical Action Plans. Participant numbers are indicative and may vary by cohort."
+  },
+  {
+    "id": "track-choice",
+    "title": "Choosing the correct track",
+    "category": "tracks",
+    "source": "KOICA YLP tracks page",
+    "text": "Applicants should choose the single track that best matches their background. Public Sector is for applicants working in government or qualifying public institutions. Private Sector is for entrepreneurs, developers, startup founders, academic professionals, and other qualifying private-sector profiles. Each track has its own application form."
   },
   {
     "id": "eligibility-required",
     "title": "Required eligibility criteria",
     "category": "eligibility",
-    "text": "Applicants should be aged 19 to 34, work in the public sector, private sector, or academia, have an interest in leadership and digital innovation, have English communication skills, be available for local training in Ghana, and be eligible for visa issuance for Ghana and the Republic of Korea. Eligibility details may differ slightly by cohort, so applicants should confirm the current announcement with their regional KOICA office."
+    "source": "KOICA YLP eligibility page",
+    "text": "General required criteria shown on the YLP website are: age 19 to 34; working in the public sector, private sector, or academia; interest in leadership and digital innovation; English communication skills; availability for local training in Ghana; and eligibility for visa issuance for Ghana and the Republic of Korea. Cohort announcements may adjust details, so applicants should confirm the current announcement before applying."
   },
   {
     "id": "eligibility-priority",
-    "title": "Priority and preferred applicant profiles",
+    "title": "Priority consideration",
     "category": "eligibility",
-    "text": "Priority consideration includes applicants with an associate degree or higher or at least two years of relevant work experience. Female applicants and applicants from rural areas are encouraged to apply. Public Sector priority includes policy-planning practitioners. Private Sector priority includes early-stage startup entrepreneurs focused on local issues. Preferred strengths include AI or ICT experience, willingness to participate in team projects, public-policy or entrepreneurship experience, and commitment to share knowledge after returning home."
+    "source": "KOICA YLP eligibility page",
+    "text": "Priority consideration may include an associate degree or higher or at least two years of relevant work experience. Female applicants and applicants from rural areas are encouraged to apply. Public Sector priority includes policy-planning practitioners. Private Sector priority includes early-stage startup entrepreneurs focused on solving local issues."
   },
   {
-    "id": "application-process",
-    "title": "Application process",
+    "id": "eligibility-preferred",
+    "title": "Preferred applicant strengths",
+    "category": "eligibility",
+    "source": "KOICA YLP eligibility page",
+    "text": "Preferred strengths include experience in AI or ICT, strong willingness to participate in team projects, experience in public policy or entrepreneurship, and commitment to sharing knowledge with colleagues after returning home. These strengths improve an application but are separate from the required eligibility criteria."
+  },
+  {
+    "id": "eligibility-students",
+    "title": "Students and borderline eligibility",
+    "category": "eligibility",
+    "source": "KOICA YLP FAQ",
+    "text": "The general criteria focus on applicants aged 19 to 34 who are working in the public sector, private sector, or academia. Final-year student status is not automatically resolved by the general guidance. Applicants whose work or academic status is unclear should confirm directly with their regional KOICA office before applying."
+  },
+  {
+    "id": "application-current-flow",
+    "title": "Current website application flow",
     "category": "application",
-    "text": "Applications first go through the applicant's regional KOICA office and then the partner university. Applicants prepare signed PDF documents, including the KOICA Application Form, Letter of Recommendation, passport copy or national ID when allowed by the cohort announcement, and the Agreement on Provision of Personal Information. Applications are sent to the official KOICA office email for the applicant's country with the subject line 'Application for KOICA YLP'. The regional KOICA office performs initial screening and shortlisting. The partner university performs a second document review and makes the final selection. Results are communicated individually by email."
+    "source": "KOICA YLP Apply page",
+    "text": "When applications are open, the public Apply page provides a separate downloadable application form for the Public Sector and Private Sector tracks. Applicants should download the correct form, complete it, return to the Apply page, enter the requested applicant details, upload the completed document, and submit it through the website. When applications are closed, form downloads and application submissions are disabled."
   },
   {
-    "id": "after-selection",
-    "title": "After selection",
+    "id": "application-documents",
+    "title": "Application documents",
     "category": "application",
-    "text": "Final selected participants submit a recent medical check-up certificate by email by the communicated deadline. They then receive immigration and departure support for training in Ghana and Korea. The partner university provides email support for curriculum and program questions."
+    "source": "KOICA YLP application guidance",
+    "text": "General application guidance may require the KOICA Application Form, a Letter of Recommendation, a passport copy or national ID where the cohort announcement allows it, and the Agreement on Provision of Personal Information. Documents should be signed where indicated. The current application form and cohort announcement override older or general document lists."
   },
   {
-    "id": "faq-cost-language-visa",
-    "title": "Common questions about cost, language and visas",
+    "id": "application-upload",
+    "title": "Submitting a completed application online",
+    "category": "application",
+    "source": "KOICA YLP Apply page",
+    "text": "The website's in-app submission form asks for the applicant's full name, email address, phone number, country, organization or institution, application track, and completed application document. The site accepts PDF, DOC, or DOCX application files up to 10 MB. After a successful submission, the applicant receives a unique application reference and should keep it for their records."
+  },
+  {
+    "id": "application-selection",
+    "title": "Screening and final selection",
+    "category": "application",
+    "source": "KOICA YLP application guidance",
+    "text": "The general selection process has two stages: the regional KOICA office performs initial screening and shortlisting, and the partner university conducts a second document review and final selection. Results are communicated individually by email according to the cohort timeline. Applicants should monitor their email closely after applying."
+  },
+  {
+    "id": "application-after-selection",
+    "title": "What happens after selection",
+    "category": "application",
+    "source": "KOICA YLP application guidance",
+    "text": "Final selected participants may be asked to submit a recent medical check-up certificate by the communicated deadline. Selected participants then receive immigration and departure support for training in Ghana and Korea. Curriculum and programme questions can be directed to the partner university."
+  },
+  {
+    "id": "application-status",
+    "title": "Application open and closed status",
+    "category": "application",
+    "source": "KOICA YLP Apply page",
+    "text": "The website clearly shows whether applications are currently open or closed. When closed, downloads and submissions are disabled. Applicants should follow the regional KOICA office for the next application window and current cohort announcement. The chatbot should not invent an application deadline if no current deadline is present in retrieved programme data."
+  },
+  {
+    "id": "language",
+    "title": "Programme language",
     "category": "faq",
-    "text": "The program is conducted in English, so applicants need enough English communication ability to learn, collaborate, and present. KOICA training programs are development-cooperation initiatives funded by the Korean government, but applicants should check the current cohort announcement for exactly what costs are covered. Applicants must be eligible for both Ghana and Republic of Korea visa issuance, and final selected participants receive immigration and departure support."
+    "source": "KOICA YLP FAQ",
+    "text": "The programme is conducted in English. English communication ability is therefore part of the general eligibility criteria. Participants need enough English to learn, collaborate on team projects, communicate with facilitators, and present their work."
+  },
+  {
+    "id": "costs",
+    "title": "Programme costs and funding",
+    "category": "faq",
+    "source": "KOICA YLP FAQ",
+    "text": "KOICA training programmes are development-cooperation initiatives funded by the Korean government. The exact costs, allowances, travel items, or expenses covered can differ by cohort. Applicants should rely on the current cohort announcement or regional KOICA office for a definitive list of covered costs."
+  },
+  {
+    "id": "visa",
+    "title": "Visa eligibility and support",
+    "category": "faq",
+    "source": "KOICA YLP FAQ",
+    "text": "Applicants must generally be eligible for visa issuance for both Ghana and the Republic of Korea. Final selected participants receive immigration and departure support for the training phases. Visa requirements and documentation should be confirmed against the current cohort instructions."
   },
   {
     "id": "alumni",
-    "title": "After the program",
+    "title": "After the programme",
     "category": "program",
-    "text": "After training, alumni can remain involved through KOICA Club activities in their home countries, the KOICA Fellowship Community, regional networking across the five participating countries, and community-service initiatives."
+    "source": "KOICA YLP programme guide",
+    "text": "After the programme, participants can remain involved through KOICA Club activities in their home countries, the KOICA Fellowship Community, regional networking across the five participating countries, and community-service initiatives that share knowledge and skills back home."
   },
   {
-    "id": "support",
-    "title": "Official support and confirmation",
+    "id": "support-applications",
+    "title": "Application and submission support",
     "category": "support",
-    "text": "Application submission and eligibility questions should be confirmed with the applicant's regional KOICA office, especially when cohort-specific rules or deadlines are involved. Curriculum, training-content, and program questions can be directed to the partner university. Official cohort announcements override general website guidance."
+    "source": "KOICA YLP contact information",
+    "text": "Application, eligibility, and submission questions should be confirmed with the applicant's regional KOICA office. For Ghana-related application support, the website lists koicaghanaaciat@gmail.com. Official cohort announcements and instructions from the regional KOICA office override general website guidance."
+  },
+  {
+    "id": "support-program",
+    "title": "Curriculum and programme support",
+    "category": "support",
+    "source": "KOICA YLP contact information",
+    "text": "Questions about curriculum, training content, and the programme itself can be directed to the partner university. The website lists KOICAYLP@hallym.ac.kr for programme inquiries."
+  },
+  {
+    "id": "portal",
+    "title": "Participant learning portal",
+    "category": "portal",
+    "source": "KOICA YLP participant portal",
+    "text": "Registered participants can sign in to the YLP portal using their registered name and KOICA PIN. The portal provides the participant dashboard, programme calendar, modules, learning progress, announcements, presentation materials, and resources for the participant's track. PIN or access problems should be raised with the appropriate programme administrator or regional KOICA office."
+  },
+  {
+    "id": "peko-scope",
+    "title": "What Peko can answer",
+    "category": "support",
+    "source": "KOICA YLP chatbot policy",
+    "text": "Peko is the KOICA YLP website assistant. Peko should answer only from the YLP knowledge base and current programme data. It can help with programme overview, participating countries, tracks, eligibility, application steps, submission requirements, schedule, training sessions, resources, visas, general cost guidance, contacts, and alumni information. If the knowledge base does not support an answer, Peko should say so and direct the user to the regional KOICA office or partner university rather than guessing."
   }
 ]

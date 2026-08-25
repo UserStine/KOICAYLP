@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import peko from "../assets/peko.png";
-import koicaLogo from "../assets/koica-logo.png";
+import BrandLogos from "../components/BrandLogos";
 import { useAuth } from "../auth/AuthContext";
 import { useT } from "../i18n";
 import PekoLoader from "../components/PekoLoader";
@@ -38,7 +38,7 @@ export default function Login() {
       <div className="login-card">
         <div className="login-language"><LanguageSwitcher /></div>
         <div className="login-brand">
-          <img className="login-logo" src={koicaLogo} alt="KOICA CIAT Fellowship Program" />
+          <BrandLogos className="login-logo-lockup" />
         </div>
 
         <div className="login-peko"><img src={peko} alt="" /></div>
