@@ -104,15 +104,42 @@ function lexicalScores(query, chunks) {
   const normalizedQuery = clean(query, 700).toLowerCase();
 
   const expansions = [
-    { match: /\bapply|application|submit|submission|documents?|form\b/, terms: ["apply", "application", "submission", "documents", "form", "screening", "download"] },
-    { match: /\beligib|qualif|criteria|age|degree|experience\b/, terms: ["eligible", "eligibility", "criteria", "required", "age", "experience"] },
-    { match: /\btrack|public sector|private sector|government|startup|entrepreneur\b/, terms: ["track", "public", "private", "sector", "government", "entrepreneur"] },
-    { match: /\bschedule|calendar|when|date|day|august|session|training\b/, terms: ["schedule", "timetable", "day", "session", "time", "training"] },
-    { match: /\bvisa|passport|travel|korea|ghana\b/, terms: ["visa", "passport", "travel", "ghana", "korea"] },
-    { match: /\bcost|pay|fee|fund|covered|scholarship\b/, terms: ["cost", "pay", "funded", "covered", "fee"] },
-    { match: /\bcontact|email|help|support|office\b/, terms: ["contact", "email", "support", "office"] },
-    { match: /\bphase|online|local|invitational\b/, terms: ["phase", "online", "local", "invitational", "training"] },
-    { match: /\balumni|after|community|club|network\b/, terms: ["alumni", "community", "club", "networking"] },
+    {
+      match: /\b(apply|application|submit|submission|documents?|form|postuler|candidature|soumettre|dossier|formulaire)\b|지원|신청|접수|서류|양식/i,
+      terms: ["apply", "application", "submission", "documents", "form", "screening", "download", "postuler", "candidature", "dossier", "지원", "신청", "접수", "서류"],
+    },
+    {
+      match: /\b(eligib|qualif|criteria|age|degree|experience|admissibilit|critere|diplome)\b|자격|요건|기준|나이|연령|경력|학력/i,
+      terms: ["eligible", "eligibility", "criteria", "required", "age", "experience", "admissibilite", "critere", "자격", "요건", "기준", "경력"],
+    },
+    {
+      match: /\b(track|public sector|private sector|government|startup|entrepreneur|secteur public|secteur prive|gouvernement|entreprise)\b|트랙|공공|민간|정부|스타트업|창업/i,
+      terms: ["track", "public", "private", "sector", "government", "entrepreneur", "gouvernement", "secteur", "트랙", "공공", "민간", "창업"],
+    },
+    {
+      match: /\b(schedule|calendar|when|date|day|august|session|training|timetable|calendrier|horaire|programme|seance|formation)\b|일정|시간표|날짜|연수|교육|세션|시간/i,
+      terms: ["schedule", "timetable", "day", "session", "time", "training", "calendrier", "horaire", "programme", "일정", "시간표", "날짜", "연수"],
+    },
+    {
+      match: /\b(visa|passport|travel|korea|ghana|nigeria|senegal|voyage|passeport|sejour|coree)\b|비자|여권|출국|여행|한국|가나|나이지리아|세네갈/i,
+      terms: ["visa", "passport", "travel", "ghana", "korea", "voyage", "passeport", "coree", "비자", "여권", "한국", "가나"],
+    },
+    {
+      match: /\b(cost|pay|fee|fund|covered|scholarship|frais|cout|bourse|gratuit|pris en charge)\b|비용|경비|지원금|장학|무료|항공|숙박/i,
+      terms: ["cost", "pay", "funded", "covered", "fee", "bourse", "frais", "gratuit", "비용", "경비", "지원금", "장학", "무료"],
+    },
+    {
+      match: /\b(contact|email|help|support|office|courriel|aide|assistance)\b|문의|이메일|연락|도움|사무소/i,
+      terms: ["contact", "email", "support", "office", "courriel", "aide", "문의", "이메일", "연락", "도움"],
+    },
+    {
+      match: /\b(phase|online|local|invitational|en ligne|sur place|invitation)\b|단계|온라인|현지|초청/i,
+      terms: ["phase", "online", "local", "invitational", "training", "ligne", "초청", "온라인", "현지"],
+    },
+    {
+      match: /\b(alumni|after|community|club|network|anciens|communaute|reseau)\b|동문|네트워크|커뮤니티|수료/i,
+      terms: ["alumni", "community", "club", "networking", "reseau", "동문", "네트워크", "커뮤니티"],
+    },
   ];
 
   for (const expansion of expansions) {
@@ -148,14 +175,14 @@ function lexicalScores(query, chunks) {
     const haystack = `${chunks[index].title} ${chunks[index].category} ${chunks[index].text}`.toLowerCase();
     if (normalizedQuery.length >= 4 && haystack.includes(normalizedQuery)) score += 5;
 
-    const dateMatch = normalizedQuery.match(/\b(\d{1,2})\s+(january|february|march|april|may|june|july|august|september|october|november|december)\b/);
-    if (dateMatch && haystack.includes(dateMatch[0])) score += 8;
+    const dateMatch = normalizedQuery.match(/\b(\d{1,2})\s+(january|february|march|april|may|june|july|august|september|october|november|december|janvier|fevrier|mars|avril|mai|juin|juillet|aout|septembre|octobre|novembre|decembre)\b/i);
+    if (dateMatch && haystack.includes(dateMatch[0].toLowerCase())) score += 8;
 
-    if (/\bapply|application|submit|submission|documents?|form\b/.test(normalizedQuery) && chunks[index].category === "application") score += 4;
-    if (/\beligib|qualif|criteria|age\b/.test(normalizedQuery) && chunks[index].category === "eligibility") score += 4;
-    if (/\btrack|public sector|private sector\b/.test(normalizedQuery) && chunks[index].category === "tracks") score += 4;
-    if (/\bschedule|calendar|when|date|day|session\b/.test(normalizedQuery) && chunks[index].category === "schedule") score += 4;
-    if (/\bcontact|email|support\b/.test(normalizedQuery) && chunks[index].category === "support") score += 4;
+    if ((/\b(apply|application|submit|submission|documents?|form|postuler|candidature|dossier)\b/i.test(normalizedQuery) || /지원|신청|접수|서류/.test(normalizedQuery)) && chunks[index].category === "application") score += 4;
+    if ((/\b(eligib|qualif|criteria|age|admissibilit|critere)\b/i.test(normalizedQuery) || /자격|요건|기준|나이|학력|경력/.test(normalizedQuery)) && chunks[index].category === "eligibility") score += 4;
+    if ((/\b(track|public sector|private sector|secteur public|secteur prive)\b/i.test(normalizedQuery) || /트랙|공공|민간/.test(normalizedQuery)) && chunks[index].category === "tracks") score += 4;
+    if ((/\b(schedule|calendar|when|date|day|session|calendrier|horaire)\b/i.test(normalizedQuery) || /일정|시간표|날짜|세션/.test(normalizedQuery)) && chunks[index].category === "schedule") score += 4;
+    if ((/\b(contact|email|support|courriel|aide)\b/i.test(normalizedQuery) || /문의|이메일|연락/.test(normalizedQuery)) && chunks[index].category === "support") score += 4;
 
     return score;
   });
@@ -268,10 +295,13 @@ export async function retrieveRagContext({
   const liveOnly = liveChunks.filter((item) => !indexedIds.has(item.id));
   const baseCandidates = indexedCandidates.length ? [...indexedCandidates, ...liveOnly] : liveChunks;
 
+  const vectorWeight = Math.max(0, Math.min(1, Number(process.env.RAG_VECTOR_WEIGHT ?? 0.65)));
+  const lexicalWeight = Math.max(0, Math.min(1, Number(process.env.RAG_LEXICAL_WEIGHT ?? 0.35)));
+
   const candidates = baseCandidates.map((chunk) => {
     const lexicalScore = lexicalById.get(chunk.id) || 0;
     const vectorScore = queryEmbedding && chunk.embedding ? Math.max(0, cosineSimilarity(queryEmbedding, chunk.embedding)) : 0;
-    const score = queryEmbedding ? (vectorScore * 0.80) + (lexicalScore * 0.20) : lexicalScore;
+    const score = queryEmbedding ? (vectorScore * vectorWeight) + (lexicalScore * lexicalWeight) : lexicalScore;
     return { ...chunk, score, vectorScore, lexicalScore };
   });
 

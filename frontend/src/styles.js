@@ -1968,6 +1968,11 @@ html[data-theme="dark"] .portal-topbar .lang-btn,html[data-theme="dark"] .login-
 
 /* Gemini-backed Peko chat */
 .chat-answer-text{white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-formatted-body{display:flex;flex-direction:column;gap:8px;line-height:1.45;}
+.chat-msg-p{margin:0;}
+.chat-msg-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
+.chat-msg-list li{position:relative;}
+.chat-source-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(0,66,144,.1);color:var(--koica);vertical-align:baseline;margin:0 2px;}
 .chat-sources{display:flex;flex-direction:column;gap:4px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
 .chat-sources span{font-size:10.5px;line-height:1.35;color:#64748B}
 .chat-thinking{display:flex;align-items:center;gap:8px;min-height:48px}
@@ -1982,6 +1987,7 @@ html[data-theme="dark"] .chat-chip{background:#132238;color:#7BC4FF;border-color
 html[data-theme="dark"] .chat-input{border-color:#28405D}
 html[data-theme="dark"] .chat-input input{background:#132238;color:#F4F7FB;border-color:#36516F}
 html[data-theme="dark"] .chat-note,html[data-theme="dark"] .chat-sources span{color:#9FB0C8}
+html[data-theme="dark"] .chat-source-tag{background:rgba(74,170,240,.18);color:#7BC4FF;}
 html[data-theme="dark"] .chat-msg.error{background:#311719;border-color:#7B3434;color:#FFD1D1}
 
 
