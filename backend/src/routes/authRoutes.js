@@ -1,0 +1,17 @@
+import crypto from "node:crypto";
+import { Router } from "express";
+import { sessionCookie, sessionCookieOptions } from "../config/security.js";
+import { sessionTtlMs } from "../config/env.js";
+import { auth, clearSession } from "../middleware/auth.js";
+import { authLimiter, signupLimiter } from "../middleware/rateLimit.js";
+import { createParticipant, getParticipantByEmail, getParticipantByName, updateParticipant } from "../repositories/participantRepository.js";
+import { consumeResetToken, createResetToken, hashPassword, issueSessionToken, verifyParticipantCredential } from "../services/authService.js";
+const router=Router();
+const publicUser=(p)=>({id:p.id,name:p.name,country:p.country,track:p.track,cohort:p.cohort,role:p.role||"participant"});
+router.post("/login",authLimiter,async(req,res,next)=>{try{const name=String(req.body?.name||"").trim(),pin=String(req.body?.pin||"").trim();if(!name||!pin)return res.status(400).json({error:"Enter both your name and your KOICA PIN."});const match=await getParticipantByName(name);if(!verifyParticipantCredential(pin,match))return res.status(401).json({error:"We couldn't match that name and PIN. Check both and try again."});const token=issueSessionToken(match.id);res.cookie(sessionCookie,token,{...sessionCookieOptions,maxAge:sessionTtlMs});res.json({user:publicUser(match)});}catch(e){next(e);}});
+router.post("/logout",auth,(req,res)=>{clearSession(res);res.json({ok:true});});
+router.get("/me",auth,(req,res)=>res.json({user:publicUser(req.user)}));
+router.post("/auth/register",signupLimiter,async(req,res,next)=>{try{const name=String(req.body?.name||"").trim(),email=String(req.body?.email||"").trim().toLowerCase(),password=String(req.body?.password||"");if(name.length<2||!email.includes("@")||password.length<12||password.length>128)return res.status(400).json({error:"Enter a valid name, email, and a password of at least 12 characters."});if(await getParticipantByEmail(email))return res.status(202).json({ok:true});const cred=hashPassword(password);await createParticipant({id:`u-${crypto.randomBytes(12).toString("hex")}`,name,email,passwordSalt:cred.salt,passwordHash:cred.hash,country:"",track:"public",cohort:"",role:"participant"});res.status(202).json({ok:true});}catch(e){next(e);}});
+router.post("/auth/forgot-password",signupLimiter,async(req,res,next)=>{try{const email=String(req.body?.email||"").trim().toLowerCase(),p=await getParticipantByEmail(email);if(p){const token=createResetToken("reset-password",p.id);console.info(`[mail] password_reset_requested user=${p.id} token_generated=${Boolean(token)}`);}res.status(202).json({ok:true});}catch(e){next(e);}});
+router.post("/auth/reset-password",signupLimiter,async(req,res,next)=>{try{const password=String(req.body?.password||"");if(password.length<12||password.length>128)return res.status(400).json({error:"Password must be 12 to 128 characters."});const token=consumeResetToken("reset-password",req.body?.token);if(!token)return res.status(400).json({error:"Reset token is invalid or expired."});const cred=hashPassword(password);await updateParticipant(token.participantId,{passwordSalt:cred.salt,passwordHash:cred.hash,pinHash:"",salt:""});res.json({ok:true});}catch(e){next(e);}});
+export default router;

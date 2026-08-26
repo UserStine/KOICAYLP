@@ -5,46 +5,31 @@ import { useT } from "../i18n";
 import { API } from "../auth/AuthContext";
 import PekoLoader from "./PekoLoader";
 
-function formatInline(str) {
-  if (!str) return "";
-  const escaped = String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+function consumeSseChunk(buffer, onEvent) {
+  let working = buffer.replace(/\r\n/g, "\n");
+  let boundary = working.indexOf("\n\n");
 
-  return escaped
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/\[(S\d+|LIVE)\]/g, '<span class="chat-source-tag">[$1]</span>');
-}
+  while (boundary >= 0) {
+    const block = working.slice(0, boundary);
+    working = working.slice(boundary + 2);
 
-function FormattedMessage({ text }) {
-  if (!text) return null;
-  const blocks = text.split(/\n\n+/);
+    let event = "message";
+    const dataLines = [];
 
-  return (
-    <div className="chat-formatted-body">
-      {blocks.map((block, bIdx) => {
-        const lines = block.split("\n").filter((l) => l.trim().length > 0);
-        const isList = lines.length > 0 && lines.every((line) => /^\s*[-*•]\s+/.test(line.trim()));
+    for (const line of block.split("\n")) {
+      if (line.startsWith("event:")) event = line.slice(6).trim();
+      if (line.startsWith("data:")) dataLines.push(line.slice(5).trimStart());
+    }
 
-        if (isList) {
-          return (
-            <ul key={bIdx} className="chat-msg-list">
-              {lines.map((line, lIdx) => {
-                const itemText = line.trim().replace(/^[-*•]\s+/, "");
-                return <li key={lIdx} dangerouslySetInnerHTML={{ __html: formatInline(itemText) }} />;
-              })}
-            </ul>
-          );
-        }
+    if (dataLines.length) {
+      const raw = dataLines.join("\n");
+      onEvent(event, JSON.parse(raw));
+    }
 
-        return (
-          <p key={bIdx} className="chat-msg-p" dangerouslySetInnerHTML={{ __html: formatInline(lines.join("<br />")) }} />
-        );
-      })}
-    </div>
-  );
+    boundary = working.indexOf("\n\n");
+  }
+
+  return working;
 }
 
 export default function ChatWidget({ open, setOpen }) {
@@ -52,17 +37,19 @@ export default function ChatWidget({ open, setOpen }) {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const bodyRef = useRef(null);
+  const requestRef = useRef(null);
   const { t, lang } = useT();
 
   useEffect(() => {
-    if (bodyRef.current) {
-      bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
-    }
+    if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
   }, [messages, open, busy]);
 
   useEffect(() => {
+    requestRef.current?.abort();
     setMessages([]);
   }, [lang]);
+
+  useEffect(() => () => requestRef.current?.abort(), []);
 
   const ask = async (q) => {
     const message = q.trim();
@@ -70,12 +57,25 @@ export default function ChatWidget({ open, setOpen }) {
 
     const history = messages
       .slice(-6)
-      .map((item) => ({ role: item.from === "bot" ? "assistant" : "user", content: item.text }))
-      .filter((item) => item.content);
+      .map((item) => ({ role: item.from === "bot" ? "assistant" : "user", content: item.text }));
 
-    setMessages((current) => [...current, { from: "user", text: message }]);
+    const botId = `bot-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const controller = new AbortController();
+    requestRef.current = controller;
+
+    setMessages((current) => [
+      ...current,
+      { from: "user", text: message },
+      { id: botId, from: "bot", text: "", sources: [], streaming: true },
+    ]);
     setInput("");
     setBusy(true);
+
+    const updateBot = (updater) => {
+      setMessages((current) =>
+        current.map((item) => (item.id === botId ? updater(item) : item))
+      );
+    };
 
     try {
       const response = await fetch(`${API}/api/ai/chat`, {
@@ -83,101 +83,105 @@ export default function ChatWidget({ open, setOpen }) {
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Accept: "text/event-stream, application/json",
+          Accept: "text/event-stream",
         },
-        body: JSON.stringify({ message, language: lang, history, stream: true }),
+        body: JSON.stringify({ message, language: lang, history }),
+        signal: controller.signal,
       });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || t.chat.error);
+      }
 
       const contentType = response.headers.get("content-type") || "";
-
-      if (contentType.includes("text/event-stream") && response.body) {
-        // SSE Stream reading
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-        let streamedText = "";
-        let streamedSources = [];
-
-        // Insert initial empty bot message
-        setMessages((current) => [...current, { from: "bot", text: "", sources: [] }]);
-
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const events = buffer.split("\n\n");
-          buffer = events.pop() || "";
-
-          for (const evt of events) {
-            const lines = evt.split("\n");
-            let eventType = "message";
-            let dataStr = "";
-
-            for (const line of lines) {
-              if (line.startsWith("event:")) eventType = line.slice(6).trim();
-              if (line.startsWith("data:")) dataStr = line.slice(5).trim();
-            }
-
-            if (!dataStr) continue;
-
-            try {
-              const parsed = JSON.parse(dataStr);
-              if (eventType === "meta") {
-                streamedSources = Array.isArray(parsed.sources) ? parsed.sources : [];
-                setMessages((curr) => {
-                  const next = [...curr];
-                  const lastIdx = next.length - 1;
-                  if (lastIdx >= 0 && next[lastIdx].from === "bot") {
-                    next[lastIdx] = { ...next[lastIdx], sources: streamedSources };
-                  }
-                  return next;
-                });
-              } else if (eventType === "delta") {
-                if (parsed.text) {
-                  streamedText += parsed.text;
-                  setMessages((curr) => {
-                    const next = [...curr];
-                    const lastIdx = next.length - 1;
-                    if (lastIdx >= 0 && next[lastIdx].from === "bot") {
-                      next[lastIdx] = { ...next[lastIdx], text: streamedText, sources: streamedSources };
-                    }
-                    return next;
-                  });
-                }
-              } else if (eventType === "error") {
-                throw new Error(parsed.error || t.chat.error);
-              }
-            } catch (err) {
-              if (eventType === "error") throw err;
-            }
-          }
-        }
-      } else {
-        // Non-streaming JSON fallback
+      if (!contentType.includes("text/event-stream") || !response.body) {
         const data = await response.json().catch(() => ({}));
-        if (!response.ok) throw new Error(data.error || t.chat.error);
+        updateBot((item) => ({
+          ...item,
+          text: data.reply || t.chat.reply,
+          sources: Array.isArray(data.sources) ? data.sources : [],
+          streaming: false,
+        }));
+        return;
+      }
 
-        setMessages((current) => [
-          ...current,
-          {
-            from: "bot",
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let streamError = "";
+      let receivedText = false;
+
+      const onEvent = (event, data) => {
+        if (event === "token") {
+          if (data.text) receivedText = true;
+          updateBot((item) => ({ ...item, text: `${item.text}${data.text || ""}` }));
+        } else if (event === "done") {
+          updateBot((item) => ({
+            ...item,
+            sources: Array.isArray(data.sources) ? data.sources : [],
+            streaming: false,
+          }));
+        } else if (event === "error") {
+          streamError = data.error || t.chat.error;
+        }
+      };
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer = consumeSseChunk(buffer + decoder.decode(value, { stream: true }), onEvent);
+      }
+
+      buffer = consumeSseChunk(buffer + decoder.decode(), onEvent);
+      if (buffer.trim()) consumeSseChunk(`${buffer}\n\n`, onEvent);
+      if (streamError) throw new Error(streamError);
+
+      updateBot((item) => ({
+        ...item,
+        text: item.text || t.chat.reply,
+        streaming: false,
+      }));
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+
+      // If SSE itself is unavailable before any text arrives, retry the same
+      // backwards-compatible endpoint as a normal JSON request.
+      if (!receivedText && !streamError) {
+        try {
+          const fallback = await fetch(`${API}/api/ai/chat`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json", Accept: "application/json" },
+            body: JSON.stringify({ message, language: lang, history }),
+            signal: controller.signal,
+          });
+          const data = await fallback.json().catch(() => ({}));
+          if (!fallback.ok) throw new Error(data.error || t.chat.error);
+          updateBot((item) => ({
+            ...item,
             text: data.reply || t.chat.reply,
             sources: Array.isArray(data.sources) ? data.sources : [],
-          },
-        ]);
-      }
-    } catch (error) {
-      setMessages((current) => {
-        const last = current[current.length - 1];
-        if (last && last.from === "bot" && !last.text) {
-          const updated = [...current];
-          updated[updated.length - 1] = { from: "bot", text: error.message || t.chat.error, error: true };
-          return updated;
+            error: false,
+            streaming: false,
+          }));
+          return;
+        } catch (fallbackError) {
+          if (fallbackError?.name === "AbortError") return;
+          error = fallbackError;
         }
-        return [...current, { from: "bot", text: error.message || t.chat.error, error: true }];
-      });
+      }
+
+      updateBot((item) => ({
+        ...item,
+        text: item.text
+          ? `${item.text}\n\n${error.message || t.chat.error}`
+          : error.message || t.chat.error,
+        error: true,
+        streaming: false,
+      }));
     } finally {
+      if (requestRef.current === controller) requestRef.current = null;
       setBusy(false);
     }
   };
@@ -213,9 +217,12 @@ export default function ChatWidget({ open, setOpen }) {
             </div>
 
             {messages.map((m, i) => (
-              <div key={`${m.from}-${i}`} className={`chat-msg ${m.from === "user" ? "user" : ""} ${m.error ? "error" : ""}`}>
+              <div key={m.id || `${m.from}-${i}`} className={`chat-msg ${m.from === "user" ? "user" : ""} ${m.error ? "error" : ""}`}>
                 <div className="chat-answer-text">
-                  {m.from === "user" ? m.text : <FormattedMessage text={m.text} />}
+                  {m.text}
+                  {m.from === "bot" && m.streaming && m.text && (
+                    <span className="chat-stream-cursor" aria-hidden="true">▍</span>
+                  )}
                 </div>
                 {m.from === "bot" && m.sources?.length > 0 && (
                   <div className="chat-sources" aria-label={t.chat.sources}>
@@ -229,7 +236,7 @@ export default function ChatWidget({ open, setOpen }) {
               </div>
             ))}
 
-            {busy && (
+            {busy && !messages.some((m) => m.from === "bot" && m.streaming && m.text) && (
               <div className="chat-msg chat-thinking">
                 <PekoLoader compact />
                 <span>{t.chat.thinking}</span>

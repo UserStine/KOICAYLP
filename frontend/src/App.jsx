@@ -10,6 +10,7 @@ import Program from "./pages/Program";
 import Tracks from "./pages/Tracks";
 import Eligibility from "./pages/Eligibility";
 import Apply from "./pages/Apply";
+import ApplySector from "./pages/ApplySector";
 import Faq from "./pages/Faq";
 import Login from "./pages/Login";
 import Portal from "./lms/Portal";
@@ -44,6 +45,8 @@ function PublicSite({ openChat }) {
         <Route path="/tracks" element={<Tracks />} />
         <Route path="/eligibility" element={<Eligibility openChat={openChat} />} />
         <Route path="/apply" element={<Apply />} />
+        <Route path="/apply/public" element={<ApplySector track="public" />} />
+        <Route path="/apply/private" element={<ApplySector track="private" />} />
         <Route path="/faq" element={<Faq openChat={openChat} />} />
         <Route path="*" element={<Home openChat={openChat} />} />
       </Routes>

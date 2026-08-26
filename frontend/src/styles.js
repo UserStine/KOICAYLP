@@ -1968,11 +1968,6 @@ html[data-theme="dark"] .portal-topbar .lang-btn,html[data-theme="dark"] .login-
 
 /* Gemini-backed Peko chat */
 .chat-answer-text{white-space:pre-wrap;overflow-wrap:anywhere}
-.chat-formatted-body{display:flex;flex-direction:column;gap:8px;line-height:1.45;}
-.chat-msg-p{margin:0;}
-.chat-msg-list{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px;}
-.chat-msg-list li{position:relative;}
-.chat-source-tag{display:inline-block;font-size:10.5px;font-weight:700;padding:1px 5px;border-radius:4px;background:rgba(0,66,144,.1);color:var(--koica);vertical-align:baseline;margin:0 2px;}
 .chat-sources{display:flex;flex-direction:column;gap:4px;margin-top:9px;padding-top:8px;border-top:1px solid var(--line)}
 .chat-sources span{font-size:10.5px;line-height:1.35;color:#64748B}
 .chat-thinking{display:flex;align-items:center;gap:8px;min-height:48px}
@@ -1987,7 +1982,6 @@ html[data-theme="dark"] .chat-chip{background:#132238;color:#7BC4FF;border-color
 html[data-theme="dark"] .chat-input{border-color:#28405D}
 html[data-theme="dark"] .chat-input input{background:#132238;color:#F4F7FB;border-color:#36516F}
 html[data-theme="dark"] .chat-note,html[data-theme="dark"] .chat-sources span{color:#9FB0C8}
-html[data-theme="dark"] .chat-source-tag{background:rgba(74,170,240,.18);color:#7BC4FF;}
 html[data-theme="dark"] .chat-msg.error{background:#311719;border-color:#7B3434;color:#FFD1D1}
 
 
@@ -2047,4 +2041,21 @@ html[data-theme="dark"] .partner-separator{background:#31506F;}
 
 /* Admin: Peko knowledge base */
 .knowledge-toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:0 0 16px}.knowledge-toolbar input{flex:1;max-width:520px;border:1px solid var(--line);border-radius:12px;padding:11px 13px;background:var(--paper);color:var(--ink)}.knowledge-toolbar span{font-size:12px;color:var(--muted);font-weight:700}.knowledge-row{align-items:flex-start}.knowledge-row .ar-main p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;max-width:850px}.knowledge-row .ar-main small{display:block;margin-top:8px;color:var(--muted)}.knowledge-meta{display:flex;align-items:center;gap:7px;margin-bottom:7px}.knowledge-meta>span{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);border:1px solid var(--line);padding:4px 7px;border-radius:999px}.knowledge-status.live{background:#EAF9F0!important;color:#137A42!important;border-color:#BFE8CD!important}.knowledge-status.draft{background:#F5F7FA!important;color:#69778A!important}.knowledge-publish-check{display:flex;align-items:center;gap:9px;align-self:end;padding:11px 0;font-weight:700;color:var(--ink)}.knowledge-publish-check input{width:18px;height:18px}.knowledge-form textarea{min-height:210px}.admin-empty{padding:32px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:16px}html[data-theme="dark"] .knowledge-toolbar input{background:#101B2B;border-color:#31506F;color:#F4F8FF}html[data-theme="dark"] .knowledge-status.live{background:#123423!important;color:#8EE6B0!important;border-color:#275B3D!important}html[data-theme="dark"] .knowledge-status.draft{background:#172437!important;color:#AFC0D5!important;border-color:#31506F!important}
+
+/* Dedicated application sector pages */
+.application-track-chooser { align-items: stretch; }
+.application-track-card { display: flex; flex-direction: column; }
+.application-track-card .application-action { margin-top: auto; text-align: center; }
+.application-single-track { grid-template-columns: minmax(0, 1fr); max-width: 760px; margin-inline: auto; }
+
+.chat-stream-cursor {
+  display: inline-block;
+  margin-left: 2px;
+  animation: chatStreamBlink 0.8s steps(1) infinite;
+}
+
+@keyframes chatStreamBlink {
+  0%, 48% { opacity: 1; }
+  49%, 100% { opacity: 0; }
+}
 `;

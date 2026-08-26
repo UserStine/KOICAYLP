@@ -11,7 +11,8 @@
     "db:check": "node scripts/check-mongo.mjs",
     "rag:build": "node scripts/build-rag-index.mjs",
     "supabase:migrate-participants": "node scripts/migrate-participants-to-supabase.mjs",
-    "supabase:migrate-knowledge": "node scripts/migrate-knowledge-to-supabase.mjs"
+    "supabase:migrate-knowledge": "node scripts/migrate-knowledge-to-supabase.mjs",
+    "test": "node --test test/**/*.test.js"
   },
   "engines": {
     "node": ">=20.12"

@@ -86,7 +86,7 @@ export default function Tracks() {
           </div>
           <div className="cta-actions">
             <Link className="btn" to="/eligibility"><span>{tr.ctaBtn}</span> <Arrow /></Link>
-            <Link className="btn ghost" to="/apply"><span>{tr.ctaAlt}</span></Link>
+            <Link className="btn ghost" to={`/apply/${active}`}><span>{tr.ctaAlt}</span></Link>
           </div>
         </div>
       </section>
