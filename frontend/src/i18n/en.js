@@ -28,13 +28,13 @@ export default {
     hubTitle2: "One hub.",
     hubTitle3: "Everything connected.",
     hubSub:
-      "Every tool built for the KOICA Youth Leaders Program lives here, from marking your attendance at training to meeting fellow leaders across five countries.",
+      "Every tool built for the KOICA Youth Leaders Program lives here, from programme guidance and participant access to networking and the Peko assistant.",
     cards: {
-      attendance: {
-        tag: "Live",
-        title: "Attendance System",
-        text: "Check in to online and local training sessions, and track your participation record throughout the program.",
-        link: "Open attendance",
+      portal: {
+        tag: "LMS",
+        title: "Participant Portal",
+        text: "Sign in to access your programme calendar, modules, resources, learning progress, and attendance tools.",
+        link: "Open participant portal",
       },
       network: {
         tag: "Live",
@@ -354,10 +354,23 @@ export default {
 
   portal: {
     nav: {
+      attendance: "Attendance",
       calendar: "Calendar",
       dashboard: "Dashboard",
       modules: "Modules",
       resources: "Resources",
+    },
+    attendance: {
+      eyebrow: "PARTICIPANT SERVICES",
+      title: "Attendance",
+      sub: "Access the programme attendance system from your learning portal.",
+      cardTitle: "Training attendance",
+      cardText: "Use the attendance system when instructed by your facilitator to check in for eligible online or in-person programme sessions.",
+      point1: "Check in to programme sessions when attendance is open.",
+      point2: "Use the same participant details provided for the YLP programme.",
+      point3: "Contact your programme administrator if an attendance record needs correction.",
+      open: "Open attendance system",
+      note: "The attendance system opens in a new secure tab.",
     },
     logout: "Sign out",
     trackPublic: "Public Sector",

@@ -2058,4 +2058,36 @@ html[data-theme="dark"] .partner-separator{background:#31506F;}
   0%, 48% { opacity: 1; }
   49%, 100% { opacity: 0; }
 }
+
+/* LMS attendance */
+.attendance-page{max-width:980px;}
+.attendance-card{display:grid;grid-template-columns:74px minmax(0,1fr);gap:22px;padding:26px;background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 12px 35px rgba(18,65,112,.07);}
+.attendance-card-icon{width:64px;height:64px;border-radius:18px;background:#EAF4FF;color:var(--koica);display:grid;place-items:center;}
+.attendance-card-body h2{font-family:'Urbanist',sans-serif;font-size:22px;color:var(--ink);margin-bottom:8px;}
+.attendance-card-body>p{font-size:14px;line-height:1.7;color:var(--grey);max-width:720px;}
+.attendance-points{display:grid;gap:9px;margin:18px 0 22px;padding:0;list-style:none;}
+.attendance-points li{position:relative;padding-left:24px;font-size:13.5px;line-height:1.55;color:#43536E;}
+.attendance-points li:before{content:'✓';position:absolute;left:0;top:0;color:var(--koica);font-weight:800;}
+.attendance-launch{display:inline-flex;margin-right:12px;}
+.attendance-card-body small{display:block;margin-top:12px;color:var(--grey);font-size:11.5px;}
+.portal-nav{overflow-y:auto;min-height:0;padding-right:2px;}
+@media(max-width:560px){.attendance-card{grid-template-columns:1fr;padding:20px}.attendance-card-icon{width:56px;height:56px}}
+html[data-theme="dark"] .attendance-card{background:#101B2B;border-color:var(--line);}
+html[data-theme="dark"] .attendance-card-icon{background:#17304B;color:#9BD9FF;}
+html[data-theme="dark"] .attendance-points li{color:#C6D2E4;}
+
+
+.chat-head-action{border:0;background:rgba(255,255,255,.15);color:#fff;border-radius:9px;padding:7px 9px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.chat-head-action:hover{background:rgba(255,255,255,.28)}
+.chat-history{max-height:190px;overflow-y:auto;padding:10px 12px;background:#fff;border-bottom:1px solid var(--line)}
+.chat-history-title{font-size:11px;font-weight:800;color:#64748B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px}
+.chat-history-empty{font-size:12px;color:#8A99B5;padding:8px 2px}
+.chat-history button{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;border:0;border-radius:9px;background:transparent;padding:8px 9px;text-align:left;color:var(--ink);cursor:pointer}
+.chat-history button:hover,.chat-history button.active{background:#EEF7FF}
+.chat-history button span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:650}
+.chat-history button small{flex:0 0 auto;font-size:10px;color:#8A99B5}
+html[data-theme="dark"] .chat-history{background:#0F1B2B;border-color:#28405D}
+html[data-theme="dark"] .chat-history button{color:#E8EEF8}
+html[data-theme="dark"] .chat-history button:hover,html[data-theme="dark"] .chat-history button.active{background:#132238}
 `;
+

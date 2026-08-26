@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { aiLimiter } from "../middleware/rateLimit.js";
+import { optionalAuth } from "../middleware/auth.js";
+import { addPekoMessage, createPekoConversation, getPekoConversation } from "../repositories/chatRepository.js";
 import { aiHealth, answerWithGemini, streamWithGemini } from "../services/aiService.js";
 
 const router = Router();
@@ -17,7 +19,7 @@ router.get("/health", async (_req, res, next) => {
   }
 });
 
-router.post("/chat", aiLimiter, async (req, res, next) => {
+router.post("/chat", aiLimiter, optionalAuth, async (req, res, next) => {
   const message = String(req.body?.message || "").trim().slice(0, 2000);
   if (message.length < 2) {
     return res.status(400).json({ error: "Enter a message." });
@@ -29,9 +31,35 @@ router.post("/chat", aiLimiter, async (req, res, next) => {
     .toLowerCase()
     .includes("text/event-stream");
 
+  let conversationId = String(req.body?.conversationId || "").trim();
+  if (req.user) {
+    try {
+      if (conversationId) {
+        const existing = await getPekoConversation(req.user.id, conversationId);
+        if (!existing) conversationId = "";
+      }
+      if (!conversationId) {
+        const conversation = await createPekoConversation({
+          participantId: req.user.id,
+          title: message,
+          language,
+        });
+        conversationId = conversation.id;
+      }
+      await addPekoMessage({ participantId: req.user.id, conversationId, role: "user", content: message });
+    } catch (error) {
+      console.warn(`[peko-chat] persist_user_failed user=${req.user.id} message=${String(error?.message || error).slice(0, 220)}`);
+      conversationId = "";
+    }
+  }
+
   if (!wantsStream) {
     try {
-      return res.json(await answerWithGemini({ message, language, history }));
+      const result = await answerWithGemini({ message, language, history });
+      if (req.user && conversationId) {
+        try { await addPekoMessage({ participantId: req.user.id, conversationId, role: "assistant", content: result.reply, sources: result.sources }); } catch (error) { console.warn(`[peko-chat] persist_assistant_failed user=${req.user.id} message=${String(error?.message || error).slice(0,220)}`); }
+      }
+      return res.json({ ...result, conversationId: conversationId || null, persisted: Boolean(req.user && conversationId) });
     } catch (error) {
       return next(error);
     }
@@ -50,7 +78,7 @@ router.post("/chat", aiLimiter, async (req, res, next) => {
   });
 
   try {
-    writeSse(res, "start", { provider: "gemini" });
+    writeSse(res, "start", { provider: "gemini", conversationId: conversationId || null, persisted: Boolean(req.user && conversationId) });
 
     const result = await streamWithGemini({
       message,
@@ -64,11 +92,17 @@ router.post("/chat", aiLimiter, async (req, res, next) => {
       },
     });
 
+    if (req.user && conversationId) {
+      try { await addPekoMessage({ participantId: req.user.id, conversationId, role: "assistant", content: result.reply, sources: result.sources }); } catch (error) { console.warn(`[peko-chat] persist_assistant_failed user=${req.user.id} message=${String(error?.message || error).slice(0,220)}`); }
+    }
+
     if (!res.writableEnded && !res.destroyed) {
       writeSse(res, "done", {
         sources: result.sources,
         retrievalMode: result.retrievalMode,
         provider: result.provider,
+        conversationId: conversationId || null,
+        persisted: Boolean(req.user && conversationId),
       });
       res.end();
     }

@@ -443,3 +443,123 @@ export async function deleteKnowledgeArticle(id) {
   const { error } = await supabase.from("knowledge_articles").delete().eq("id", id);
   if (error) throw new Error(`Unable to delete knowledge article: ${error.message}`);
 }
+
+/* --------------------------------------------------------------------------
+   Peko conversations and messages
+   -------------------------------------------------------------------------- */
+
+function fromPekoConversationRow(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    participantId: row.participant_id,
+    title: row.title || "New conversation",
+    language: row.language || "en",
+    createdAt: row.created_at || null,
+    updatedAt: row.updated_at || null,
+  };
+}
+
+function fromPekoMessageRow(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    conversationId: row.conversation_id,
+    role: row.role,
+    content: row.content || "",
+    sources: Array.isArray(row.sources) ? row.sources : [],
+    createdAt: row.created_at || null,
+  };
+}
+
+export async function createPekoConversation({ participantId, title, language = "en" }) {
+  const supabase = requireClient();
+  const safeLanguage = ["en", "fr", "ko"].includes(language) ? language : "en";
+  const { data, error } = await supabase
+    .from("peko_conversations")
+    .insert({
+      participant_id: participantId,
+      title: String(title || "New conversation").trim().slice(0, 120) || "New conversation",
+      language: safeLanguage,
+    })
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to create Peko conversation: ${error.message}`);
+  return fromPekoConversationRow(data);
+}
+
+export async function listPekoConversations(participantId, limit = 20) {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("peko_conversations")
+    .select("id,participant_id,title,language,created_at,updated_at")
+    .eq("participant_id", participantId)
+    .order("updated_at", { ascending: false })
+    .limit(Math.max(1, Math.min(Number(limit) || 20, 50)));
+  if (error) throw new Error(`Unable to list Peko conversations: ${error.message}`);
+  return (data || []).map(fromPekoConversationRow);
+}
+
+export async function getPekoConversation(participantId, conversationId) {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("peko_conversations")
+    .select("id,participant_id,title,language,created_at,updated_at")
+    .eq("id", conversationId)
+    .eq("participant_id", participantId)
+    .maybeSingle();
+  if (error) throw new Error(`Unable to read Peko conversation: ${error.message}`);
+  return fromPekoConversationRow(data);
+}
+
+export async function listPekoMessages(participantId, conversationId) {
+  const conversation = await getPekoConversation(participantId, conversationId);
+  if (!conversation) return null;
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("peko_messages")
+    .select("id,conversation_id,role,content,sources,created_at")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true });
+  if (error) throw new Error(`Unable to list Peko messages: ${error.message}`);
+  return { conversation, messages: (data || []).map(fromPekoMessageRow) };
+}
+
+export async function addPekoMessage({ participantId, conversationId, role, content, sources = [] }) {
+  const conversation = await getPekoConversation(participantId, conversationId);
+  if (!conversation) throw new Error("Peko conversation not found.");
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("peko_messages")
+    .insert({
+      conversation_id: conversationId,
+      role: role === "assistant" ? "assistant" : "user",
+      content: String(content || "").trim().slice(0, 12000),
+      sources: Array.isArray(sources) ? sources : [],
+    })
+    .select()
+    .single();
+  if (error) throw new Error(`Unable to save Peko message: ${error.message}`);
+
+  const titleUpdate = role === "user" && conversation.title === "New conversation"
+    ? String(content || "").replace(/\s+/g, " ").trim().slice(0, 70) || "New conversation"
+    : conversation.title;
+
+  await supabase
+    .from("peko_conversations")
+    .update({ title: titleUpdate, updated_at: new Date().toISOString() })
+    .eq("id", conversationId)
+    .eq("participant_id", participantId);
+
+  return fromPekoMessageRow(data);
+}
+
+export async function deletePekoConversation(participantId, conversationId) {
+  const supabase = requireClient();
+  const { error } = await supabase
+    .from("peko_conversations")
+    .delete()
+    .eq("id", conversationId)
+    .eq("participant_id", participantId);
+  if (error) throw new Error(`Unable to delete Peko conversation: ${error.message}`);
+}

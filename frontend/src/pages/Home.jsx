@@ -63,7 +63,7 @@ const FELLOW_GALLERY = [
 ];
 
 const HUB_CARDS = [
-  { key: "attendance", icon: <CalendarCheckIcon />, href: "https://koica-attendance.vercel.app/" },
+  { key: "portal",     icon: <CalendarCheckIcon />, to: "/login" },
   { key: "network",    icon: <NetworkIcon />,       href: "https://koicakonnect.vercel.app/" },
   { key: "guide",      icon: <BookIcon />,          to: "/program" },
   { key: "assistant",  icon: <ChatSparkIcon />,     chat: true },

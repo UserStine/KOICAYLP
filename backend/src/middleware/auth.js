@@ -17,6 +17,18 @@ export async function auth(req, res, next) {
     res.status(503).json({ error: "Authentication service is temporarily unavailable." });
   }
 }
+
+export async function optionalAuth(req, _res, next) {
+  try {
+    const token = parseCookies(req.headers.cookie || "")[sessionCookie] || "";
+    const data = readSessionToken(token);
+    if (!data) return next();
+    const participant = await getParticipantById(data.id);
+    if (participant) req.user = participant;
+  } catch {}
+  next();
+}
+
 export function adminOnly(req,res,next){ return (req.user?.role||"participant") === "admin" ? next() : res.status(403).json({error:"Admin access only."}); }
 export function trackAllowed(req,res,next){ const track=req.params.track||req.body?.track; return !track||!req.user?.track||track===req.user.track||req.user.role==="admin"?next():res.status(403).json({error:"That resource belongs to the other track."}); }
 export function clearSession(res){ res.clearCookie(sessionCookie, sessionCookieOptions); }

@@ -28,13 +28,13 @@ export default {
     hubTitle2: "하나의 허브.",
     hubTitle3: "모든 것이 연결됩니다.",
     hubSub:
-      "KOICA 청년 리더 프로그램을 위해 만들어진 모든 도구가 이곳에 있습니다. 교육 출석 체크부터 5개국 동료 리더와의 만남까지 한곳에서 이용하세요.",
+      "KOICA Youth Leaders Program의 주요 도구를 한곳에서 이용하세요. 프로그램 안내, 참가자 포털, 네트워킹, Peko 도우미를 제공합니다.",
     cards: {
-      attendance: {
-        tag: "운영 중",
-        title: "출석 시스템",
-        text: "온라인 및 현지 교육 세션에 출석을 등록하고, 프로그램 전 과정의 참여 기록을 관리하세요.",
-        link: "출석 시스템 열기",
+      portal: {
+        tag: "LMS",
+        title: "참가자 포털",
+        text: "로그인하여 프로그램 캘린더, 모듈, 자료, 학습 진도 및 출석 도구를 이용하세요.",
+        link: "참가자 포털 열기",
       },
       network: {
         tag: "운영 중",
@@ -354,10 +354,23 @@ export default {
 
   portal: {
     nav: {
+      attendance: "출석",
       calendar: "캘린더",
       dashboard: "대시보드",
       modules: "학습 모듈",
       resources: "자료실",
+    },
+    attendance: {
+      eyebrow: "참가자 서비스",
+      title: "출석",
+      sub: "학습 포털에서 프로그램 출석 시스템에 접속하세요.",
+      cardTitle: "교육 출석",
+      cardText: "진행자의 안내에 따라 온라인 또는 대면 프로그램 세션의 출석을 등록할 때 이 시스템을 사용하세요.",
+      point1: "출석이 열린 프로그램 세션에서 체크인하세요.",
+      point2: "YLP 프로그램에 등록된 동일한 참가자 정보를 사용하세요.",
+      point3: "출석 기록 수정이 필요하면 프로그램 관리자에게 문의하세요.",
+      open: "출석 시스템 열기",
+      note: "출석 시스템은 새 보안 탭에서 열립니다.",
     },
     logout: "로그아웃",
     trackPublic: "공공부문",

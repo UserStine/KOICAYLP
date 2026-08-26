@@ -8,6 +8,7 @@ import lmsRoutes from "./src/routes/lmsRoutes.js";
 import applicationRoutes from "./src/routes/applicationRoutes.js";
 import aiRoutes from "./src/routes/aiRoutes.js";
 import adminRoutes from "./src/routes/adminRoutes.js";
+import chatRoutes from "./src/routes/chatRoutes.js";
 
 const app=express();
 app.set("trust proxy",1);
@@ -22,6 +23,7 @@ app.use(csrfOriginGuard);
 app.use("/api",authRoutes);
 app.use("/api",applicationRoutes);
 app.use("/api/ai",aiRoutes);
+app.use("/api/ai",chatRoutes);
 app.use("/api",lmsRoutes);
 app.use("/api/admin",adminRoutes);
 

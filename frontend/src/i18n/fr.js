@@ -28,13 +28,13 @@ export default {
     hubTitle2: "Un hub.",
     hubTitle3: "Tout est connecté.",
     hubSub:
-      "Tous les outils créés pour le Programme des Jeunes Leaders de la KOICA sont réunis ici, de la validation de votre présence aux formations à la rencontre d'autres leaders des cinq pays.",
+      "Tous les outils du KOICA Youth Leaders Program sont réunis ici : informations sur le programme, accès participant, réseau et assistant Peko.",
     cards: {
-      attendance: {
-        tag: "En ligne",
-        title: "Système de présence",
-        text: "Enregistrez votre présence aux sessions de formation en ligne et sur place, et suivez votre participation tout au long du programme.",
-        link: "Ouvrir les présences",
+      portal: {
+        tag: "LMS",
+        title: "Portail participant",
+        text: "Connectez-vous pour accéder au calendrier, aux modules, aux ressources, à votre progression et aux outils de présence.",
+        link: "Ouvrir le portail participant",
       },
       network: {
         tag: "En ligne",
@@ -354,10 +354,23 @@ export default {
 
   portal: {
     nav: {
+      attendance: "Présence",
       calendar: "Calendrier",
       dashboard: "Tableau de bord",
       modules: "Modules",
       resources: "Ressources",
+    },
+    attendance: {
+      eyebrow: "SERVICES PARTICIPANTS",
+      title: "Présence",
+      sub: "Accédez au système de présence du programme depuis votre espace d’apprentissage.",
+      cardTitle: "Présence aux formations",
+      cardText: "Utilisez le système de présence lorsque votre facilitateur vous le demande pour enregistrer votre participation aux sessions éligibles en ligne ou en présentiel.",
+      point1: "Enregistrez votre présence lorsque la session est ouverte.",
+      point2: "Utilisez les mêmes informations participant que pour le programme YLP.",
+      point3: "Contactez l’administrateur du programme si une présence doit être corrigée.",
+      open: "Ouvrir le système de présence",
+      note: "Le système de présence s’ouvre dans un nouvel onglet sécurisé.",
     },
     logout: "Se déconnecter",
     trackPublic: "Secteur public",

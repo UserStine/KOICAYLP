@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import peko from "../assets/peko.png";
 import { WaveIcon } from "./Icons";
 import { useT } from "../i18n";
-import { API } from "../auth/AuthContext";
+import { API, useAuth } from "../auth/AuthContext";
 import PekoLoader from "./PekoLoader";
 
 function consumeSseChunk(buffer, onEvent) {
@@ -32,13 +32,32 @@ function consumeSseChunk(buffer, onEvent) {
   return working;
 }
 
+
+function cleanPekoText(value) {
+  return String(value || "")
+    .replace(/\[(?:S\d+(?:\s*,\s*S\d+)*|LIVE)\]/gi, "")
+    .replace(/^\s*#{1,6}\s+/gm, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/__(.*?)__/g, "$1")
+    .replace(/^\s*[-*+]\s+/gm, "• ")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/ {2,}/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 export default function ChatWidget({ open, setOpen }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [conversationId, setConversationId] = useState(null);
+  const [conversations, setConversations] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const bodyRef = useRef(null);
   const requestRef = useRef(null);
   const { t, lang } = useT();
+  const { user } = useAuth();
 
   useEffect(() => {
     if (bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
@@ -47,9 +66,49 @@ export default function ChatWidget({ open, setOpen }) {
   useEffect(() => {
     requestRef.current?.abort();
     setMessages([]);
+    setConversationId(null);
   }, [lang]);
 
   useEffect(() => () => requestRef.current?.abort(), []);
+
+
+  const refreshHistory = async () => {
+    if (!user) return setConversations([]);
+    try {
+      const response = await fetch(`${API}/api/ai/conversations`, { credentials: "include" });
+      const data = await response.json().catch(() => ({}));
+      if (response.ok) setConversations(Array.isArray(data.conversations) ? data.conversations : []);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (open && user) refreshHistory();
+  }, [open, user]);
+
+  const openConversation = async (id) => {
+    if (!user || busy) return;
+    try {
+      const response = await fetch(`${API}/api/ai/conversations/${id}`, { credentials: "include" });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || "Unable to load conversation.");
+      setConversationId(id);
+      setMessages((data.messages || []).map((item) => ({
+        id: item.id,
+        from: item.role === "assistant" ? "bot" : "user",
+        text: item.content || "",
+        sources: item.sources || [],
+        streaming: false,
+      })));
+      setShowHistory(false);
+    } catch {}
+  };
+
+  const newConversation = () => {
+    requestRef.current?.abort();
+    setConversationId(null);
+    setMessages([]);
+    setShowHistory(false);
+  };
 
   const ask = async (q) => {
     const message = q.trim();
@@ -85,7 +144,7 @@ export default function ChatWidget({ open, setOpen }) {
           "Content-Type": "application/json",
           Accept: "text/event-stream",
         },
-        body: JSON.stringify({ message, language: lang, history }),
+        body: JSON.stringify({ message, language: lang, history, conversationId }),
         signal: controller.signal,
       });
 
@@ -113,10 +172,13 @@ export default function ChatWidget({ open, setOpen }) {
       let receivedText = false;
 
       const onEvent = (event, data) => {
-        if (event === "token") {
+        if (event === "start") {
+          if (data.conversationId) setConversationId(data.conversationId);
+        } else if (event === "token") {
           if (data.text) receivedText = true;
           updateBot((item) => ({ ...item, text: `${item.text}${data.text || ""}` }));
         } else if (event === "done") {
+          if (data.conversationId) setConversationId(data.conversationId);
           updateBot((item) => ({
             ...item,
             sources: Array.isArray(data.sources) ? data.sources : [],
@@ -153,11 +215,12 @@ export default function ChatWidget({ open, setOpen }) {
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json", Accept: "application/json" },
-            body: JSON.stringify({ message, language: lang, history }),
+            body: JSON.stringify({ message, language: lang, history, conversationId }),
             signal: controller.signal,
           });
           const data = await fallback.json().catch(() => ({}));
           if (!fallback.ok) throw new Error(data.error || t.chat.error);
+          if (data.conversationId) setConversationId(data.conversationId);
           updateBot((item) => ({
             ...item,
             text: data.reply || t.chat.reply,
@@ -183,6 +246,7 @@ export default function ChatWidget({ open, setOpen }) {
     } finally {
       if (requestRef.current === controller) requestRef.current = null;
       setBusy(false);
+      if (user) refreshHistory();
     }
   };
 
@@ -201,11 +265,31 @@ export default function ChatWidget({ open, setOpen }) {
               <strong>{t.chat.title}</strong>
               <small>{t.chat.subtitle}</small>
             </div>
+            {user && (
+              <>
+                <button className="chat-head-action" type="button" title="Chat history" onClick={() => setShowHistory((value) => !value)}>History</button>
+                <button className="chat-head-action" type="button" title="New chat" onClick={newConversation}>New</button>
+              </>
+            )}
             <button className="chat-close" aria-label={t.chat.close} onClick={() => setOpen(false)}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 strokeWidth="2.2" strokeLinecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
           </div>
+
+          {user && showHistory && (
+            <div className="chat-history">
+              <div className="chat-history-title">Previous conversations</div>
+              {conversations.length === 0 ? (
+                <div className="chat-history-empty">No saved conversations yet.</div>
+              ) : conversations.map((conversation) => (
+                <button key={conversation.id} type="button" className={conversation.id === conversationId ? "active" : ""} onClick={() => openConversation(conversation.id)}>
+                  <span>{conversation.title}</span>
+                  <small>{conversation.updatedAt ? new Date(conversation.updatedAt).toLocaleDateString() : ""}</small>
+                </button>
+              ))}
+            </div>
+          )}
 
           <div className="chat-body" ref={bodyRef}>
             <div className="chat-msg"><WaveIcon /> {t.chat.greeting}</div>
@@ -219,7 +303,7 @@ export default function ChatWidget({ open, setOpen }) {
             {messages.map((m, i) => (
               <div key={m.id || `${m.from}-${i}`} className={`chat-msg ${m.from === "user" ? "user" : ""} ${m.error ? "error" : ""}`}>
                 <div className="chat-answer-text">
-                  {m.text}
+                  {m.from === "bot" ? cleanPekoText(m.text) : m.text}
                   {m.from === "bot" && m.streaming && m.text && (
                     <span className="chat-stream-cursor" aria-hidden="true">▍</span>
                   )}
@@ -228,7 +312,7 @@ export default function ChatWidget({ open, setOpen }) {
                   <div className="chat-sources" aria-label={t.chat.sources}>
                     {m.sources.slice(0, 3).map((source) => (
                       <span key={`${source.ref}-${source.title}`} title={source.source || source.title}>
-                        [{source.ref}] {source.title}
+                        {source.title}
                       </span>
                     ))}
                   </div>

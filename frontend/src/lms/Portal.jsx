@@ -11,6 +11,7 @@ import Modules from "./Modules";
 import ModuleDetail from "./ModuleDetail";
 import Resources from "./Resources";
 import Calendar from "./Calendar";
+import Attendance from "./Attendance";
 
 const HomeIcon = () => (
   <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"
@@ -25,6 +26,7 @@ const FolderIcon = () => (
     strokeLinecap="round" strokeLinejoin="round"><path d="M3.5 7a2 2 0 0 1 2-2h3.6l2 2.4h7.4a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z" /></svg>
 );
 const CalendarIcon = () => (<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>);
+const AttendanceIcon = () => (<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 9h18"/><path d="m8.5 15 2.2 2.2 4.8-5"/></svg>);
 const LogoutIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9"
     strokeLinecap="round" strokeLinejoin="round"><path d="M14 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4M10 8l-4 4 4 4M6 12h10" /></svg>
@@ -38,9 +40,10 @@ export default function Portal() {
 
   const links = [
     { to: "/portal", end: true, label: p.nav.dashboard, icon: <HomeIcon /> },
+    { to: "/portal/calendar", label: p.nav.calendar, icon: <CalendarIcon /> },
     { to: "/portal/modules", label: p.nav.modules, icon: <BooksIcon /> },
     { to: "/portal/resources", label: p.nav.resources, icon: <FolderIcon /> },
-    { to: "/portal/calendar", label: p.nav.calendar, icon: <CalendarIcon /> },
+    { to: "/portal/attendance", label: p.nav.attendance, icon: <AttendanceIcon /> },
   ];
 
   const initials = (user?.name || "?")
@@ -97,6 +100,7 @@ export default function Portal() {
           <Route path="modules/:id" element={<ModuleDetail />} />
           <Route path="resources" element={<Resources />} />
           <Route path="calendar" element={<Calendar />} />
+          <Route path="attendance" element={<Attendance />} />
         </Routes>
       </div>
 
