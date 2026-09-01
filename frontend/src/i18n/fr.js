@@ -456,7 +456,7 @@ export default {
     placeholder: "Écrivez votre question…",
     send: "Envoyer",
     reply: "Je n'ai pas trouvé suffisamment d'informations KOICA vérifiées pour répondre avec certitude.",
-    thinking: "Peko consulte la base de connaissances KOICA…",
+    thinking: "Peko réfléchit…",
     error: "Peko ne peut pas joindre le service IA pour le moment. Réessayez.",
     sources: "Sources",
     note: "Propulsé par Gemini et fondé sur la base de connaissances KOICA YLP. Confirmez les décisions propres à une cohorte auprès de la KOICA.",

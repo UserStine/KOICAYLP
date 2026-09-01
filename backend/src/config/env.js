@@ -2,9 +2,19 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadEnvFile } from "node:process";
+// Manually load .env so our file values always win over OS-level env vars.
+try {
+  const envPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.env");
+  const lines = fs.readFileSync(envPath, "utf8").split("\n");
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const eq = trimmed.indexOf("=");
+    if (eq < 0) continue;
+    process.env[trimmed.slice(0, eq)] = trimmed.slice(eq + 1);
+  }
+} catch { /* .env not present – fine in production */ }
 
-try { loadEnvFile(); } catch {}
 
 export const backendDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 export const isVercel = Boolean(process.env.VERCEL);

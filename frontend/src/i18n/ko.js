@@ -456,7 +456,7 @@ export default {
     placeholder: "질문을 입력하세요…",
     send: "보내기",
     reply: "확인된 KOICA 정보가 충분하지 않아 확실하게 답변하기 어렵습니다.",
-    thinking: "페코가 KOICA 지식 베이스를 확인하고 있어요…",
+    thinking: "페코가 생각하고 있어요…",
     error: "현재 AI 서비스에 연결할 수 없습니다. 다시 시도해 주세요.",
     sources: "출처",
     note: "Gemini를 사용하며 KOICA YLP 지식 베이스에 근거해 답변합니다. 기수별 공식 결정은 KOICA에 확인해 주세요.",

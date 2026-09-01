@@ -459,7 +459,7 @@ export default {
     placeholder: "Type your question…",
     send: "Send",
     reply: "I couldn't find enough verified KOICA information to answer that yet.",
-    thinking: "Peko is checking the KOICA knowledge base…",
+    thinking: "Peko is thinking…",
     error: "Peko could not reach the AI service. Please try again.",
     sources: "Sources",
     note: "Powered by Gemini and grounded in the KOICA YLP knowledge base. Confirm cohort-specific decisions with KOICA.",
