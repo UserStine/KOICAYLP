@@ -44,7 +44,7 @@ export const allowedResourceExtensions = new Set([".pdf",".doc",".docx",".ppt","
 
 export const gemini = {
   apiKey: process.env.GEMINI_API_KEY || "",
-  model: process.env.GEMINI_MODEL || "gemini-3.7-flash",
+  model: process.env.GEMINI_MODEL || "gemini-3.6-flash",
   embeddingModel: process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001",
   ragTopK: Number(process.env.RAG_TOP_K || 6),
   ragMinScore: Number(process.env.RAG_MIN_SCORE || 0.08),

@@ -71,13 +71,20 @@ function requestBody(req) {
   return JSON.stringify(req.body);
 }
 
+export const config = {
+  maxDuration: 60,
+};
+
 export default async function handler(req, res) {
+  const apiPath = normalizeApiPath(req.query?.path);
+  const isAiRequest = apiPath.startsWith("/api/ai");
+  const timeoutMs = isAiRequest ? 45_000 : 20_000;
+
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15_000);
+  const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const origin = backendOrigin();
-    const apiPath = normalizeApiPath(req.query?.path);
 
     const forwardedUrl = new URL(apiPath, origin);
     const originalUrl = new URL(req.url || "/api/proxy", "https://frontend.invalid");
@@ -129,6 +136,22 @@ export default async function handler(req, res) {
     } else {
       const cookie = upstream.headers.get("set-cookie");
       if (cookie) res.setHeader("Set-Cookie", cookie);
+    }
+
+    const isEventStream = String(upstream.headers.get("content-type") || "").includes("text/event-stream");
+
+    if (isEventStream && upstream.body) {
+      const reader = upstream.body.getReader();
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          res.write(Buffer.from(value));
+        }
+      } finally {
+        res.end();
+      }
+      return;
     }
 
     const payload = Buffer.from(await upstream.arrayBuffer());

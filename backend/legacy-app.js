@@ -1031,7 +1031,7 @@ app.get("/api/ai/health", async (_req, res) => {
     const chunks = buildRagChunks(__dirname, databaseKnowledge);
     res.json({
       ok: true, provider: "gemini", configured: Boolean(process.env.GEMINI_API_KEY),
-      model: process.env.GEMINI_MODEL || "gemini-3.7-flash",
+      model: process.env.GEMINI_MODEL || "gemini-3.6-flash",
       embeddingModel: process.env.GEMINI_EMBEDDING_MODEL || "gemini-embedding-001",
       knowledgeArticles: databaseKnowledge.length, knowledgeChunks: chunks.length,
       knowledgeSource: "supabase",
@@ -1110,7 +1110,7 @@ app.post("/api/ai/chat", aiLimiter, async (req, res) => {
       }],
     });
 
-    const model = process.env.GEMINI_MODEL || "gemini-3.7-flash";
+    const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`,
       {
