@@ -2,18 +2,26 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-// Manually load .env so our file values always win over OS-level env vars.
+// Load backend/.env only as a local-development fallback.
+// Platform environment variables (Vercel, Render, Railway, etc.) MUST win.
+// Never overwrite a variable that the hosting platform already supplied.
 try {
   const envPath = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.env");
-  const lines = fs.readFileSync(envPath, "utf8").split("\n");
+  const lines = fs.readFileSync(envPath, "utf8").split(/\r?\n/);
   for (const line of lines) {
     const trimmed = line.trim();
     if (!trimmed || trimmed.startsWith("#")) continue;
     const eq = trimmed.indexOf("=");
     if (eq < 0) continue;
-    process.env[trimmed.slice(0, eq)] = trimmed.slice(eq + 1);
+    const key = trimmed.slice(0, eq).trim();
+    let value = trimmed.slice(eq + 1).trim();
+    if (!key || Object.prototype.hasOwnProperty.call(process.env, key)) continue;
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    process.env[key] = value;
   }
-} catch { /* .env not present – fine in production */ }
+} catch { /* .env not present – expected in production */ }
 
 
 export const backendDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
