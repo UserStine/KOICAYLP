@@ -57,7 +57,7 @@ export default {
     },
     tracksTeaser: { titleA: "Deux filières,", titleB: "une même mission", sub: "Que vous façonnniez les politiques publiques ou développiez des solutions, une filière vous correspond. Les deux suivent le même parcours en trois phases : formation en ligne, formation locale au Ghana et formation sur invitation en Corée.", publicGhost: "PUBLIC", publicKicker: "Filière Secteur public", publicTitle: "Pour ceux qui façonnent les politiques", publicText: "Agents publics, praticiens des politiques et employés du secteur public qui portent l'innovation numérique publique grâce à l'IA.", privateGhost: "PRIVÉ", privateKicker: "Filière Secteur privé", privateTitle: "Pour ceux qui bâtissent des solutions", privateText: "Entrepreneurs, développeurs, fondateurs de start-up et professionnels du monde académique qui transforment des idées en MVP et applications d'IA sans code.", publicEnter: "Entrer dans le Secteur public", privateEnter: "Entrer dans le Secteur privé", explore: "Découvrir la filière" },
     testimonials: { eyebrow: "Paroles d'anciens", titleA: "Écoutez les anciens", titleB: "participants", sub: "Les témoignages vérifiés des anciens participants peuvent être publiés ici sans modifier la mise en page.", roles: ["Ancien du secteur public", "Ancien du secteur privé", "Ancien régional"], comingSoon: "Témoignage vérifié à venir.", program: "Programme des Jeunes Leaders de la KOICA" },
-    gallery: { eyebrow: "Anciens participants", titleA: "Moments de la", titleB: "communauté" },
+    gallery: { eyebrow: "Anciens participants", titleA: "Moments de la", titleB: "communauté", viewMore: "Voir plus de photos" },
   },
 
   program: {

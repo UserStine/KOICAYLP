@@ -267,8 +267,22 @@ export default function Home({ openChat }) {
               </figure>
             ))}
           </div>
+          <div className="gallery-view-more" data-reveal>
+            <a
+              href="https://kshots-ten.vercel.app/koicalive"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gallery-view-more-btn"
+            >
+              {t.home.gallery.viewMore || "View More Photos"}
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </a>
+          </div>
         </div>
       </section>
+
 
       {/* ================= YLP HUB ================= */}
       <section className="hub" id="hub">

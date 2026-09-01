@@ -57,7 +57,7 @@ export default {
     },
     tracksTeaser: { titleA: "두 개의 트랙,", titleB: "하나의 목표", sub: "정책을 설계하든 제품을 만들든 여러분에게 맞는 트랙이 있습니다. 두 트랙 모두 온라인 교육, 가나 현지 교육, 한국 초청 연수의 동일한 3단계 여정을 이수합니다.", publicGhost: "공공", publicKicker: "공공부문 트랙", publicTitle: "정책을 만드는 리더를 위해", publicText: "AI 기반 디지털 정부 혁신을 이끄는 공무원, 정책 실무자 및 공공부문 종사자를 위한 트랙입니다.", privateGhost: "민간", privateKicker: "민간부문 트랙", privateTitle: "솔루션을 만드는 리더를 위해", privateText: "아이디어를 MVP와 노코드 AI 애플리케이션으로 발전시키는 기업가, 개발자, 스타트업 창업자 및 학계 전문가를 위한 트랙입니다.", publicEnter: "공공부문으로 들어가기", privateEnter: "민간부문으로 들어가기", explore: "트랙 살펴보기" },
     testimonials: { eyebrow: "수료생 이야기", titleA: "이전", titleB: "수료생의 목소리", sub: "검증된 수료생 후기를 현재 레이아웃을 변경하지 않고 이곳에 게시할 수 있습니다.", roles: ["공공부문 수료생", "민간부문 수료생", "지역 수료생"], comingSoon: "검증된 후기가 곧 공개됩니다.", program: "KOICA 청년 리더 프로그램" },
-    gallery: { eyebrow: "이전 수료생", titleA: "커뮤니티의", titleB: "순간들" },
+    gallery: { eyebrow: "이전 수료생", titleA: "커뮤니티의", titleB: "순간들", viewMore: "사진 더 보기" },
   },
 
   program: {

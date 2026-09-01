@@ -57,7 +57,7 @@ export default {
     },
     tracksTeaser: { titleA: "Two tracks,", titleB: "one mission", sub: "Whether you shape policy or build products, there is a track for you. Both complete the same three-phase journey: online training, local training in Ghana, and invitational training in Korea.", publicGhost: "PUBLIC", publicKicker: "Public Sector Track", publicTitle: "For those shaping policy", publicText: "Government officials, policy practitioners, and public sector employees driving AI-powered digital government innovation.", privateGhost: "PRIVATE", privateKicker: "Private Sector Track", privateTitle: "For those building solutions", privateText: "Entrepreneurs, developers, startup founders, and academic professionals turning ideas into MVPs and no-code AI applications.", publicEnter: "Enter Public Sector", privateEnter: "Enter Private Sector", explore: "Explore the track" },
     testimonials: { eyebrow: "Fellow stories", titleA: "Hear from previous", titleB: "fellows", sub: "Verified fellow testimonials can be published here without changing the page layout.", roles: ["Public Sector Fellow", "Private Sector Fellow", "Regional Fellow"], comingSoon: "Verified testimonial coming soon.", program: "KOICA Youth Leaders Program" },
-    gallery: { eyebrow: "Previous fellows", titleA: "Moments from the", titleB: "community" },
+    gallery: { eyebrow: "Previous fellows", titleA: "Moments from the", titleB: "community", viewMore: "View More Photos" },
   },
 
   program: {
