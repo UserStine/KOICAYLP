@@ -13,6 +13,8 @@ import Apply from "./pages/Apply";
 import ApplySector from "./pages/ApplySector";
 import Faq from "./pages/Faq";
 import Login from "./pages/Login";
+import ForgotPin from "./pages/ForgotPin";
+import ChangePin from "./pages/ChangePin";
 import Portal from "./lms/Portal";
 import AdminLayout from "./admin/AdminLayout";
 import Protected from "./auth/Protected";
@@ -59,13 +61,15 @@ function Shell() {
   const [chatOpen, setChatOpen] = useState(false);
   const openChat = () => setChatOpen(true);
   const { pathname } = useLocation();
-  const isPortal = pathname.startsWith("/portal") || pathname.startsWith("/login") || pathname.startsWith("/admin");
+  const isPortal = pathname.startsWith("/portal") || pathname.startsWith("/login") || pathname.startsWith("/forgot-pin") || pathname.startsWith("/change-pin") || pathname.startsWith("/admin");
 
   return (
     <>
       <ScrollManager />
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-pin" element={<ForgotPin />} />
+        <Route path="/change-pin" element={<Protected><ChangePin /></Protected>} />
         <Route path="/portal/*" element={<Protected><Portal /></Protected>} />
         <Route path="/admin/*" element={<Protected><AdminLayout /></Protected>} />
         <Route path="*" element={<PublicSite openChat={openChat} />} />

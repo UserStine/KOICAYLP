@@ -12,6 +12,7 @@ import AdminParticipants from "./AdminParticipants";
 import AdminApplicationSettings from "./AdminApplicationSettings";
 import AdminApplicationSubmissions from "./AdminApplicationSubmissions";
 import AdminKnowledgeBase from "./AdminKnowledgeBase";
+import AdminPinResets from "./AdminPinResets";
 
 const I = { width: 19, height: 19, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor",
   strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round" };
@@ -38,6 +39,7 @@ export default function AdminLayout() {
     { to: "/admin/announcements", label: a.nav.announcements, icon: <MegaIcon /> },
     { to: "/admin/resources", label: a.nav.resources, icon: <FolderIcon /> },
     { to: "/admin/participants", label: a.nav.participants, icon: <PeopleIcon /> },
+    { to: "/admin/pin-resets", label: a.nav.pinResets, icon: <SettingsIcon /> },
     { to: "/admin/applications", label: a.nav.applications, icon: <SettingsIcon /> },
     { to: "/admin/knowledge", label: a.nav.knowledge, icon: <BrainIcon /> },
     { to: "/admin/submissions", label: a.nav.submissions, icon: <InboxIcon /> },
@@ -92,6 +94,7 @@ export default function AdminLayout() {
           <Route path="announcements" element={<AdminAnnouncements />} />
           <Route path="resources" element={<AdminResources />} />
           <Route path="participants" element={<AdminParticipants />} />
+          <Route path="pin-resets" element={<AdminPinResets />} />
           <Route path="applications" element={<AdminApplicationSettings />} />
           <Route path="submissions" element={<AdminApplicationSubmissions />} />
           <Route path="knowledge" element={<AdminKnowledgeBase />} />

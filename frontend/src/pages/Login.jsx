@@ -25,7 +25,7 @@ export default function Login() {
     setBusy(true);
     try {
       const who = await login(name.replace(/\s+/g, " ").trim(), pin.trim());
-      nav(who.role === "admin" ? "/admin" : "/portal");
+      nav(who.role === "admin" ? "/admin" : (who.mustChangePin ? "/change-pin" : "/portal"));
     } catch (e2) {
       setErr(e2.message);
     } finally {
@@ -71,7 +71,7 @@ export default function Login() {
               type="password"
               value={pin}
               onChange={(e) => setPin(e.target.value.toUpperCase())}
-              placeholder="KYLP000"
+              placeholder={l.pinPlaceholder || "KYLP000"}
               autoComplete="one-time-code"
               autoCapitalize="characters"
               autoCorrect="off"
@@ -90,6 +90,7 @@ export default function Login() {
         </form>
 
         <p className="login-help">{l.help}</p>
+        <Link className="forgot-password-link" to="/forgot-pin">{l.forgot}</Link>
         <Link className="login-back" to="/">{l.back}</Link>
       </div>
     </main>

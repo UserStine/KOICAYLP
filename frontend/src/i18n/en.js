@@ -342,14 +342,22 @@ export default {
 
   login: {
     title: "Participant sign in",
-    sub: "Enter your name exactly as it appears on your application, along with your KOICA PIN.",
+    sub: "Enter your name exactly as it appears on the participant roster, along with your issued KOICA PIN.",
     name: "Full name",
     namePlaceholder: "e.g. Ama Owusu",
     pin: "KOICA PIN",
+    pinPlaceholder: "KYLP000",
     submit: "Sign in",
     working: "Signing in…",
-    help: "Lost your PIN? Contact your regional KOICA office and they'll re-issue it.",
+    help: "Use the KOICA PIN issued to you for the programme.",
+    forgot: "Forgot your KOICA PIN?",
     back: "← Back to the website",
+  },
+  pinReset: {
+    title: "Request a PIN reset", sub: "Enter the same participant details used for the programme. If they match the roster, the programme administrator will review your request.",
+    name: "Full name", country: "Country", track: "Programme track", selectTrack: "Select your track", publicTrack: "Public Sector", privateTrack: "Private Sector",
+    submit: "Send reset request", sending: "Sending…", sentTitle: "Request received", sent: "If the details match the participant roster, your PIN reset request has been sent to the programme administrator. You will receive a temporary PIN through an approved programme communication channel after verification.", error: "We could not submit the request. Please try again.", back: "← Back to sign in",
+    changeTitle: "Create a new KOICA PIN", changeSub: "You signed in with a temporary PIN. Choose a new PIN before continuing to the LMS.", newPin: "New PIN", confirmPin: "Confirm new PIN", pinHint: "Use 6–24 letters, numbers, or hyphens.", save: "Save new PIN", saving: "Saving…"
   },
 
   portal: {
@@ -402,7 +410,7 @@ export default {
     badge: "Admin",
     role: "Administrator",
     viewAsParticipant: "View participant portal",
-    nav: { modules: "Courses", announcements: "Announcements", resources: "Resources", participants: "Participants", applications: "Applications", submissions: "Submissions", knowledge: "Knowledge Base" },
+    nav: { modules: "Courses", announcements: "Announcements", resources: "Resources", participants: "Participants", applications: "Applications", submissions: "Submissions", knowledge: "Knowledge Base", pinResets: "PIN Resets" },
     modulesTitle: "Courses & modules",
     modulesSub: "Add a module, then list its lessons. Participants see modules for their track plus anything marked for both.",
     newModule: "New module", editModule: "Edit module",
@@ -438,6 +446,7 @@ export default {
     appSettings: { title: "Application Settings", sub: "Open or close applications and upload the application documents. Completed applications are submitted directly through the website.", availability: "Application availability", availabilityHint: "Turn this on only when applicants should be able to download and submit applications.", closedMessage: "Closed message", closeAt: "Automatic closing date and time", optional: "optional", form: "Application form", uploadHint: "Upload PDF, DOC, or DOCX. Maximum 10 MB.", currentFile: "Currently available to applicants when applications are open.", noFile: "No application form uploaded.", unsaved: "Unsaved changes" },
     submissions: { eyebrow: "Admin console", title: "Application Submissions", sub: "Review and download completed applications submitted through the website.", countOne: "submission", countMany: "submissions", search: "Search name, email, country or reference", allTracks: "All tracks", reference: "Reference", applicant: "Applicant", track: "Track", countryOrg: "Country / Organization", submitted: "Submitted", file: "File", empty: "No application submissions found." },
     knowledge: { title: "Peko Knowledge Base", sub: "Manage the verified information Gemini can use when Peko answers questions.", newArticle: "New article", editArticle: "Edit article", articleTitle: "Title", category: "Category", language: "Language", allLanguages: "All languages", content: "Verified content", source: "Source", published: "Published", search: "Search knowledge base…", live: "Published", draft: "Draft", publish: "Publish", unpublish: "Unpublish", publishedCount: "published", required: "Enter both a title and verified content.", confirmDelete: "Delete this knowledge article permanently?", empty: "No knowledge articles found." },
+    pinResets: { title: "PIN Reset Requests", sub: "Verify participant recovery requests and issue a one-time temporary PIN.", pending: "Pending", all: "All", refresh: "Refresh", loading: "Loading requests…", participant: "Participant", details: "Details", requested: "Requested", actions: "Actions", approve: "Approve", reject: "Reject", empty: "No PIN reset requests found.", publicTrack: "Public Sector", privateTrack: "Private Sector", confirmApprove: "Approve the PIN reset for {name}?", confirmReject: "Reject the PIN reset for {name}?", tempTitle: "Temporary PIN generated", tempExplain: "Give this temporary PIN to {name} through an approved programme communication channel.", tempWarning: "This PIN is shown only now and is not stored in plaintext. The participant will be forced to choose a new PIN after signing in.", copy: "Copy PIN", done: "Done" },
   },
 
   accessibility: { tools: "Display and accessibility tools", lightMode: "Switch to light mode", darkMode: "Switch to dark mode", open: "Open visual accessibility tools", title: "Accessibility", sub: "Adjust how the site looks and reads.", close: "Close accessibility tools", textSize: "Text size", highContrast: "High contrast", highContrastSub: "Increase separation between text and backgrounds.", grayscale: "Grayscale", grayscaleSub: "Remove colour distractions.", underline: "Underline links", underlineSub: "Make interactive links easier to identify.", reduceMotion: "Reduce motion", reduceMotionSub: "Stop non-essential animation.", readAloud: "Read page aloud", stopReading: "Stop reading", reset: "Reset accessibility settings" },

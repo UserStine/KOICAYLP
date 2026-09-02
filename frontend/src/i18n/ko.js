@@ -342,14 +342,22 @@ export default {
 
   login: {
     title: "참가자 로그인",
-    sub: "지원서에 기재한 이름과 KOICA PIN을 정확히 입력하세요.",
+    sub: "참가자 명단에 등록된 이름과 발급받은 KOICA PIN을 정확히 입력하세요.",
     name: "성명",
     namePlaceholder: "예: 아마 오우수",
     pin: "KOICA PIN",
+    pinPlaceholder: "KYLP000",
     submit: "로그인",
     working: "로그인 중…",
-    help: "PIN을 잊으셨나요? 해당 국가 KOICA 사무소에 문의하시면 다시 발급해 드립니다.",
+    help: "프로그램에서 발급받은 KOICA PIN을 사용하세요.",
+    forgot: "KOICA PIN을 잊으셨나요?",
     back: "← 웹사이트로 돌아가기",
+  },
+  pinReset: {
+    title: "PIN 재설정 요청", sub: "프로그램 참가 시 사용한 정보를 입력하세요. 명단과 일치하면 관리자가 요청을 검토합니다.",
+    name: "성명", country: "국가", track: "프로그램 트랙", selectTrack: "트랙 선택", publicTrack: "공공 부문", privateTrack: "민간 부문",
+    submit: "재설정 요청 보내기", sending: "전송 중…", sentTitle: "요청이 접수되었습니다", sent: "입력한 정보가 참가자 명단과 일치하면 PIN 재설정 요청이 관리자에게 전달됩니다. 확인 후 공식 프로그램 연락 채널을 통해 임시 PIN을 받게 됩니다.", error: "요청을 제출할 수 없습니다. 다시 시도하세요.", back: "← 로그인으로 돌아가기",
+    changeTitle: "새 KOICA PIN 만들기", changeSub: "임시 PIN으로 로그인했습니다. LMS를 계속 사용하기 전에 새 PIN을 설정하세요.", newPin: "새 PIN", confirmPin: "새 PIN 확인", pinHint: "6~24자의 영문자, 숫자 또는 하이픈을 사용하세요.", save: "새 PIN 저장", saving: "저장 중…"
   },
 
   portal: {
@@ -402,7 +410,7 @@ export default {
     badge: "관리자",
     role: "관리자",
     viewAsParticipant: "참가자 포털 보기",
-    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자", applications: "지원 관리", submissions: "지원서", knowledge: "지식 베이스" },
+    nav: { modules: "강의", announcements: "공지사항", resources: "자료실", participants: "참가자", applications: "지원 관리", submissions: "지원서", knowledge: "지식 베이스", pinResets: "PIN 재설정" },
     modulesTitle: "강의 및 모듈",
     modulesSub: "모듈을 추가한 뒤 레슨을 등록하세요. 참가자에게는 본인 트랙의 모듈과 공통 모듈이 표시됩니다.",
     newModule: "새 모듈", editModule: "모듈 수정",
@@ -435,6 +443,7 @@ export default {
     appSettings: { title: "지원 설정", sub: "지원 접수를 열거나 닫고 지원서 양식을 업로드합니다. 작성된 지원서는 웹사이트에서 직접 제출됩니다.", availability: "지원 가능 여부", availabilityHint: "지원자가 지원서를 다운로드하고 제출할 수 있을 때만 활성화하세요.", closedMessage: "마감 안내 문구", closeAt: "자동 마감 날짜 및 시간", optional: "선택", form: "지원서 양식", uploadHint: "PDF, DOC 또는 DOCX 파일을 업로드하세요. 최대 10MB입니다.", currentFile: "지원 접수 기간에 지원자가 사용할 수 있습니다.", noFile: "업로드된 지원서 양식이 없습니다.", unsaved: "저장되지 않은 변경사항" },
     submissions: { eyebrow: "관리자 콘솔", title: "지원서 제출 내역", sub: "웹사이트를 통해 제출된 완료 지원서를 검토하고 다운로드합니다.", countOne: "건", countMany: "건", search: "이름, 이메일, 국가 또는 접수번호 검색", allTracks: "전체 트랙", reference: "접수번호", applicant: "지원자", track: "트랙", countryOrg: "국가 / 기관", submitted: "제출일", file: "파일", empty: "제출된 지원서가 없습니다." },
     knowledge: { title: "Peko 지식 베이스", sub: "Peko가 답변할 때 Gemini가 사용할 수 있는 검증된 정보를 관리합니다.", newArticle: "새 문서", editArticle: "문서 수정", articleTitle: "제목", category: "카테고리", language: "언어", allLanguages: "모든 언어", content: "검증된 내용", source: "출처", published: "게시됨", search: "지식 베이스 검색…", live: "게시됨", draft: "초안", publish: "게시", unpublish: "게시 해제", publishedCount: "게시됨", required: "제목과 검증된 내용을 입력하세요.", confirmDelete: "이 지식 문서를 영구 삭제하시겠습니까?", empty: "지식 문서가 없습니다." },
+    pinResets: { title: "PIN 재설정 요청", sub: "참가자의 복구 요청을 확인하고 일회용 임시 PIN을 발급합니다.", pending: "대기 중", all: "전체", refresh: "새로고침", loading: "요청 불러오는 중…", participant: "참가자", details: "세부정보", requested: "요청일", actions: "작업", approve: "승인", reject: "거절", empty: "PIN 재설정 요청이 없습니다.", publicTrack: "공공 부문", privateTrack: "민간 부문", confirmApprove: "{name}의 PIN 재설정을 승인하시겠습니까?", confirmReject: "{name}의 요청을 거절하시겠습니까?", tempTitle: "임시 PIN 생성됨", tempExplain: "공식 프로그램 연락 채널을 통해 {name}에게 이 임시 PIN을 전달하세요.", tempWarning: "이 PIN은 지금 한 번만 표시되며 평문으로 저장되지 않습니다. 참가자는 로그인 후 새 PIN을 반드시 설정해야 합니다.", copy: "PIN 복사", done: "완료" },
   },
 
   accessibility: { tools: "화면 및 접근성 도구", lightMode: "라이트 모드로 전환", darkMode: "다크 모드로 전환", open: "시각 접근성 도구 열기", title: "접근성", sub: "사이트의 표시 방식과 가독성을 조정하세요.", close: "접근성 도구 닫기", textSize: "글자 크기", highContrast: "고대비", highContrastSub: "텍스트와 배경의 구분을 더 선명하게 합니다.", grayscale: "회색조", grayscaleSub: "색상으로 인한 시각적 방해를 줄입니다.", underline: "링크 밑줄", underlineSub: "클릭 가능한 링크를 더 쉽게 구분합니다.", reduceMotion: "모션 줄이기", reduceMotionSub: "필수적이지 않은 애니메이션을 중지합니다.", readAloud: "페이지 읽어주기", stopReading: "읽기 중지", reset: "접근성 설정 초기화" },

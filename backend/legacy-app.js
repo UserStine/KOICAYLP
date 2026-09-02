@@ -989,42 +989,6 @@ app.post("/api/logout", auth, (req, res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/auth/register", signupLimiter, async (req, res) => {
-  const name = cleanText(req.body?.name, 120), email = cleanText(req.body?.email, 254).toLowerCase(), password = String(req.body?.password || "");
-  if (name.length < 2 || !validEmail(email) || password.length < 12 || password.length > 128) return res.status(400).json({ error: "Enter a valid name, email, and a password of at least 12 characters." });
-
-  if (await getParticipantByEmail(email)) return res.status(202).json({ ok: true });
-
-  const cred = hashSecret(password);
-  const id = `u-${crypto.randomBytes(12).toString("hex")}`;
-  await createParticipant({ id, name, email, passwordSalt: cred.salt, passwordHash: cred.hash, country: "", track: "public", cohort: "", role: "participant" });
-  res.status(202).json({ ok: true });
-});
-
-app.post("/api/auth/forgot-password", signupLimiter, async (req, res) => {
-  const email = cleanText(req.body?.email, 254).toLowerCase();
-  const participant = await getParticipantByEmail(email);
-  if (participant) {
-    const token = setAuthToken("reset-password", participant.id);
-    await deliverEmail(email, "Reset your KOICA YLP password", `${process.env.FRONTEND_URL || ""}/reset-password?token=${encodeURIComponent(token)}`);
-  }
-  res.status(202).json({ ok: true });
-});
-
-app.post("/api/auth/reset-password", signupLimiter, async (req, res) => {
-  const password = String(req.body?.password || "");
-  if (password.length < 12 || password.length > 128) return res.status(400).json({ error: "Password must be 12 to 128 characters." });
-  const token = consumeAuthToken("reset-password", req.body?.token);
-  if (!token) return res.status(400).json({ error: "Reset token is invalid or expired." });
-
-  const participant = await getParticipantById(token.participantId);
-  if (!participant) return res.status(400).json({ error: "Reset token is invalid or expired." });
-
-  const cred = hashSecret(password);
-  await updateParticipant(participant.id, { passwordSalt: cred.salt, passwordHash: cred.hash, pinHash: "", salt: "" });
-  res.json({ ok: true });
-});
-
 app.get("/api/ai/health", async (_req, res) => {
   try {
     const databaseKnowledge = isSupabaseConfigured() ? await listPublishedKnowledgeArticles() : [];

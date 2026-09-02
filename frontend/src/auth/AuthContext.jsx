@@ -44,6 +44,15 @@ export function AuthProvider({ children }) {
     return sessionData.user;
   }, []);
 
+
+  const refreshUser = useCallback(async () => {
+    const res = await fetch(`${API}/api/me`, { credentials: "include", cache: "no-store" });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.user) { setUser(null); throw new Error("Your session expired. Please log in again."); }
+    setUser(data.user);
+    return data.user;
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       await fetch(`${API}/api/logout`, { method: "POST", credentials: "include", headers: { "Content-Type": "application/json" } });
@@ -66,7 +75,7 @@ export function AuthProvider({ children }) {
     return data;
   }, []);
 
-  return <AuthContext.Provider value={{ user, loading, login, logout, api }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, loading, login, logout, api, refreshUser }}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => useContext(AuthContext);

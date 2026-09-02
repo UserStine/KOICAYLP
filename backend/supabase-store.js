@@ -56,6 +56,7 @@ function fromParticipantRow(row) {
     pinHash: row.pin_hash || "",
     passwordSalt: row.password_salt || "",
     passwordHash: row.password_hash || "",
+    mustChangePin: Boolean(row.must_change_pin),
   };
 }
 
@@ -74,6 +75,7 @@ function toParticipantRow(participant) {
     pin_hash: String(participant.pinHash || "").trim() || null,
     password_salt: String(participant.passwordSalt || "").trim() || null,
     password_hash: String(participant.passwordHash || "").trim() || null,
+    must_change_pin: Boolean(participant.mustChangePin),
     updated_at: new Date().toISOString(),
   };
 }

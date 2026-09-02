@@ -342,14 +342,22 @@ export default {
 
   login: {
     title: "Connexion participant",
-    sub: "Saisissez votre nom exactement tel qu'il figure sur votre candidature, ainsi que votre code KOICA.",
+    sub: "Saisissez votre nom exactement comme il apparaît sur la liste des participants, ainsi que votre PIN KOICA attribué.",
     name: "Nom complet",
     namePlaceholder: "ex. Ama Owusu",
-    pin: "Code KOICA",
+    pin: "PIN KOICA",
+    pinPlaceholder: "KYLP000",
     submit: "Se connecter",
     working: "Connexion…",
-    help: "Code perdu ? Contactez votre bureau régional de la KOICA, qui vous en délivrera un nouveau.",
+    help: "Utilisez le PIN KOICA qui vous a été attribué pour le programme.",
+    forgot: "PIN KOICA oublié ?",
     back: "← Retour au site",
+  },
+  pinReset: {
+    title: "Demander la réinitialisation du PIN", sub: "Saisissez les mêmes informations que celles utilisées pour le programme. Si elles correspondent à la liste, l’administrateur examinera votre demande.",
+    name: "Nom complet", country: "Pays", track: "Parcours du programme", selectTrack: "Sélectionnez votre parcours", publicTrack: "Secteur public", privateTrack: "Secteur privé",
+    submit: "Envoyer la demande", sending: "Envoi…", sentTitle: "Demande reçue", sent: "Si les informations correspondent à la liste des participants, votre demande a été envoyée à l’administrateur. Après vérification, un PIN temporaire vous sera communiqué par un canal officiel du programme.", error: "Impossible d’envoyer la demande. Réessayez.", back: "← Retour à la connexion",
+    changeTitle: "Créer un nouveau PIN KOICA", changeSub: "Vous vous êtes connecté avec un PIN temporaire. Choisissez un nouveau PIN avant d’accéder au LMS.", newPin: "Nouveau PIN", confirmPin: "Confirmer le nouveau PIN", pinHint: "Utilisez 6 à 24 lettres, chiffres ou tirets.", save: "Enregistrer le nouveau PIN", saving: "Enregistrement…"
   },
 
   portal: {
@@ -402,7 +410,7 @@ export default {
     badge: "Admin",
     role: "Administrateur",
     viewAsParticipant: "Voir le portail participant",
-    nav: { modules: "Cours", announcements: "Annonces", resources: "Ressources", participants: "Participants", applications: "Candidatures", submissions: "Soumissions", knowledge: "Base de connaissances" },
+    nav: { modules: "Cours", announcements: "Annonces", resources: "Ressources", participants: "Participants", applications: "Candidatures", submissions: "Soumissions", knowledge: "Base de connaissances", pinResets: "Réinitialisations PIN" },
     modulesTitle: "Cours et modules",
     modulesSub: "Ajoutez un module, puis listez ses leçons. Les participants voient les modules de leur filière ainsi que ceux marqués pour les deux.",
     newModule: "Nouveau module", editModule: "Modifier le module",
@@ -435,6 +443,7 @@ export default {
     appSettings: { title: "Paramètres des candidatures", sub: "Ouvrez ou fermez les candidatures et importez les documents de candidature. Les dossiers complétés sont soumis directement sur le site.", availability: "Disponibilité des candidatures", availabilityHint: "Activez cette option uniquement lorsque les candidats doivent pouvoir télécharger et soumettre leur dossier.", closedMessage: "Message de fermeture", closeAt: "Date et heure de fermeture automatique", optional: "facultatif", form: "Formulaire de candidature", uploadHint: "Importez un PDF, DOC ou DOCX. Maximum 10 Mo.", currentFile: "Disponible pour les candidats lorsque les candidatures sont ouvertes.", noFile: "Aucun formulaire de candidature importé.", unsaved: "Modifications non enregistrées" },
     submissions: { eyebrow: "Console admin", title: "Dossiers de candidature", sub: "Consultez et téléchargez les candidatures complètes soumises sur le site.", countOne: "soumission", countMany: "soumissions", search: "Rechercher par nom, e-mail, pays ou référence", allTracks: "Toutes les filières", reference: "Référence", applicant: "Candidat", track: "Filière", countryOrg: "Pays / Organisation", submitted: "Soumis le", file: "Fichier", empty: "Aucune candidature trouvée." },
     knowledge: { title: "Base de connaissances Peko", sub: "Gérez les informations vérifiées que Gemini peut utiliser pour répondre aux questions de Peko.", newArticle: "Nouvel article", editArticle: "Modifier l’article", articleTitle: "Titre", category: "Catégorie", language: "Langue", allLanguages: "Toutes les langues", content: "Contenu vérifié", source: "Source", published: "Publié", search: "Rechercher dans la base…", live: "Publié", draft: "Brouillon", publish: "Publier", unpublish: "Dépublier", publishedCount: "publiés", required: "Saisissez un titre et un contenu vérifié.", confirmDelete: "Supprimer définitivement cet article ?", empty: "Aucun article trouvé." },
+    pinResets: { title: "Demandes de réinitialisation du PIN", sub: "Vérifiez les demandes et émettez un PIN temporaire à usage unique.", pending: "En attente", all: "Toutes", refresh: "Actualiser", loading: "Chargement…", participant: "Participant", details: "Détails", requested: "Demandé", actions: "Actions", approve: "Approuver", reject: "Rejeter", empty: "Aucune demande trouvée.", publicTrack: "Secteur public", privateTrack: "Secteur privé", confirmApprove: "Approuver la réinitialisation pour {name} ?", confirmReject: "Rejeter la demande de {name} ?", tempTitle: "PIN temporaire généré", tempExplain: "Communiquez ce PIN temporaire à {name} par un canal officiel du programme.", tempWarning: "Ce PIN n’est affiché qu’une seule fois et n’est pas stocké en clair. Le participant devra choisir un nouveau PIN après connexion.", copy: "Copier le PIN", done: "Terminé" },
   },
 
   accessibility: { tools: "Outils d'affichage et d'accessibilité", lightMode: "Passer en mode clair", darkMode: "Passer en mode sombre", open: "Ouvrir les outils d'accessibilité visuelle", title: "Accessibilité", sub: "Ajustez l'affichage et la lisibilité du site.", close: "Fermer les outils d'accessibilité", textSize: "Taille du texte", highContrast: "Contraste élevé", highContrastSub: "Augmenter la séparation entre le texte et les arrière-plans.", grayscale: "Niveaux de gris", grayscaleSub: "Supprimer les distractions liées aux couleurs.", underline: "Souligner les liens", underlineSub: "Rendre les liens interactifs plus faciles à repérer.", reduceMotion: "Réduire les animations", reduceMotionSub: "Arrêter les animations non essentielles.", readAloud: "Lire la page à voix haute", stopReading: "Arrêter la lecture", reset: "Réinitialiser les réglages d'accessibilité" },

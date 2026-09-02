@@ -2097,5 +2097,17 @@ html[data-theme="dark"] .attendance-points li{color:#C6D2E4;}
 html[data-theme="dark"] .chat-history{background:#0F1B2B;border-color:#28405D}
 html[data-theme="dark"] .chat-history button{color:#E8EEF8}
 html[data-theme="dark"] .chat-history button:hover,html[data-theme="dark"] .chat-history button.active{background:#132238}
+
+/* Password recovery */
+.forgot-password-link{display:inline-flex;margin:.25rem auto .65rem;font-weight:700;color:#1769aa;text-decoration:none}
+.forgot-password-link:hover{text-decoration:underline}
+.password-card{max-width:520px}
+.login-success{padding:.85rem 1rem;border-radius:12px;background:rgba(30,142,62,.10);border:1px solid rgba(30,142,62,.28);color:#176b31;font-weight:650;line-height:1.45}
+.password-hint{margin:-.25rem 0 .25rem;font-size:.83rem;opacity:.72;line-height:1.4}
+.reset-dev-link{display:block;font-size:.84rem;font-weight:700;color:#1769aa;word-break:break-all}
+
+.reset-success{margin:1rem 0;padding:1rem;border:1px solid var(--border);border-radius:14px;background:var(--surface-2)}
+.reset-success p{margin:.45rem 0 0}.admin-filter-row,.admin-row-actions{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap}.admin-filter-row{margin:0 0 1rem}.btn-sm{padding:.55rem .8rem;font-size:.86rem}.pin-secret-card{margin:0 0 1.25rem;padding:1rem 1.1rem;border:1px solid var(--border);border-radius:16px;background:var(--surface-2)}.pin-secret-card p{margin:.45rem 0}.pin-secret-value{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin:.8rem 0}.pin-secret-value code{font-size:1.15rem;font-weight:800;letter-spacing:.08em;padding:.6rem .8rem;border-radius:10px;background:var(--surface)}.pin-status{display:block;margin-top:.2rem;text-transform:capitalize;opacity:.7}.pin-reset-table .ppl-row{grid-template-columns:1.35fr 1fr 1.15fr 1.2fr}
+@media(max-width:760px){.pin-reset-table .ppl-row{grid-template-columns:1fr}}
 `;
 
