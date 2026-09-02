@@ -16,8 +16,8 @@ export default function ForgotPin() {
   }catch(x){setErr(x.message)}finally{setBusy(false)}};
   return <main className="login-wrap"><div className="login-card">
     <div className="login-language"><LanguageSwitcher/></div><div className="login-brand"><BrandLogos className="login-logo-lockup"/></div>
-    <h1>{l.title}</h1><p className="login-sub">{l.sub}</p>
-    {sent ? <div className="reset-success"><strong>{l.sentTitle}</strong><p>{l.sent}</p></div> : <form className="login-form" onSubmit={submit}>
+    <h1>{l.title}</h1>
+    {sent ? <div className="reset-success"><strong>{l.sentTitle}</strong></div> : <form className="login-form" onSubmit={submit}>
       <label className="field"><span>{l.name}</span><input value={name} onChange={e=>setName(e.target.value)} autoCapitalize="off" autoCorrect="off" spellCheck="false" required/></label>
       <label className="field"><span>{l.country}</span><input value={country} onChange={e=>setCountry(e.target.value)} required/></label>
       <label className="field"><span>{l.track}</span><select value={track} onChange={e=>setTrack(e.target.value)} required><option value="">{l.selectTrack}</option><option value="public">{l.publicTrack}</option><option value="private">{l.privateTrack}</option></select></label>

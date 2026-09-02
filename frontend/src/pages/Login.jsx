@@ -44,8 +44,6 @@ export default function Login() {
         <div className="login-peko"><img src={peko} alt="" /></div>
 
         <h1>{l.title}</h1>
-        <p className="login-sub">{l.sub}</p>
-
         <form onSubmit={submit} className="login-form">
           <label className="field">
             <span>{l.name}</span>
@@ -89,7 +87,6 @@ export default function Login() {
           </button>
         </form>
 
-        <p className="login-help">{l.help}</p>
         <Link className="forgot-password-link" to="/forgot-pin">{l.forgot}</Link>
         <Link className="login-back" to="/">{l.back}</Link>
       </div>
